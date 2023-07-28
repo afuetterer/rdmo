@@ -15,7 +15,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components_root')
 
 FIXTURE_DIRS = (
-   os.path.join(BASE_DIR, 'fixtures'),
+    os.path.join(BASE_DIR, 'fixtures'),
 )
 
 INSTALLED_APPS += [
@@ -122,3 +122,33 @@ LOGGING = {
         }
     }
 }
+
+'''
+Settings for improved performance when testing
+'''
+DEBUG = False
+TEMPLATE_DEBUG = False
+DEBUG_LOGGING = False
+SECRET_KEY = 'this is a not very secret key'
+PASSWORD_HASHERS = ('django.contrib.auth.hashers.MD5PasswordHasher',)
+# MIDDLEWARE = [
+#     "django.contrib.sessions.middleware.SessionMiddleware",
+#     "django.middleware.locale.LocaleMiddleware",
+#     "django.contrib.auth.middleware.AuthenticationMiddleware",
+#     "django.contrib.messages.middleware.MessageMiddleware",
+# ]
+
+MIDDLEWARE = [
+    # 'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware'
+]
+
+import logging
+logging.disable(logging.CRITICAL)
