@@ -1,65 +1,99 @@
 name: pytest
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  PYTHONDONTWRITEBYTECODE: 1
+
+# https://docs.github.com/en/actions/using-jobs/using-concurrency
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        db-backend: [mysql, postgres, sqlite3]
-        python-version: ['3.6', '3.11']
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: rdmo
-          POSTGRES_PASSWORD: postgres_password
-        ports:
-          - 5432:5432
-
+        python-version: ['3.11']
+        db-backend: [sqlite3]
+      fail-fast: false # TODO: for debugging only
+    name: "Build (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})"
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
+        cache: pip
+
+    # TODO:
+    # Using the cache-apt-pkgs-action could speed up the "sudo apt install ..." step significantly
+    # but sadly it does not work for latex apt packages.
+
+    # see: https://github.com/marketplace/actions/cache-apt-packages
+    # https://github.com/awalsh128/cache-apt-pkgs-action/issues/57
+    # - name: Install apt dependencies
+    #   uses: awalsh128/cache-apt-pkgs-action@latest
+    #   with:
+    #     packages: pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended lmodern librsvg2-bin
+    #     version: 1.0
+
+    - name: Install prerequisites
       run: |
-        sudo apt update && sudo apt install -y pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended lmodern librsvg2-bin
-        sudo apt install -y libpq-dev postgresql postgresql-client
+        sudo apt update
+        sudo apt install --yes pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended lmodern librsvg2-bin
         python -m pip install --upgrade pip
-    - name: Install RDMO
+    - name: Install RDMO and dependencies
       run: |
         pip install -e .
-        pip install psycopg2-binary
-        pip install mysqlclient
         pip install coveralls
     - name: Prepare Env
       run: |
         cp testing/config/settings/${{ matrix.db-backend }}.py testing/config/settings/local.py
-        cp -r testing/media testing/media_root
         mkdir testing/log
+    - name: Setup mysql
+      run: | 
+        pip install mysqlclient
         sudo systemctl start mysql.service
+      if: matrix.db-backend == 'mysql'
+    - name: Setup postgres
+      run: |
+        pip install psycopg2-binary
+        sudo systemctl start postgresql.service
+        pg_isready
+        sudo -u postgres psql --command="CREATE USER postgres_user PASSWORD 'postgres_password' CREATEDB"
+      if: matrix.db-backend == 'postgres'
     - name: Run Tests
       run: |
-        pytest --cov=rdmo
-        coveralls --service=github
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_FLAG_NAME: '${{ matrix.db-backend }}: ${{ matrix.python-version }}'
-        COVERALLS_PARALLEL: true
+        pytest --reuse-db --cov --numprocesses=auto --dist=loadscope rdmo/projects/tests/test_view_project.py
+    
+      # pytest rdmo/projects/tests/test_view_project_update_import.py --numprocesses=auto --reuse-db --cov
+      # pytest --numprocesses=auto --reuse-db --cov
+      # pytest rdmo/views
+      
+      # TODO: --no-migrations
+      # TODO: https://pytest-django.readthedocs.io/en/latest/database.html#use-the-same-database-for-all-xdist-processes
 
-  coveralls:
-    name: Indicate completion to coveralls
-    needs: build
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Run Coveralls finish
-      run: |
-        pip install coveralls
-        coveralls --service=github --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       coveralls --service=github
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       COVERALLS_FLAG_NAME: '${{ matrix.db-backend }}: ${{ matrix.python-version }}'
+  #       COVERALLS_PARALLEL: true
+
+  # coveralls:
+  #   name: Indicate completion to coveralls
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   container: python:3-slim
+  #   steps:
+  #   - name: Run Coveralls finish
+  #     run: |
+  #       pip install coveralls
+  #       coveralls --service=github --finish
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

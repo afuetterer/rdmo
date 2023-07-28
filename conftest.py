@@ -1,5 +1,5 @@
 import os
-import subprocess
+import shutil
 from pathlib import Path
 
 import pytest
@@ -20,10 +20,9 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture
-def files():
-    def setup():
-        media_path = Path(__file__).parent / 'testing' / 'media'
-        subprocess.check_call(['rsync', '-a', '--delete', media_path.as_posix().rstrip('/') + '/', settings.MEDIA_ROOT.rstrip('/') + '/'])
-
-    setup()
-    return setup
+def files(settings, tmp_path):
+    """Create a temporary media root directory."""
+    media_path = Path(__file__).parent.joinpath("testing").joinpath("media")
+    settings.MEDIA_ROOT = tmp_path.joinpath("media")
+    shutil.copytree(media_path, settings.MEDIA_ROOT)
+    return settings.MEDIA_ROOT
