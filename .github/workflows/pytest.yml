@@ -35,6 +35,8 @@ jobs:
         sudo apt update
         sudo apt install --yes pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended lmodern librsvg2-bin
         python -m pip install --upgrade pip
+
+        pandoc --version
     - name: Install RDMO and dependencies
       run: |
         pip install -e .
@@ -79,3 +81,10 @@ jobs:
   #       coveralls --service=github --finish
   #     env:
   #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+# FAILED rdmo/projects/tests/test_view_project.py::test_project_view_export[pdf-1-owner-owner]
+# FAILED rdmo/projects/tests/test_view_project.py::test_project_view_export[pdf-1-manager-manager]
+# FAILED rdmo/projects/tests/test_view_project.py::test_project_view_export[pdf-1-author-author]
+# FAILED rdmo/projects/tests/test_view_project.py::test_project_view_export[pdf-1-guest-guest]
+# FAILED rdmo/projects/tests/test_view_project.py::test_project_view_export[pdf-1-site-site]
