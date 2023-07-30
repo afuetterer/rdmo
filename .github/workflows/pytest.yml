@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: ['3.11']
-        db-backend: [sqlite3]
+        python-version: ['3.6', '3.11']
+        db-backend: [mysql, postgres, sqlite3]
       fail-fast: false # TODO: for debugging only
     name: "Build (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})"
     steps:
@@ -30,19 +30,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
-
-    # TODO:
-    # Using the cache-apt-pkgs-action could speed up the "sudo apt install ..." step significantly
-    # but sadly it does not work for latex apt packages.
-
-    # see: https://github.com/marketplace/actions/cache-apt-packages
-    # https://github.com/awalsh128/cache-apt-pkgs-action/issues/57
-    # - name: Install apt dependencies
-    #   uses: awalsh128/cache-apt-pkgs-action@latest
-    #   with:
-    #     packages: pandoc texlive-xetex texlive-latex-extra texlive-fonts-recommended lmodern librsvg2-bin
-    #     version: 1.0
-
     - name: Install prerequisites
       run: |
         sudo apt update
@@ -72,8 +59,6 @@ jobs:
     - name: Run Tests
       run: |
         pytest --reuse-db --cov --numprocesses=auto --dist=loadscope
-      
-      # TODO: --no-migrations
       # TODO: https://pytest-django.readthedocs.io/en/latest/database.html#use-the-same-database-for-all-xdist-processes
 
   #       coveralls --service=github
