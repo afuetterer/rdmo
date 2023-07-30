@@ -55,6 +55,7 @@ jobs:
     - name: Prepare Env
       run: |
         cp testing/config/settings/${{ matrix.db-backend }}.py testing/config/settings/local.py
+        cp -r testing/media testing/media_root
         mkdir testing/log
     - name: Setup mysql
       run: | 
