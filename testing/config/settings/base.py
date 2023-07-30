@@ -131,13 +131,13 @@ TEMPLATE_DEBUG = False
 DEBUG_LOGGING = False
 SECRET_KEY = 'this is a not very secret key'
 PASSWORD_HASHERS = ('django.contrib.auth.hashers.MD5PasswordHasher',)
-MIDDLEWARE = [
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-]
+# MIDDLEWARE = [
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.locale.LocaleMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+# ]
 
 import logging
 logging.disable(logging.CRITICAL)
