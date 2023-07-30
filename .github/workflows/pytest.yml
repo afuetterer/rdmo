@@ -70,11 +70,7 @@ jobs:
       if: matrix.db-backend == 'postgres'
     - name: Run Tests
       run: |
-        pytest --reuse-db --cov --numprocesses=auto --dist=loadscope rdmo/projects/tests/test_view_project.py
-    
-      # pytest rdmo/projects/tests/test_view_project_update_import.py --numprocesses=auto --reuse-db --cov
-      # pytest --numprocesses=auto --reuse-db --cov
-      # pytest rdmo/views
+        pytest --reuse-db --cov --numprocesses=auto --dist=loadscope
       
       # TODO: --no-migrations
       # TODO: https://pytest-django.readthedocs.io/en/latest/database.html#use-the-same-database-for-all-xdist-processes
