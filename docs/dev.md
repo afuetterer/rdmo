@@ -77,9 +77,9 @@ In the new file, set `DEBUG = True` and configure the `DATABASE` entry. The simp
 
 ```python
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "db.sqlite3",
     }
 }
 ```
