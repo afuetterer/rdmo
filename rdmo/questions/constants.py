@@ -10,5 +10,5 @@ WIDGET_TYPES = (
     ('autocomplete', _('Autocomplete')),
     ('range', _('Range slider')),
     ('date', _('Date picker')),
-    ('file', _('File upload'))
+    ('file', _('File upload')),
 )

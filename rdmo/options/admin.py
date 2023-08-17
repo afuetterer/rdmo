@@ -4,8 +4,12 @@ from django.contrib import admin
 from rdmo.core.utils import get_language_fields
 
 from .models import Option, OptionSet
-from .validators import (OptionLockedValidator, OptionSetLockedValidator,
-                         OptionSetUniqueURIValidator, OptionUniqueURIValidator)
+from .validators import (
+    OptionLockedValidator,
+    OptionSetLockedValidator,
+    OptionSetUniqueURIValidator,
+    OptionUniqueURIValidator,
+)
 
 
 class OptionSetAdminForm(forms.ModelForm):
@@ -35,9 +39,9 @@ class OptionAdminForm(forms.ModelForm):
 class OptionSetAdmin(admin.ModelAdmin):
     form = OptionSetAdminForm
 
-    search_fields = ('uri', )
-    list_display = ('uri', )
-    readonly_fields = ('uri', )
+    search_fields = ('uri',)
+    list_display = ('uri',)
+    readonly_fields = ('uri',)
 
 
 class OptionAdmin(admin.ModelAdmin):

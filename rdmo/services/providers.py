@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 
 class OauthProviderMixin(object):
-
     def get(self, request, url):
         # get access token from the session
         access_token = self.get_from_session(request, 'access_token')
@@ -37,10 +36,15 @@ class OauthProviderMixin(object):
                 except requests.HTTPError:
                     logger.warn('get error: %s (%s)', response.content, response.status_code)
 
-                    return render(request, 'core/error.html', {
-                        'title': _('OAuth error'),
-                        'errors': [_('Something went wrong: %s') % self.get_error_message(response)]
-                    }, status=200)
+                    return render(
+                        request,
+                        'core/error.html',
+                        {
+                            'title': _('OAuth error'),
+                            'errors': [_('Something went wrong: %s') % self.get_error_message(response)],
+                        },
+                        status=200,
+                    )
 
         # if the above did not work authorize first
         self.store_in_session(request, 'request', ('get', url, {}))
@@ -65,10 +69,15 @@ class OauthProviderMixin(object):
                 except requests.HTTPError:
                     logger.warn('post error: %s (%s)', response.content, response.status_code)
 
-                    return render(request, 'core/error.html', {
-                        'title': _('OAuth error'),
-                        'errors': [_('Something went wrong: %s') % self.get_error_message(response)]
-                    }, status=200)
+                    return render(
+                        request,
+                        'core/error.html',
+                        {
+                            'title': _('OAuth error'),
+                            'errors': [_('Something went wrong: %s') % self.get_error_message(response)],
+                        },
+                        status=200,
+                    )
 
         # if the above did not work authorize first
         self.store_in_session(request, 'request', ('post', url, data))
@@ -84,16 +93,21 @@ class OauthProviderMixin(object):
 
     def callback(self, request):
         if request.GET.get('state') != self.pop_from_session(request, 'state'):
-            return render(request, 'core/error.html', {
-                'title': _('OAuth authorization not successful'),
-                'errors': [_('State parameter did not match.')]
-            }, status=200)
+            return render(
+                request,
+                'core/error.html',
+                {'title': _('OAuth authorization not successful'), 'errors': [_('State parameter did not match.')]},
+                status=200,
+            )
 
         url = self.token_url + '?' + urlencode(self.get_callback_params(request))
 
-        response = requests.post(url, self.get_callback_data(request),
-                                 auth=self.get_callback_auth(request),
-                                 headers=self.get_callback_headers(request))
+        response = requests.post(
+            url,
+            self.get_callback_data(request),
+            auth=self.get_callback_auth(request),
+            headers=self.get_callback_headers(request),
+        )
 
         try:
             response.raise_for_status()
@@ -116,10 +130,12 @@ class OauthProviderMixin(object):
         except ValueError:
             pass
 
-        return render(request, 'core/error.html', {
-            'title': _('OAuth authorization successful'),
-            'errors': [_('But no redirect could be found.')]
-        }, status=200)
+        return render(
+            request,
+            'core/error.html',
+            {'title': _('OAuth authorization successful'), 'errors': [_('But no redirect could be found.')]},
+            status=200,
+        )
 
     def get_success(self, request, response):
         raise NotImplementedError
@@ -182,10 +198,7 @@ class GitHubProviderMixin(OauthProviderMixin):
         return reverse('oauth_callback', args=['github'])
 
     def get_authorization_headers(self, access_token):
-        return {
-            'Authorization': 'token {}'.format(access_token),
-            'Accept': 'application/vnd.github.v3+json'
-        }
+        return {'Authorization': 'token {}'.format(access_token), 'Accept': 'application/vnd.github.v3+json'}
 
     def get_authorize_params(self, request, state):
         return {
@@ -201,12 +214,11 @@ class GitHubProviderMixin(OauthProviderMixin):
             'token_url': self.token_url,
             'client_id': self.client_id,
             'client_secret': self.client_secret,
-            'code': request.GET.get('code')
+            'code': request.GET.get('code'),
         }
 
 
 class GitLabProviderMixin(OauthProviderMixin):
-
     @property
     def gitlab_url(self):
         return settings.GITLAB_PROVIDER['gitlab_url'].strip('/')
@@ -252,5 +264,5 @@ class GitLabProviderMixin(OauthProviderMixin):
             'client_secret': self.client_secret,
             'code': request.GET.get('code'),
             'grant_type': 'authorization_code',
-            'redirect_uri': request.build_absolute_uri(self.redirect_path)
+            'redirect_uri': request.build_absolute_uri(self.redirect_path),
         }

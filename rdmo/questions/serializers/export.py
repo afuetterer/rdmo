@@ -6,7 +6,6 @@ from ..models import Catalog, Question, QuestionSet, Section
 
 
 class QuestionExportSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
-
     attribute = serializers.CharField(source='attribute.uri', default=None, read_only=True)
     questionset = serializers.CharField(source='questionset.uri', default=None, read_only=True)
     default_option = serializers.CharField(source='default_option.uri', default=None, read_only=True)
@@ -36,7 +35,7 @@ class QuestionExportSerializer(TranslationSerializerMixin, serializers.ModelSeri
             'unit',
             'width',
             'optionsets',
-            'conditions'
+            'conditions',
         )
         trans_fields = (
             'help',
@@ -54,7 +53,6 @@ class QuestionExportSerializer(TranslationSerializerMixin, serializers.ModelSeri
 
 
 class QuestionSetExportSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
-
     attribute = serializers.CharField(source='attribute.uri', default=None, read_only=True)
     section = serializers.CharField(source='section.uri', default=None, read_only=True)
     questionset = serializers.CharField(source='questionset.uri', default=None, read_only=True)
@@ -77,7 +75,7 @@ class QuestionSetExportSerializer(TranslationSerializerMixin, serializers.ModelS
             'order',
             'questionsets',
             'questions',
-            'conditions'
+            'conditions',
         )
         trans_fields = (
             'title',
@@ -94,42 +92,19 @@ class QuestionSetExportSerializer(TranslationSerializerMixin, serializers.ModelS
 
 
 class SectionExportSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
-
     catalog = serializers.CharField(source='catalog.uri', default=None, read_only=True)
     questionsets = QuestionSetExportSerializer(many=True)
 
     class Meta:
         model = Section
-        fields = (
-            'uri',
-            'uri_prefix',
-            'key',
-            'path',
-            'comment',
-            'catalog',
-            'order',
-            'questionsets'
-        )
-        trans_fields = (
-            'title',
-        )
+        fields = ('uri', 'uri_prefix', 'key', 'path', 'comment', 'catalog', 'order', 'questionsets')
+        trans_fields = ('title',)
 
 
 class CatalogExportSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
-
     sections = SectionExportSerializer(many=True)
 
     class Meta:
         model = Catalog
-        fields = (
-            'uri',
-            'uri_prefix',
-            'key',
-            'comment',
-            'order',
-            'sections'
-        )
-        trans_fields = (
-            'title',
-            'help'
-        )
+        fields = ('uri', 'uri_prefix', 'key', 'comment', 'order', 'sections')
+        trans_fields = ('title', 'help')

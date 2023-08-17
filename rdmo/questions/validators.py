@@ -1,14 +1,12 @@
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.utils.translation import gettext_lazy as _
 
-from rdmo.core.validators import (InstanceValidator, LockedValidator,
-                                  UniqueURIValidator)
+from rdmo.core.validators import InstanceValidator, LockedValidator, UniqueURIValidator
 
 from .models import Catalog, Question, QuestionSet, Section
 
 
 class CatalogUniqueURIValidator(UniqueURIValidator):
-
     model = Catalog
 
     def get_uri(self, data):
@@ -20,7 +18,6 @@ class CatalogUniqueURIValidator(UniqueURIValidator):
 
 
 class SectionUniqueURIValidator(UniqueURIValidator):
-
     model = Section
 
     def get_uri(self, data):
@@ -35,7 +32,6 @@ class SectionUniqueURIValidator(UniqueURIValidator):
 
 
 class QuestionSetUniqueURIValidator(UniqueURIValidator):
-
     def __call__(self, data):
         uri = self.get_uri(data)
         self.validate(QuestionSet, self.instance, uri)
@@ -53,7 +49,6 @@ class QuestionSetUniqueURIValidator(UniqueURIValidator):
 
 
 class QuestionUniqueURIValidator(UniqueURIValidator):
-
     def __call__(self, data):
         uri = self.get_uri(data)
         self.validate(Question, self.instance, uri)
@@ -71,7 +66,6 @@ class QuestionUniqueURIValidator(UniqueURIValidator):
 
 
 class QuestionSetQuestionSetValidator(InstanceValidator):
-
     def __call__(self, data):
         questionset = data.get('questionset')
         if questionset:
@@ -81,34 +75,39 @@ class QuestionSetQuestionSetValidator(InstanceValidator):
                 if view and view.action == 'copy':
                     # get the original from the view when cloning an attribute
                     if questionset in view.get_object().get_descendants(include_self=True):
-                        self.raise_validation_error({
-                            'questionset': [_('A question set may not be cloned to be a child of itself or one of its descendants.')]
-                        })
+                        self.raise_validation_error(
+                            {
+                                'questionset': [
+                                    _(
+                                        'A question set may not be cloned to be a child of itself or one of its descendants.'
+                                    )
+                                ]
+                            }
+                        )
 
             # only check updated attributes
             if self.instance:
                 if questionset in self.instance.get_descendants(include_self=True):
-                    self.raise_validation_error({
-                        'questionset': [_('A question set may not be moved to be a child of itself or one of its descendants.')]
-                    })
-
+                    self.raise_validation_error(
+                        {
+                            'questionset': [
+                                _('A question set may not be moved to be a child of itself or one of its descendants.')
+                            ]
+                        }
+                    )
 
 
 class CatalogLockedValidator(LockedValidator):
-
     pass
 
 
 class SectionLockedValidator(LockedValidator):
-
     parent_field = 'catalog'
 
 
 class QuestionSetLockedValidator(LockedValidator):
-
     parent_field = 'section'
 
 
 class QuestionLockedValidator(LockedValidator):
-
     parent_field = 'questionset'

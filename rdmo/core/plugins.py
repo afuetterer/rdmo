@@ -4,7 +4,6 @@ from .utils import import_class
 
 
 class Plugin(object):
-
     def __init__(self, key, label, class_name):
         self.key = key
         self.label = label
@@ -21,7 +20,9 @@ def get_plugins(plugin_settings):
 def get_plugin(plugin_settings, plugin_key):
     try:
         key, label, class_name = next(
-            (key, label, class_name) for key, label, class_name in getattr(settings, plugin_settings) if key == plugin_key
+            (key, label, class_name)
+            for key, label, class_name in getattr(settings, plugin_settings)
+            if key == plugin_key
         )
         return import_class(class_name)(key, label, class_name)
     except StopIteration:

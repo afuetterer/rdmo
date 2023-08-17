@@ -29,11 +29,7 @@ def flat_xml_to_elements(treenode):
     uri_attrib = get_ns_tag('dc:uri', ns_map)
 
     for node in treenode:
-
-        element = {
-            'uri': get_uri(node, ns_map),
-            'type': node.tag
-        }
+        element = {'uri': get_uri(node, ns_map), 'type': node.tag}
 
         for subnode in node:
             tag = strip_ns(subnode.tag, ns_map)

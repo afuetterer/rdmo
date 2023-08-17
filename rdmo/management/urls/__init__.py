@@ -6,5 +6,5 @@ from ..views import ImportView, UploadView
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='catalogs'), name='management'),
     path('upload/', UploadView.as_view(), name='upload'),
-    path('import/', ImportView.as_view(), name='import')
+    path('import/', ImportView.as_view(), name='import'),
 ]

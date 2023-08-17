@@ -7,7 +7,6 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-
     def setup(self, options):
         self.theme_name = options['name']
         self.theme_path = Path(options['name'])
@@ -49,7 +48,9 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--name', action='store', default='rdmo_theme', help='Module name for the theme.')
-        parser.add_argument('--file', action='store', help='Copy specific file/template, e.g. core/static/css/variables.scss.')
+        parser.add_argument(
+            '--file', action='store', help='Copy specific file/template, e.g. core/static/css/variables.scss.'
+        )
 
     def handle(self, *args, **options):
         self.setup(options)

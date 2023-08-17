@@ -23,7 +23,7 @@ change_project_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -63,10 +63,7 @@ def test_project_create_import_post_upload_file(db, settings, client, username, 
     url = reverse('project_create_import')
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if password:
         assert response.status_code == 302
@@ -88,10 +85,7 @@ def test_project_create_import_post_upload_file_error(db, settings, client, user
     url = reverse('project_create_import')
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'error.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if password:
         assert response.status_code == 302
@@ -111,9 +105,7 @@ def test_project_create_import_post_upload_file_empty(db, client, username, pass
     client.login(username=username, password=password)
 
     url = reverse('project_create_import')
-    response = client.post(url, {
-        'method': 'upload_file'
-    })
+    response = client.post(url, {'method': 'upload_file'})
     if password:
         assert response.status_code == 400
     else:
@@ -130,10 +122,7 @@ def test_project_create_import_post_import_file(db, settings, client, files, use
     url = reverse('project_create_import')
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if password:
         assert response.status_code == 302
@@ -185,10 +174,7 @@ def test_project_create_import_post_import_file_cancel(db, settings, client, fil
     url = reverse('project_create_import')
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if password:
         assert response.status_code == 302
@@ -238,10 +224,7 @@ def test_project_create_import_post_import_empty(db, settings, client, username,
     url = reverse('project_create_import')
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if password:
         assert response.status_code == 302
@@ -253,9 +236,7 @@ def test_project_create_import_post_import_empty(db, settings, client, username,
         assert response.status_code == 200
 
         # post the form empty
-        response = client.post(url, {
-            'method': 'import_file'
-        })
+        response = client.post(url, {'method': 'import_file'})
 
         # check if all the files are where are supposed to be
         for file_value in Value.objects.filter(value_type=VALUE_TYPE_FILE):
@@ -286,9 +267,7 @@ def test_project_create_import_post_import_project(db, settings, client, usernam
     client.login(username=username, password=password)
 
     url = reverse('project_create_import')
-    response = client.post(url, {
-        'method': 'import_project'
-    })
+    response = client.post(url, {'method': 'import_project'})
 
     if password:
         assert response.status_code == 404

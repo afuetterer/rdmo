@@ -13,128 +13,127 @@ from .managers import TaskManager
 
 
 class Task(TranslationMixin, models.Model):
-
     objects = TaskManager()
 
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this task (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this task (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this task.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this task.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this task.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this task.')
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this task.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this task.')
     )
     locked = models.BooleanField(
-        default=False,
-        verbose_name=_('Locked'),
-        help_text=_('Designates whether this task can be changed.')
+        default=False, verbose_name=_('Locked'), help_text=_('Designates whether this task can be changed.')
     )
     catalogs = models.ManyToManyField(
-        Catalog, blank=True,
+        Catalog,
+        blank=True,
         verbose_name=_('Catalogs'),
-        help_text=_('The catalogs this task can be used with. An empty list implies that this task can be used with every catalog.')
+        help_text=_(
+            'The catalogs this task can be used with. An empty list implies that this task can be used with every catalog.'
+        ),
     )
     sites = models.ManyToManyField(
-        Site, blank=True,
+        Site,
+        blank=True,
         verbose_name=_('Sites'),
-        help_text=_('The sites this task belongs to (in a multi site setup).')
+        help_text=_('The sites this task belongs to (in a multi site setup).'),
     )
     groups = models.ManyToManyField(
-        Group, blank=True,
-        verbose_name=_('Group'),
-        help_text=_('The groups for which this task is active.')
+        Group, blank=True, verbose_name=_('Group'), help_text=_('The groups for which this task is active.')
     )
     title_lang1 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (primary)'),
-        help_text=_('The title for this task in the primary language.')
+        help_text=_('The title for this task in the primary language.'),
     )
     title_lang2 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (secondary)'),
-        help_text=_('The title for this task in the secondary language.')
+        help_text=_('The title for this task in the secondary language.'),
     )
     title_lang3 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (tertiary)'),
-        help_text=_('The title for this task in the tertiary language.')
+        help_text=_('The title for this task in the tertiary language.'),
     )
     title_lang4 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quaternary)'),
-        help_text=_('The title for this task in the quaternary language.')
+        help_text=_('The title for this task in the quaternary language.'),
     )
     title_lang5 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quinary)'),
-        help_text=_('The title for this task in the quinary language.')
+        help_text=_('The title for this task in the quinary language.'),
     )
     text_lang1 = models.TextField(
-        blank=True,
-        verbose_name=_('Text (primary)'),
-        help_text=_('The text for this task in the primary language.')
+        blank=True, verbose_name=_('Text (primary)'), help_text=_('The text for this task in the primary language.')
     )
     text_lang2 = models.TextField(
-        blank=True,
-        verbose_name=_('Text (secondary)'),
-        help_text=_('The text for this task in the secondary language.')
+        blank=True, verbose_name=_('Text (secondary)'), help_text=_('The text for this task in the secondary language.')
     )
     text_lang3 = models.TextField(
-        blank=True,
-        verbose_name=_('Text (tertiary)'),
-        help_text=_('The text for this task in the tertiary language.')
+        blank=True, verbose_name=_('Text (tertiary)'), help_text=_('The text for this task in the tertiary language.')
     )
     text_lang4 = models.TextField(
         blank=True,
         verbose_name=_('Text (quaternary)'),
-        help_text=_('The text for this task in the quaternary language.')
+        help_text=_('The text for this task in the quaternary language.'),
     )
     text_lang5 = models.TextField(
-        blank=True,
-        verbose_name=_('Text (quinary)'),
-        help_text=_('The text for this task in the quinary language.')
+        blank=True, verbose_name=_('Text (quinary)'), help_text=_('The text for this task in the quinary language.')
     )
     start_attribute = models.ForeignKey(
-        Attribute, blank=True, null=True, on_delete=models.SET_NULL, related_name='tasks_as_start',
+        Attribute,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='tasks_as_start',
         verbose_name=_('Start date attribute'),
-        help_text=_('The attribute that is setting the start date for this task.')
+        help_text=_('The attribute that is setting the start date for this task.'),
     )
     end_attribute = models.ForeignKey(
-        Attribute, blank=True, null=True, on_delete=models.SET_NULL, related_name='tasks_as_end',
+        Attribute,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='tasks_as_end',
         verbose_name=_('End date attribute'),
-        help_text=_('The attribute that is setting the end date for this task (optional, if no end date attribute is given, the start date attribute sets also the end date).')
+        help_text=_(
+            'The attribute that is setting the end date for this task (optional, if no end date attribute is given, the start date attribute sets also the end date).'
+        ),
     )
     days_before = models.IntegerField(
-        blank=True, null=True,
-        verbose_name=_('Days before'),
-        help_text=_('Additional days before the start date.')
+        blank=True, null=True, verbose_name=_('Days before'), help_text=_('Additional days before the start date.')
     )
     days_after = models.IntegerField(
-        blank=True, null=True,
-        verbose_name=_('Days after'),
-        help_text=_('Additional days after the end date.')
+        blank=True, null=True, verbose_name=_('Days after'), help_text=_('Additional days after the end date.')
     )
     conditions = models.ManyToManyField(
-        Condition, blank=True, related_name='tasks',
+        Condition,
+        blank=True,
+        related_name='tasks',
         verbose_name=_('Conditions'),
-        help_text=_('The list of conditions evaluated for this task.')
+        help_text=_('The list of conditions evaluated for this task.'),
     )
     available = models.BooleanField(
         default=True,
         verbose_name=_('Available'),
-        help_text=_('Designates whether this task is generally available for projects.')
+        help_text=_('Designates whether this task is generally available for projects.'),
     )
 
     class Meta:
@@ -150,7 +149,9 @@ class Task(TranslationMixin, models.Model):
         super().save(*args, **kwargs)
 
     def copy(self, uri_prefix, key):
-        task = copy_model(self, uri_prefix=uri_prefix, key=key, start_attribute=self.start_attribute, end_attribute=self.end_attribute)
+        task = copy_model(
+            self, uri_prefix=uri_prefix, key=key, start_attribute=self.start_attribute, end_attribute=self.end_attribute
+        )
 
         # add m2m fields
         task.catalogs.set(self.catalogs.all())

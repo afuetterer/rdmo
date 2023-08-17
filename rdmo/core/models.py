@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class Model(models.Model):
-
     created = models.DateTimeField(editable=False, verbose_name=_('created'))
     updated = models.DateTimeField(editable=False, verbose_name=_('updated'))
 
@@ -28,7 +27,6 @@ class Model(models.Model):
 
 
 class TranslationMixin(object):
-
     def trans(self, field):
         current_language = get_language()
 

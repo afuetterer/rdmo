@@ -3,7 +3,6 @@ from rdmo.core.utils import get_languages
 
 
 class OptionsRenderer(BaseXMLRenderer):
-
     def render_optionset(self, xml, optionset):
         xml.startElement('optionset', {'dc:uri': optionset['uri']})
         self.render_text_element(xml, 'uri_prefix', {}, optionset['uri_prefix'])
@@ -38,24 +37,16 @@ class OptionsRenderer(BaseXMLRenderer):
 
 
 class OptionSetRenderer(OptionsRenderer):
-
     def render_document(self, xml, optionsets):
-        xml.startElement('rdmo', {
-            'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
-            'created': self.created
-        })
+        xml.startElement('rdmo', {'xmlns:dc': 'http://purl.org/dc/elements/1.1/', 'created': self.created})
         for optionset in optionsets:
             self.render_optionset(xml, optionset)
         xml.endElement('rdmo')
 
 
 class OptionRenderer(OptionsRenderer):
-
     def render_document(self, xml, options):
-        xml.startElement('rdmo', {
-            'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
-            'created': self.created
-        })
+        xml.startElement('rdmo', {'xmlns:dc': 'http://purl.org/dc/elements/1.1/', 'created': self.created})
         for option in options:
             self.render_option(xml, option)
         xml.endElement('rdmo')

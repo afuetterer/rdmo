@@ -7,7 +7,6 @@ from ..managers import MembershipManager
 
 
 class Membership(models.Model):
-
     objects = MembershipManager()
 
     ROLE_CHOICES = (
@@ -18,23 +17,25 @@ class Membership(models.Model):
     )
 
     project = models.ForeignKey(
-        'Project', on_delete=models.CASCADE, related_name='memberships',
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='memberships',
         verbose_name=_('Project'),
-        help_text=_('The project for this membership.')
+        help_text=_('The project for this membership.'),
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='memberships',
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='memberships',
         verbose_name=_('User'),
-        help_text=_('The user for this membership.')
+        help_text=_('The user for this membership.'),
     )
     role = models.CharField(
-        max_length=12, choices=ROLE_CHOICES,
-        verbose_name=_('Role'),
-        help_text=_('The role for this membership.')
+        max_length=12, choices=ROLE_CHOICES, verbose_name=_('Role'), help_text=_('The role for this membership.')
     )
 
     class Meta:
-        ordering = ('project__title', )
+        ordering = ('project__title',)
         verbose_name = _('Membership')
         verbose_name_plural = _('Memberships')
 

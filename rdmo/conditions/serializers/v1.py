@@ -11,47 +11,30 @@ from ..validators import ConditionLockedValidator, ConditionUniqueURIValidator
 
 
 class OptionSetSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = OptionSet
-        fields = (
-            'id',
-            'uri'
-        )
+        fields = ('id', 'uri')
 
 
 class QuestionSetSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = QuestionSet
-        fields = (
-            'id',
-            'uri'
-        )
+        fields = ('id', 'uri')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Question
-        fields = (
-            'id',
-            'uri'
-        )
+        fields = ('id', 'uri')
 
 
 class TaskSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Task
-        fields = (
-            'id',
-            'uri'
-        )
+        fields = ('id', 'uri')
 
 
 class ConditionSerializer(serializers.ModelSerializer):
-
     key = serializers.SlugField(required=True)
     source = serializers.PrimaryKeyRelatedField(queryset=Attribute.objects.all(), required=True)
     optionsets = OptionSetSerializer(many=True, read_only=True)
@@ -75,16 +58,12 @@ class ConditionSerializer(serializers.ModelSerializer):
             'optionsets',
             'questionsets',
             'questions',
-            'tasks'
+            'tasks',
         )
-        validators = (
-            ConditionUniqueURIValidator(),
-            ConditionLockedValidator()
-        )
+        validators = (ConditionUniqueURIValidator(), ConditionLockedValidator())
 
 
 class ConditionIndexSerializer(serializers.ModelSerializer):
-
     target_option_uri = serializers.CharField(source='target_option.uri', default=None, read_only=True)
     target_option_text = serializers.CharField(source='target_option.text', default=None, read_only=True)
     xml_url = serializers.SerializerMethodField()
@@ -104,7 +83,7 @@ class ConditionIndexSerializer(serializers.ModelSerializer):
             'target_label',
             'target_option_uri',
             'target_option_text',
-            'xml_url'
+            'xml_url',
         )
 
     def get_xml_url(self, obj):

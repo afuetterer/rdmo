@@ -24,16 +24,13 @@ class ProjectCreateView(LoginRequiredMixin, RedirectViewMixin, CreateView):
     form_class = ProjectForm
 
     def get_form_kwargs(self):
-        catalogs = Catalog.objects.filter_current_site() \
-                                  .filter_group(self.request.user) \
-                                  .filter_availability(self.request.user)
+        catalogs = (
+            Catalog.objects.filter_current_site().filter_group(self.request.user).filter_availability(self.request.user)
+        )
         projects = Project.objects.filter_user(self.request.user)
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'catalogs': catalogs,
-            'projects': projects
-        })
+        form_kwargs.update({'catalogs': catalogs, 'projects': projects})
         return form_kwargs
 
     def form_valid(self, form):
@@ -44,17 +41,19 @@ class ProjectCreateView(LoginRequiredMixin, RedirectViewMixin, CreateView):
         response = super(ProjectCreateView, self).form_valid(form)
 
         # add all tasks to project
-        tasks = Task.objects.filter_current_site() \
-                            .filter_group(self.request.user) \
-                            .filter_availability(self.request.user)
+        tasks = (
+            Task.objects.filter_current_site().filter_group(self.request.user).filter_availability(self.request.user)
+        )
         for task in tasks:
             form.instance.tasks.add(task)
 
         # add all views to project
-        views = View.objects.filter_current_site() \
-                            .filter_catalog(self.object.catalog) \
-                            .filter_group(self.request.user) \
-                            .filter_availability(self.request.user)
+        views = (
+            View.objects.filter_current_site()
+            .filter_catalog(self.object.catalog)
+            .filter_group(self.request.user)
+            .filter_availability(self.request.user)
+        )
         for view in views:
             form.instance.views.add(view)
 

@@ -57,9 +57,7 @@ def test_send_mail_from_email(db):
 
 
 def test_send_mail_from_attachments(db):
-    send_mail('Subject', 'Message', to=['user2@example.com'], attachments=[
-        ('Attachment', b'attachment', 'plain/text')
-    ])
+    send_mail('Subject', 'Message', to=['user2@example.com'], attachments=[('Attachment', b'attachment', 'plain/text')])
 
     assert len(mail.outbox) == 1
     assert mail.outbox[0].subject == '[example.com] Subject'
@@ -68,6 +66,4 @@ def test_send_mail_from_attachments(db):
     assert mail.outbox[0].to == ['user2@example.com']
     assert mail.outbox[0].cc == []
     assert mail.outbox[0].bcc == []
-    assert mail.outbox[0].attachments == [
-        ('Attachment', b'attachment', 'plain/text')
-    ]
+    assert mail.outbox[0].attachments == [('Attachment', b'attachment', 'plain/text')]

@@ -10,8 +10,9 @@ from .models import Overlay
 
 
 class OverlayViewSet(ViewSet):
-
-    @action(detail=False, methods=['post'], url_path='(?P<url_name>[-\\w]+)/current', permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=['post'], url_path='(?P<url_name>[-\\w]+)/current', permission_classes=[IsAuthenticated]
+    )
     def current(self, request, url_name=None):
         site = Site.objects.get_current()
         overlays = settings.OVERLAYS.get(url_name)[:]
@@ -24,10 +25,7 @@ class OverlayViewSet(ViewSet):
         except Overlay.DoesNotExist:
             overlay = Overlay.objects.create(user=request.user, site=site, url_name=url_name, current=overlays[0])
 
-        return Response({
-            'overlay': overlay.current,
-            'last': overlay.current == overlays[-1]
-        })
+        return Response({'overlay': overlay.current, 'last': overlay.current == overlays[-1]})
 
     @action(detail=False, methods=['post'], url_path='(?P<url_name>[-\\w]+)/next', permission_classes=[IsAuthenticated])
     def next(self, request, url_name=None):
@@ -46,12 +44,11 @@ class OverlayViewSet(ViewSet):
         except Overlay.DoesNotExist:
             overlay = Overlay.objects.create(user=request.user, site=site, url_name=url_name, current=overlays[0])
 
-        return Response({
-            'overlay': overlay.current,
-            'last': overlay.current == overlays[-1]
-        })
+        return Response({'overlay': overlay.current, 'last': overlay.current == overlays[-1]})
 
-    @action(detail=False, methods=['post'], url_path='(?P<url_name>[-\\w]+)/dismiss', permission_classes=[IsAuthenticated])
+    @action(
+        detail=False, methods=['post'], url_path='(?P<url_name>[-\\w]+)/dismiss', permission_classes=[IsAuthenticated]
+    )
     def dismiss(self, request, url_name=None):
         site = Site.objects.get_current()
         overlays = settings.OVERLAYS.get(url_name)[:]

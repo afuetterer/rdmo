@@ -9,7 +9,6 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         # remove old vendor files
         vendor_dir = os.path.join(settings.BASE_DIR, 'vendor/')

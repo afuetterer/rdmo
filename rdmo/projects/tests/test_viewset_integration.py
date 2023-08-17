@@ -20,20 +20,17 @@ view_integration_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_integration_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:integration-list',
-    'detail': 'v1-projects:integration-detail'
-}
+urlnames = {'list': 'v1-projects:integration-list', 'detail': 'v1-projects:integration-detail'}
 
 integrations = [1, 2]
 
@@ -52,8 +49,11 @@ def test_list(db, client, username, password):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Integration.objects.filter(project__in=view_integration_permission_map.get(username, [])) \
-                                             .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Integration.objects.filter(project__in=view_integration_permission_map.get(username, []))
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401

@@ -8,24 +8,19 @@ from ..managers import SnapshotManager
 
 
 class Snapshot(Model):
-
     objects = SnapshotManager()
 
     project = models.ForeignKey(
-        'Project', related_name='snapshots',
-        on_delete=models.CASCADE, null=True,
+        'Project',
+        related_name='snapshots',
+        on_delete=models.CASCADE,
+        null=True,
         verbose_name=_('Project'),
-        help_text=_('The project this snapshot belongs to.')
+        help_text=_('The project this snapshot belongs to.'),
     )
-    title = models.CharField(
-        max_length=256,
-        verbose_name=_('Title'),
-        help_text=_('The title for this snapshot.')
-    )
+    title = models.CharField(max_length=256, verbose_name=_('Title'), help_text=_('The title for this snapshot.'))
     description = models.TextField(
-        blank=True,
-        verbose_name=_('Description'),
-        help_text=_('A description for this snapshot (optional).')
+        blank=True, verbose_name=_('Description'), help_text=_('A description for this snapshot (optional).')
     )
 
     class Meta:

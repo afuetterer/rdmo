@@ -1,5 +1,4 @@
-from django.core.exceptions import (MultipleObjectsReturned,
-                                    ObjectDoesNotExist, ValidationError)
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist, ValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -34,7 +33,6 @@ class InstanceValidator(object):
 
 
 class UniqueURIValidator(InstanceValidator):
-
     model = None
 
     def __call__(self, data):
@@ -51,19 +49,18 @@ class UniqueURIValidator(InstanceValidator):
         except ObjectDoesNotExist:
             return
 
-        self.raise_validation_error({
-            'key': _('%(model)s with the uri "%(uri)s" already exists.') % {
-                'model': model._meta.verbose_name.title(),
-                'uri': uri
+        self.raise_validation_error(
+            {
+                'key': _('%(model)s with the uri "%(uri)s" already exists.')
+                % {'model': model._meta.verbose_name.title(), 'uri': uri}
             }
-        })
+        )
 
     def get_uri(self, data):
         raise NotImplementedError
 
 
 class LockedValidator(InstanceValidator):
-
     parent_field = None
 
     def __call__(self, data):
@@ -81,10 +78,6 @@ class LockedValidator(InstanceValidator):
 
         if is_locked:
             if data.get('locked'):
-                raise self.raise_validation_error({
-                    'locked': _('The element is locked.')
-                })
+                raise self.raise_validation_error({'locked': _('The element is locked.')})
             else:
-                raise self.raise_validation_error({
-                    'locked': _('A superior element is locked.')
-                })
+                raise self.raise_validation_error({'locked': _('A superior element is locked.')})

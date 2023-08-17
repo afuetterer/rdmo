@@ -1,13 +1,16 @@
 from rdmo.conditions.imports import import_condition
 from rdmo.core.constants import PERMISSIONS
 from rdmo.domain.imports import fetch_attribute_parents, import_attribute
-from rdmo.options.imports import (fetch_option_parents, import_option,
-                                  import_optionset)
-from rdmo.questions.imports import (fetch_question_parents,
-                                    fetch_questionset_parents,
-                                    fetch_section_parents, import_catalog,
-                                    import_question, import_questionset,
-                                    import_section)
+from rdmo.options.imports import fetch_option_parents, import_option, import_optionset
+from rdmo.questions.imports import (
+    fetch_question_parents,
+    fetch_questionset_parents,
+    fetch_section_parents,
+    import_catalog,
+    import_question,
+    import_questionset,
+    import_section,
+)
 from rdmo.tasks.imports import import_task
 from rdmo.views.imports import import_view
 
@@ -67,7 +70,9 @@ def import_elements(elements, parents={}, save={}):
         elif element_type == 'questionset':
             section_uri = get_parent_uri(element.get('uri'), element.get('section'), parents, uris)
             questionset_uri = get_parent_uri(element.get('uri'), element.get('questionset'), {}, uris)
-            instance = import_questionset(element, section_uri=section_uri, questionset_uri=questionset_uri, save=save_element)
+            instance = import_questionset(
+                element, section_uri=section_uri, questionset_uri=questionset_uri, save=save_element
+            )
 
         elif element_type == 'question':
             questionset_uri = get_parent_uri(element.get('uri'), element.get('questionset'), parents, uris)

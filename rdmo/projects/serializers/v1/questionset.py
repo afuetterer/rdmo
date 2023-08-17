@@ -9,48 +9,27 @@ from rdmo.questions.utils import get_widget_class
 
 
 class OptionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Option
-        fields = (
-            'id',
-            'optionset',
-            'text',
-            'additional_input'
-        )
+        fields = ('id', 'optionset', 'text', 'additional_input')
 
 
 class OptionSetSerializer(serializers.ModelSerializer):
-
     options = OptionSerializer(many=True)
 
     class Meta:
         model = OptionSet
-        fields = (
-            'id',
-            'options',
-            'has_provider',
-            'has_search',
-            'has_conditions'
-        )
+        fields = ('id', 'options', 'has_provider', 'has_search', 'has_conditions')
 
 
 class ConditionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Condition
-        fields = (
-            'id',
-            'source',
-            'relation',
-            'target_text',
-            'target_option'
-        )
+        fields = ('id', 'source', 'relation', 'target_text', 'target_option')
 
 
 class QuestionSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
-
-    markdown_fields = ('help', )
+    markdown_fields = ('help',)
 
     conditions = ConditionSerializer(default=None, many=True)
     optionsets = serializers.SerializerMethodField()
@@ -84,7 +63,7 @@ class QuestionSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
             'optionsets',
             'is_collection',
             'is_optional',
-            'has_conditions'
+            'has_conditions',
         )
 
     def get_optionsets(self, obj):
@@ -101,8 +80,7 @@ class QuestionSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
 
 
 class QuestionSetSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
-
-    markdown_fields = ('help', )
+    markdown_fields = ('help',)
 
     questionsets = serializers.SerializerMethodField()
     questions = QuestionSerializer(many=True)
@@ -128,17 +106,14 @@ class QuestionSetSerializer(MarkdownSerializerMixin, serializers.ModelSerializer
             'section',
             'questionsets',
             'questions',
-            'has_conditions'
+            'has_conditions',
         )
 
     def get_questionsets(self, obj):
         return QuestionSetSerializer(obj.questionsets.all(), many=True, read_only=True).data
 
     def get_section(self, obj):
-        return {
-            'id': obj.section.id,
-            'title': obj.section.title
-        }
+        return {'id': obj.section.id, 'title': obj.section.title}
 
     def get_verbose_name(self, obj):
         return obj.verbose_name or _('set')

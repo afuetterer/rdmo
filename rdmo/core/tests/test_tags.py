@@ -5,7 +5,7 @@ from django.utils import translation
 
 
 def test_i18n_switcher(rf):
-    """ The language switcher is rendered correctly. """
+    """The language switcher is rendered correctly."""
 
     # create a fake template with a name
     template = "{% load core_tags %}{% i18n_switcher %}"
@@ -21,4 +21,4 @@ def test_i18n_switcher(rf):
         if language == settings.LANGUAGES[0]:
             assert '<a href="/i18n/%s/"><u>%s</u></a>' % language in rendered_template
         else:
-            assert'<a href="/i18n/%s/">%s</a>' % language in rendered_template
+            assert '<a href="/i18n/%s/">%s</a>' % language in rendered_template

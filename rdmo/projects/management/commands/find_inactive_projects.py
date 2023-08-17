@@ -14,15 +14,17 @@ from rdmo.projects.models import Project, Value
 
 
 class Command(BaseCommand):
-
     columns = ('id', 'title', 'created', 'updated', 'last_changed')
 
     def add_arguments(self, parser):
-        parser.add_argument('since',
-                            type=lambda s: pytz.utc.localize(datetime.strptime(s, '%Y-%m-%d')),
-                            help='Date since the projects have been inactive (format: 2022-12-31).')
-        parser.add_argument('-o|--output-file', dest='output_file', default=None,
-                            help='Store the output in a csv file.')
+        parser.add_argument(
+            'since',
+            type=lambda s: pytz.utc.localize(datetime.strptime(s, '%Y-%m-%d')),
+            help='Date since the projects have been inactive (format: 2022-12-31).',
+        )
+        parser.add_argument(
+            '-o|--output-file', dest='output_file', default=None, help='Store the output in a csv file.'
+        )
 
     def handle(self, *args, **options):
         # prepare subquery for last_changed
@@ -31,10 +33,12 @@ class Command(BaseCommand):
         )
 
         # prepare actual query
-        rows = Project.objects.annotate(last_changed=Greatest('updated', last_changed_subquery)) \
-                              .filter(last_changed__lt=options['since']) \
-                              .order_by('-last_changed') \
-                              .values_list(*self.columns)
+        rows = (
+            Project.objects.annotate(last_changed=Greatest('updated', last_changed_subquery))
+            .filter(last_changed__lt=options['since'])
+            .order_by('-last_changed')
+            .values_list(*self.columns)
+        )
 
         if rows:
             fp = open(options['output_file'], 'w') if options['output_file'] else sys.stdout

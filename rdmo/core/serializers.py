@@ -6,7 +6,6 @@ from rdmo.core.utils import get_languages, markdown2html
 
 
 class RecursiveField(serializers.Serializer):
-
     def to_representation(self, value):
         serializer = self.parent.parent.__class__(value, context=self.context)
         return serializer.data
@@ -24,7 +23,6 @@ class ChoicesSerializer(serializers.Serializer):
 
 
 class MarkdownSerializerMixin(serializers.Serializer):
-
     markdown_fields = ()
 
     def to_representation(self, instance):
@@ -38,7 +36,6 @@ class MarkdownSerializerMixin(serializers.Serializer):
 
 
 class TranslationSerializerMixin(object):
-
     def __init__(self, *args, **kwargs):
         super(TranslationSerializerMixin, self).__init__(*args, **kwargs)
 
@@ -53,25 +50,17 @@ class TranslationSerializerMixin(object):
                         source=field_name,
                         required=not model_field.blank,
                         allow_null=model_field.null,
-                        allow_blank=model_field.blank)
+                        allow_blank=model_field.blank,
+                    )
 
 
 class SiteSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Site
-        fields = (
-            'id',
-            'domain',
-            'name'
-        )
+        fields = ('id', 'domain', 'name')
 
 
 class GroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Group
-        fields = (
-            'id',
-            'name'
-        )
+        fields = ('id', 'name')

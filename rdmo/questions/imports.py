@@ -3,18 +3,28 @@ import logging
 from django.contrib.sites.models import Site
 
 from rdmo.conditions.models import Condition
-from rdmo.core.imports import (fetch_parents, get_foreign_field,
-                               get_m2m_instances, set_common_fields,
-                               set_lang_field, validate_instance)
+from rdmo.core.imports import (
+    fetch_parents,
+    get_foreign_field,
+    get_m2m_instances,
+    set_common_fields,
+    set_lang_field,
+    validate_instance,
+)
 from rdmo.domain.models import Attribute
 from rdmo.options.models import Option, OptionSet
 
 from .models import Catalog, Question, QuestionSet, Section
-from .validators import (CatalogLockedValidator, CatalogUniqueURIValidator,
-                         QuestionLockedValidator, QuestionSetLockedValidator,
-                         QuestionSetUniqueURIValidator,
-                         QuestionUniqueURIValidator, SectionLockedValidator,
-                         SectionUniqueURIValidator)
+from .validators import (
+    CatalogLockedValidator,
+    CatalogUniqueURIValidator,
+    QuestionLockedValidator,
+    QuestionSetLockedValidator,
+    QuestionSetUniqueURIValidator,
+    QuestionUniqueURIValidator,
+    SectionLockedValidator,
+    SectionUniqueURIValidator,
+)
 from .utils import get_widget_types
 
 logger = logging.getLogger(__name__)
@@ -83,7 +93,9 @@ def import_questionset(element, section_uri=False, questionset_uri=False, save=F
             if questionset_uri is False:
                 questionset = QuestionSet.objects.get(key=element.get('key'), section__uri=section_uri)
             else:
-                questionset = QuestionSet.objects.get(key=element.get('key'), section__uri=section_uri, questionset__uri=questionset_uri)
+                questionset = QuestionSet.objects.get(
+                    key=element.get('key'), section__uri=section_uri, questionset__uri=questionset_uri
+                )
 
     except QuestionSet.DoesNotExist:
         questionset = QuestionSet()

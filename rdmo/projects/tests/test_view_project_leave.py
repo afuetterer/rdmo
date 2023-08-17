@@ -13,12 +13,7 @@ users = (
     ('anonymous', None),
 )
 
-leave_project_permission_map = {
-    'owner': [1, 2, 3, 4, 5],
-    'manager': [1, 3],
-    'author': [1, 3],
-    'guest': [1, 3]
-}
+leave_project_permission_map = {'owner': [1, 2, 3, 4, 5], 'manager': [1, 3], 'author': [1, 3], 'guest': [1, 3]}
 
 projects = [1, 2, 3, 4, 5]
 

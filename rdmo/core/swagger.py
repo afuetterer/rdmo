@@ -14,10 +14,6 @@ class SwaggerSchemaView(LoginRequiredMixin, APIView):
     ]
 
     def get(self, request):
-        generator = SchemaGenerator(
-            title="RDMO API",
-            patterns=urlpatterns,
-            url=request.path
-        )
+        generator = SchemaGenerator(title="RDMO API", patterns=urlpatterns, url=request.path)
         schema = generator.get_schema(request=request)
         return Response(schema)

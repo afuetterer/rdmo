@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 class UploadView(LoginRequiredMixin, View):
-
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER') or reverse('management')
 
@@ -33,19 +32,26 @@ class UploadView(LoginRequiredMixin, View):
         root = read_xml_file(import_tmpfile_name)
         if root is None:
             logger.info('Xml parsing error. Import failed.')
-            return render(request, 'core/error.html', {
-                'title': _('Import error'),
-                'errors': [_('The content of the xml file does not consist of well formed data or markup.')]
-            }, status=400)
+            return render(
+                request,
+                'core/error.html',
+                {
+                    'title': _('Import error'),
+                    'errors': [_('The content of the xml file does not consist of well formed data or markup.')],
+                },
+                status=400,
+            )
 
         else:
             try:
                 elements = flat_xml_to_elements(root)
             except (KeyError, TypeError, AttributeError):
-                return render(request, 'core/error.html', {
-                    'title': _('Import error'),
-                    'errors': [_('This is not a valid RDMO XML file.')]
-                }, status=400)
+                return render(
+                    request,
+                    'core/error.html',
+                    {'title': _('Import error'), 'errors': [_('This is not a valid RDMO XML file.')]},
+                    status=400,
+                )
 
             if check_permissions(elements, request.user):
                 # store information in session for ProjectCreateImportView
@@ -53,19 +59,18 @@ class UploadView(LoginRequiredMixin, View):
                 request.session['import_tmpfile_name'] = import_tmpfile_name
                 request.session['import_success_url'] = self.get_success_url()
 
-                return render(request, 'management/upload.html', {
-                    'file_name': uploaded_file.name,
-                    'elements': import_elements(elements)
-                })
+                return render(
+                    request,
+                    'management/upload.html',
+                    {'file_name': uploaded_file.name, 'elements': import_elements(elements)},
+                )
             else:
-                return render(request, 'core/error.html', {
-                    'title': _('Import error'),
-                    'errors': [_('Forbidden.')]
-                }, status=403)
+                return render(
+                    request, 'core/error.html', {'title': _('Import error'), 'errors': [_('Forbidden.')]}, status=403
+                )
 
 
 class ImportView(LoginRequiredMixin, View):
-
     def get_success_url(self):
         return self.request.session.get('import_success_url') or reverse('management')
 
@@ -94,33 +99,43 @@ class ImportView(LoginRequiredMixin, View):
         root = read_xml_file(import_tmpfile_name)
         if root is None:
             logger.info('Xml parsing error. Import failed.')
-            return render(request, 'core/error.html', {
-                'title': _('Import error'),
-                'errors': [_('The content of the xml file does not consist of well formed data or markup.')]
-            }, status=400)
+            return render(
+                request,
+                'core/error.html',
+                {
+                    'title': _('Import error'),
+                    'errors': [_('The content of the xml file does not consist of well formed data or markup.')],
+                },
+                status=400,
+            )
 
         else:
             try:
                 elements = flat_xml_to_elements(root)
             except (KeyError, TypeError):
-                return render(request, 'core/error.html', {
-                    'title': _('Import error'),
-                    'errors': [_('This is not a RDMO XML file.')]
-                }, status=400)
+                return render(
+                    request,
+                    'core/error.html',
+                    {'title': _('Import error'), 'errors': [_('This is not a RDMO XML file.')]},
+                    status=400,
+                )
 
             if check_permissions(elements, request.user):
                 if checked:
-                    return render(request, 'management/import.html', {
-                        'file_name': import_file_name,
-                        'elements': import_elements(elements, parents=parents, save=checked),
-                        'success_url': self.get_success_url()
-                    })
+                    return render(
+                        request,
+                        'management/import.html',
+                        {
+                            'file_name': import_file_name,
+                            'elements': import_elements(elements, parents=parents, save=checked),
+                            'success_url': self.get_success_url(),
+                        },
+                    )
                 else:
                     # if nothing was checked, just return to the success_url
                     return HttpResponseRedirect(self.get_success_url())
 
             else:
-                return render(request, 'core/error.html', {
-                    'title': _('Import error'),
-                    'errors': [_('Forbidden.')]
-                }, status=403)
+                return render(
+                    request, 'core/error.html', {'title': _('Import error'), 'errors': [_('Forbidden.')]}, status=403
+                )

@@ -35,20 +35,24 @@ class ProjectViewView(ObjectPermissionMixin, DetailView):
             raise Http404
 
         try:
-            context['rendered_view'] = context['view'].render(context['project'],
-                                                              snapshot=context['current_snapshot'])
+            context['rendered_view'] = context['view'].render(context['project'], snapshot=context['current_snapshot'])
         except TemplateSyntaxError:
             context['rendered_view'] = None
 
         # collect values with files, remove double files and order them.
-        context['attachments'] = context['project'].values.filter(snapshot=context['current_snapshot']) \
-                                                          .filter(value_type=VALUE_TYPE_FILE) \
-                                                          .order_by('file')
+        context['attachments'] = (
+            context['project']
+            .values.filter(snapshot=context['current_snapshot'])
+            .filter(value_type=VALUE_TYPE_FILE)
+            .order_by('file')
+        )
 
-        context.update({
-            'snapshots': list(context['project'].snapshots.values('id', 'title')),
-            'export_formats': settings.EXPORT_FORMATS
-        })
+        context.update(
+            {
+                'snapshots': list(context['project'].snapshots.values('id', 'title')),
+                'export_formats': settings.EXPORT_FORMATS,
+            }
+        )
 
         return context
 
@@ -74,19 +78,23 @@ class ProjectViewExportView(ObjectPermissionMixin, DetailView):
             raise Http404
 
         try:
-            context['rendered_view'] = context['view'].render(context['project'],
-                                                              snapshot=context['current_snapshot'],
-                                                              export_format=export_format)
+            context['rendered_view'] = context['view'].render(
+                context['project'], snapshot=context['current_snapshot'], export_format=export_format
+            )
         except TemplateSyntaxError:
             context['rendered_view'] = None
 
-        context.update({
-            'title': context['project'].title,
-            'format': export_format,
-            'resource_path': get_value_path(context['project'], context['current_snapshot'])
-        })
+        context.update(
+            {
+                'title': context['project'].title,
+                'format': export_format,
+                'resource_path': get_value_path(context['project'], context['current_snapshot']),
+            }
+        )
 
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        return render_to_format(self.request, context['format'], context['title'], 'projects/project_view_export.html', context)
+        return render_to_format(
+            self.request, context['format'], context['title'], 'projects/project_view_export.html', context
+        )

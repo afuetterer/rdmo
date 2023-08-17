@@ -6,7 +6,6 @@ from .models import Task
 
 
 class TaskUniqueURIValidator(UniqueURIValidator):
-
     model = Task
 
     def get_uri(self, data):
@@ -18,5 +17,4 @@ class TaskUniqueURIValidator(UniqueURIValidator):
 
 
 class TaskLockedValidator(LockedValidator):
-
     pass

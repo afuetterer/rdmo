@@ -9,9 +9,14 @@ from rdmo.questions.models import Catalog
 from rdmo.tasks.models import Task
 from rdmo.views.models import View
 
-from ..forms import (ProjectForm, ProjectUpdateCatalogForm,
-                     ProjectUpdateInformationForm, ProjectUpdateParentForm,
-                     ProjectUpdateTasksForm, ProjectUpdateViewsForm)
+from ..forms import (
+    ProjectForm,
+    ProjectUpdateCatalogForm,
+    ProjectUpdateInformationForm,
+    ProjectUpdateParentForm,
+    ProjectUpdateTasksForm,
+    ProjectUpdateViewsForm,
+)
 from ..mixins import ProjectImportMixin
 from ..models import Project
 
@@ -25,16 +30,13 @@ class ProjectUpdateView(ObjectPermissionMixin, RedirectViewMixin, UpdateView):
     permission_required = 'projects.change_project_object'
 
     def get_form_kwargs(self):
-        catalogs = Catalog.objects.filter_current_site() \
-                                  .filter_group(self.request.user) \
-                                  .filter_availability(self.request.user)
+        catalogs = (
+            Catalog.objects.filter_current_site().filter_group(self.request.user).filter_availability(self.request.user)
+        )
         projects = Project.objects.filter_user(self.request.user)
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'catalogs': catalogs,
-            'projects': projects
-        })
+        form_kwargs.update({'catalogs': catalogs, 'projects': projects})
         return form_kwargs
 
 
@@ -52,14 +54,12 @@ class ProjectUpdateCatalogView(ObjectPermissionMixin, RedirectViewMixin, UpdateV
     permission_required = 'projects.change_project_object'
 
     def get_form_kwargs(self):
-        catalogs = Catalog.objects.filter_current_site() \
-                                  .filter_group(self.request.user) \
-                                  .filter_availability(self.request.user)
+        catalogs = (
+            Catalog.objects.filter_current_site().filter_group(self.request.user).filter_availability(self.request.user)
+        )
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'catalogs': catalogs
-        })
+        form_kwargs.update({'catalogs': catalogs})
         return form_kwargs
 
 
@@ -70,15 +70,15 @@ class ProjectUpdateTasksView(ObjectPermissionMixin, RedirectViewMixin, UpdateVie
     permission_required = 'projects.change_project_object'
 
     def get_form_kwargs(self):
-        tasks = Task.objects.filter_current_site() \
-                            .filter_catalog(self.object.catalog) \
-                            .filter_group(self.request.user) \
-                            .filter_availability(self.request.user)
+        tasks = (
+            Task.objects.filter_current_site()
+            .filter_catalog(self.object.catalog)
+            .filter_group(self.request.user)
+            .filter_availability(self.request.user)
+        )
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'tasks': tasks
-        })
+        form_kwargs.update({'tasks': tasks})
         return form_kwargs
 
 
@@ -89,15 +89,15 @@ class ProjectUpdateViewsView(ObjectPermissionMixin, RedirectViewMixin, UpdateVie
     permission_required = 'projects.change_project_object'
 
     def get_form_kwargs(self):
-        views = View.objects.filter_current_site() \
-                            .filter_catalog(self.object.catalog) \
-                            .filter_group(self.request.user) \
-                            .filter_availability(self.request.user)
+        views = (
+            View.objects.filter_current_site()
+            .filter_catalog(self.object.catalog)
+            .filter_group(self.request.user)
+            .filter_availability(self.request.user)
+        )
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'views': views
-        })
+        form_kwargs.update({'views': views})
         return form_kwargs
 
 
@@ -111,9 +111,7 @@ class ProjectUpdateParentView(ObjectPermissionMixin, RedirectViewMixin, UpdateVi
         projects = Project.objects.filter_user(self.request.user)
 
         form_kwargs = super().get_form_kwargs()
-        form_kwargs.update({
-            'projects': projects
-        })
+        form_kwargs.update({'projects': projects})
         return form_kwargs
 
 

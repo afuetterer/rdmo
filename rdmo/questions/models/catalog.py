@@ -11,103 +11,99 @@ from ..managers import CatalogManager
 
 
 class Catalog(Model, TranslationMixin):
-
     objects = CatalogManager()
 
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this catalog (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this catalog (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this catalog.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this catalog.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this catalog.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this catalog.')
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this catalog.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this catalog.')
     )
     locked = models.BooleanField(
         default=False,
         verbose_name=_('Locked'),
-        help_text=_('Designates whether this catalog (and its sections, question sets and questions) can be changed.')
+        help_text=_('Designates whether this catalog (and its sections, question sets and questions) can be changed.'),
     )
     order = models.IntegerField(
-        default=0,
-        verbose_name=_('Order'),
-        help_text=_('The position of this catalog in lists.')
+        default=0, verbose_name=_('Order'), help_text=_('The position of this catalog in lists.')
     )
     sites = models.ManyToManyField(
-        Site, blank=True,
+        Site,
+        blank=True,
         verbose_name=_('Sites'),
-        help_text=_('The sites this catalog belongs to (in a multi site setup).')
+        help_text=_('The sites this catalog belongs to (in a multi site setup).'),
     )
     groups = models.ManyToManyField(
-        Group, blank=True,
-        verbose_name=_('Group'),
-        help_text=_('The groups for which this catalog is active.')
+        Group, blank=True, verbose_name=_('Group'), help_text=_('The groups for which this catalog is active.')
     )
     title_lang1 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (primary)'),
-        help_text=_('The title for this catalog in the primary language.')
+        help_text=_('The title for this catalog in the primary language.'),
     )
     title_lang2 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (secondary)'),
-        help_text=_('The title for this catalog in the secondary language.')
+        help_text=_('The title for this catalog in the secondary language.'),
     )
     title_lang3 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (tertiary)'),
-        help_text=_('The title for this catalog in the tertiary language.')
+        help_text=_('The title for this catalog in the tertiary language.'),
     )
     title_lang4 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quaternary)'),
-        help_text=_('The title for this catalog in the quaternary language.')
+        help_text=_('The title for this catalog in the quaternary language.'),
     )
     title_lang5 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quinary)'),
-        help_text=_('The title for this catalog in the quinary language.')
+        help_text=_('The title for this catalog in the quinary language.'),
     )
     help_lang1 = models.TextField(
         blank=True,
         verbose_name=_('Help (primary)'),
-        help_text=_('The help text for this catalog in the primary language.')
+        help_text=_('The help text for this catalog in the primary language.'),
     )
     help_lang2 = models.TextField(
         blank=True,
         verbose_name=_('Help (secondary)'),
-        help_text=_('The help text for this catalog in the secondary language.')
+        help_text=_('The help text for this catalog in the secondary language.'),
     )
     help_lang3 = models.TextField(
         blank=True,
         verbose_name=_('Help (tertiary)'),
-        help_text=_('The help text for this catalog in the tertiary language.')
+        help_text=_('The help text for this catalog in the tertiary language.'),
     )
     help_lang4 = models.TextField(
         blank=True,
         verbose_name=_('Help (quaternary)'),
-        help_text=_('The help text for this catalog in the quaternary language.')
+        help_text=_('The help text for this catalog in the quaternary language.'),
     )
     help_lang5 = models.TextField(
         blank=True,
         verbose_name=_('Help (quinary)'),
-        help_text=_('The help text for this catalog in the quinary language.')
+        help_text=_('The help text for this catalog in the quinary language.'),
     )
     available = models.BooleanField(
         default=True,
         verbose_name=_('Available'),
-        help_text=_('Designates whether this catalog is generally available for projects.')
+        help_text=_('Designates whether this catalog is generally available for projects.'),
     )
 
     class Meta:

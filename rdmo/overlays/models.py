@@ -5,26 +5,21 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Overlay(models.Model):
-
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='overlays',
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='overlays',
         verbose_name=_('User'),
-        help_text=_('The user for this overlay.')
+        help_text=_('The user for this overlay.'),
     )
     site = models.ForeignKey(
-        Site, on_delete=models.SET_NULL, null=True,
-        verbose_name=_('Site'),
-        help_text=_('The site for this overlay.')
+        Site, on_delete=models.SET_NULL, null=True, verbose_name=_('Site'), help_text=_('The site for this overlay.')
     )
     url_name = models.SlugField(
-        max_length=128,
-        verbose_name=_('Url name'),
-        help_text=_('The url_name for this overlay.')
+        max_length=128, verbose_name=_('Url name'), help_text=_('The url_name for this overlay.')
     )
     current = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Current'),
-        help_text=_('The current state for this overlay.')
+        max_length=128, blank=True, verbose_name=_('Current'), help_text=_('The current state for this overlay.')
     )
 
     class Meta:

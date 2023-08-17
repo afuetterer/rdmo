@@ -12,12 +12,8 @@ users = (
 )
 
 status_map = {
-    'domain': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302
-    },
-    'domain_export': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302
-    }
+    'domain': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302},
+    'domain_export': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302},
 }
 
 export_formats = ('xml', 'rtf', 'odt', 'docx', 'html', 'markdown', 'tex', 'pdf', 'csv', 'csvcomma')

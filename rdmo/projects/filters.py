@@ -9,11 +9,10 @@ class ProjectFilter(FilterSet):
 
     class Meta:
         model = Project
-        fields = ('title', )
+        fields = ('title',)
 
 
 class SnapshotFilterBackend(BaseFilterBackend):
-
     def filter_queryset(self, request, queryset, view):
         if view.detail:
             return queryset
@@ -33,7 +32,6 @@ class SnapshotFilterBackend(BaseFilterBackend):
 
 
 class ValueFilterBackend(BaseFilterBackend):
-
     def filter_queryset(self, request, queryset, view):
         if view.detail:
             return queryset

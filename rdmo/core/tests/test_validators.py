@@ -40,9 +40,7 @@ def test_instance_validator_validation_error():
     validator = InstanceValidator()
 
     with pytest.raises(ValidationError):
-        validator.raise_validation_error({
-            'foo': 'bar'
-        })
+        validator.raise_validation_error({'foo': 'bar'})
 
 
 def test_instance_validator_validation_serializer_error():
@@ -50,6 +48,4 @@ def test_instance_validator_validation_serializer_error():
     validator.set_context(serializers.Serializer())
 
     with pytest.raises(serializers.ValidationError):
-        validator.raise_validation_error({
-            'foo': 'bar'
-        })
+        validator.raise_validation_error({'foo': 'bar'})

@@ -6,7 +6,6 @@ from ..models import Project, Snapshot, Value
 
 
 class ValueSerializer(serializers.ModelSerializer):
-
     attribute = serializers.CharField(source='attribute.uri', default=None, read_only=True)
     option = serializers.CharField(source='option.uri', default=None, read_only=True)
     file_content = serializers.SerializerMethodField()
@@ -26,7 +25,7 @@ class ValueSerializer(serializers.ModelSerializer):
             'unit',
             'external_id',
             'created',
-            'updated'
+            'updated',
         )
 
     def get_file_content(self, obj):
@@ -35,18 +34,11 @@ class ValueSerializer(serializers.ModelSerializer):
 
 
 class SnapshotSerializer(serializers.ModelSerializer):
-
     values = serializers.SerializerMethodField()
 
     class Meta:
         model = Snapshot
-        fields = (
-            'title',
-            'description',
-            'values',
-            'created',
-            'updated'
-        )
+        fields = ('title', 'description', 'values', 'created', 'updated')
 
     def get_values(self, obj):
         values = Value.objects.filter(snapshot=obj)
@@ -55,7 +47,6 @@ class SnapshotSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-
     snapshots = SnapshotSerializer(many=True)
     values = serializers.SerializerMethodField()
 
@@ -65,17 +56,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = (
-            'title',
-            'description',
-            'catalog',
-            'tasks',
-            'views',
-            'snapshots',
-            'values',
-            'created',
-            'updated'
-        )
+        fields = ('title', 'description', 'catalog', 'tasks', 'views', 'snapshots', 'values', 'created', 'updated')
 
     def get_values(self, obj):
         values = Value.objects.filter(project=obj, snapshot=None)

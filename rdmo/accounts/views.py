@@ -30,10 +30,11 @@ def profile_update(request):
                 form.save()
                 return HttpResponseRedirect(get_next(request))
 
-        return render(request, 'profile/profile_update_form.html', {
-            'form': form,
-            'next': get_referer_path_info(request, default='/')
-        })
+        return render(
+            request,
+            'profile/profile_update_form.html',
+            {'form': form, 'next': get_referer_path_info(request, default='/')},
+        )
     else:
         return render(request, 'profile/profile_update_closed.html')
 
@@ -63,10 +64,11 @@ def remove_user(request):
                 else:
                     return render(request, 'profile/profile_remove_failed.html')
 
-        return render(request, 'profile/profile_remove_form.html', {
-            'form': form,
-            'next': get_referer_path_info(request, default='/')
-        })
+        return render(
+            request,
+            'profile/profile_remove_form.html',
+            {'form': form, 'next': get_referer_path_info(request, default='/')},
+        )
     else:
         return render(request, 'profile/profile_remove_closed.html')
 

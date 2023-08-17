@@ -1,9 +1,18 @@
 from django.contrib import admin
 from django.db.models import Prefetch
 
-from .models import (Continuation, Integration, IntegrationOption, Invite,
-                     Issue, IssueResource, Membership, Project, Snapshot,
-                     Value)
+from .models import (
+    Continuation,
+    Integration,
+    IntegrationOption,
+    Invite,
+    Issue,
+    IssueResource,
+    Membership,
+    Project,
+    Snapshot,
+    Value,
+)
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -15,7 +24,7 @@ class ProjectAdmin(admin.ModelAdmin):
             Prefetch(
                 'memberships',
                 queryset=Membership.objects.filter(role='owner').select_related('user'),
-                to_attr='owner_memberships'
+                to_attr='owner_memberships',
             )
         )
 
@@ -52,7 +61,7 @@ class InviteAdmin(admin.ModelAdmin):
 class IssueAdmin(admin.ModelAdmin):
     search_fields = ('project__title', 'task', 'status')
     list_display = ('project', 'task', 'status')
-    list_filter = ('status', )
+    list_filter = ('status',)
 
 
 class IssueResourceAdmin(admin.ModelAdmin):
@@ -69,7 +78,7 @@ class SnapshotAdmin(admin.ModelAdmin):
             Prefetch(
                 'project__memberships',
                 queryset=Membership.objects.filter(role='owner').select_related('user'),
-                to_attr='owner_memberships'
+                to_attr='owner_memberships',
             )
         ).select_related('project')
 
@@ -80,7 +89,7 @@ class SnapshotAdmin(admin.ModelAdmin):
 class ValueAdmin(admin.ModelAdmin):
     search_fields = ('attribute__uri', 'project__title', 'snapshot__title', 'project__user__username')
     list_display = ('attribute', 'set_prefix', 'set_index', 'collection_index', 'project', 'snapshot_title')
-    list_filter = ('value_type', )
+    list_filter = ('value_type',)
 
     def snapshot_title(self, obj):
         if obj.snapshot:

@@ -9,50 +9,45 @@ from rdmo.core.utils import copy_model, join_url
 
 
 class OptionSet(models.Model):
-
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this option set (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this option set (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this option set.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this option set.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this option set.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this option set.')
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this option set.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this option set.')
     )
     locked = models.BooleanField(
         default=False,
         verbose_name=_('Locked'),
-        help_text=_('Designates whether this option set (and its options) can be changed.')
+        help_text=_('Designates whether this option set (and its options) can be changed.'),
     )
     order = models.IntegerField(
-        default=0,
-        verbose_name=_('Order'),
-        help_text=_('The position of this option set in lists.')
+        default=0, verbose_name=_('Order'), help_text=_('The position of this option set in lists.')
     )
     provider_key = models.SlugField(
-        max_length=128, blank=True,
+        max_length=128,
+        blank=True,
         verbose_name=_('Provider'),
-        help_text=_('The provider for this optionset. If set, it will create dynamic options for this optionset.')
+        help_text=_('The provider for this optionset. If set, it will create dynamic options for this optionset.'),
     )
     conditions = models.ManyToManyField(
-        Condition, blank=True, related_name='optionsets',
+        Condition,
+        blank=True,
+        related_name='optionsets',
         verbose_name=_('Conditions'),
-        help_text=_('The list of conditions evaluated for this option set.')
+        help_text=_('The list of conditions evaluated for this option set.'),
     )
 
     class Meta:
-        ordering = ('uri', )
+        ordering = ('uri',)
         verbose_name = _('Option set')
         verbose_name_plural = _('Option sets')
 
@@ -109,76 +104,72 @@ class OptionSet(models.Model):
 
 
 class Option(models.Model, TranslationMixin):
-
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this option (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this option (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this option.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this option.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this option.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this option.')
     )
     path = models.SlugField(
-        max_length=512, blank=True,
+        max_length=512,
+        blank=True,
         verbose_name=_('Path'),
-        help_text=_('The path part of the URI for this option (auto-generated).')
+        help_text=_('The path part of the URI for this option (auto-generated).'),
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this option.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this option.')
     )
     locked = models.BooleanField(
-        default=False,
-        verbose_name=_('Locked'),
-        help_text=_('Designates whether this option can be changed.')
+        default=False, verbose_name=_('Locked'), help_text=_('Designates whether this option can be changed.')
     )
     optionset = models.ForeignKey(
-        'OptionSet', on_delete=models.CASCADE, related_name='options',
+        'OptionSet',
+        on_delete=models.CASCADE,
+        related_name='options',
         verbose_name=_('Option set'),
-        help_text=_('The option set this option belongs to.')
+        help_text=_('The option set this option belongs to.'),
     )
-    order = models.IntegerField(
-        default=0,
-        verbose_name=_('Order'),
-        help_text=_('Position in lists.')
-    )
+    order = models.IntegerField(default=0, verbose_name=_('Order'), help_text=_('Position in lists.'))
     text_lang1 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Text (primary)'),
-        help_text=_('The text for this option in the primary language.')
+        help_text=_('The text for this option in the primary language.'),
     )
     text_lang2 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Text (secondary)'),
-        help_text=_('The text for this option in the secondary language.')
+        help_text=_('The text for this option in the secondary language.'),
     )
     text_lang3 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Text (tertiary)'),
-        help_text=_('The text for this option in the tertiary language.')
+        help_text=_('The text for this option in the tertiary language.'),
     )
     text_lang4 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Text (quaternary)'),
-        help_text=_('The text for this option in the quaternary language.')
+        help_text=_('The text for this option in the quaternary language.'),
     )
     text_lang5 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Text (quinary)'),
-        help_text=_('The text for this option in the quinary language.')
+        help_text=_('The text for this option in the quinary language.'),
     )
     additional_input = models.BooleanField(
         default=False,
         verbose_name=_('Additional input'),
-        help_text=_('Designates whether an additional input is possible for this option.')
+        help_text=_('Designates whether an additional input is possible for this option.'),
     )
 
     class Meta:
@@ -199,7 +190,7 @@ class Option(models.Model, TranslationMixin):
 
     @property
     def parent_fields(self):
-        return ('optionset', )
+        return ('optionset',)
 
     @property
     def text(self):

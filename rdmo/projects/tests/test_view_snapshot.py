@@ -24,14 +24,14 @@ view_snapshot_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_snapshot_permission_map = change_snapshot_permission_map = rollback_snapshot_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -67,10 +67,7 @@ def test_snapshot_create_post(db, client, files, username, password, project_id)
     current_values_count = project.values.filter(snapshot=None).count()
 
     url = reverse('snapshot_create', args=[project.id])
-    data = {
-        'title': 'A new snapshot',
-        'description': 'Some description'
-    }
+    data = {'title': 'A new snapshot', 'description': 'Some description'}
     response = client.post(url, data)
 
     # check if all the files are where are supposed to be
@@ -131,10 +128,7 @@ def test_snapshot_update_post(db, client, username, password, project_id, snapsh
     values_files = [value.file.name for value in project.values.filter(value_type=VALUE_TYPE_FILE)]
 
     url = reverse('snapshot_update', args=[project_id, snapshot_id])
-    data = {
-        'title': snapshot.title,
-        'description': snapshot.description
-    }
+    data = {'title': snapshot.title, 'description': snapshot.description}
     response = client.post(url, data)
 
     # check if all the files are where are supposed to be

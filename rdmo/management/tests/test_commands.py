@@ -5,14 +5,7 @@ import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
-files = (
-    'conditions.xml',
-    'domain.xml',
-    'options.xml',
-    'questions.xml',
-    'tasks.xml',
-    'views.xml'
-)
+files = ('conditions.xml', 'domain.xml', 'options.xml', 'questions.xml', 'tasks.xml', 'views.xml')
 
 
 @pytest.mark.parametrize('file_name', files)

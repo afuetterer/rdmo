@@ -7,7 +7,6 @@ from rdmo.domain.models import Attribute
 
 
 class Condition(models.Model):
-
     RELATION_EQUAL = 'eq'
     RELATION_NOT_EQUAL = 'neq'
     RELATION_CONTAINS = 'contains'
@@ -30,53 +29,60 @@ class Condition(models.Model):
     )
 
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this condition (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this condition (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this condition.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this condition.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this condition.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this condition.')
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this condition.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this condition.')
     )
     locked = models.BooleanField(
-        default=False,
-        verbose_name=_('Locked'),
-        help_text=_('Designates whether this condition can be changed.')
+        default=False, verbose_name=_('Locked'), help_text=_('Designates whether this condition can be changed.')
     )
     source = models.ForeignKey(
-        Attribute, db_constraint=False, blank=True, null=True, on_delete=models.SET_NULL, related_name='conditions',
+        Attribute,
+        db_constraint=False,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='conditions',
         verbose_name=_('Source'),
-        help_text=_('The attribute of the value for this condition.')
+        help_text=_('The attribute of the value for this condition.'),
     )
     relation = models.CharField(
-        max_length=8, choices=RELATION_CHOICES,
+        max_length=8,
+        choices=RELATION_CHOICES,
         verbose_name=_('Relation'),
-        help_text=_('The relation this condition is using.')
+        help_text=_('The relation this condition is using.'),
     )
     target_text = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Target (Text)'),
-        help_text=_('If using a regular value, the text value this condition is checking against (for boolean values use 1 and 0).')
+        help_text=_(
+            'If using a regular value, the text value this condition is checking against (for boolean values use 1 and 0).'
+        ),
     )
     target_option = models.ForeignKey(
-        'options.Option', db_constraint=False, blank=True, null=True, on_delete=models.SET_NULL, related_name='conditions',
+        'options.Option',
+        db_constraint=False,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='conditions',
         verbose_name=_('Target (Option)'),
-        help_text=_('If using a value pointing to an option, the option this condition is checking against.')
+        help_text=_('If using a value pointing to an option, the option this condition is checking against.'),
     )
 
     class Meta:
-        ordering = ('uri', )
+        ordering = ('uri',)
         verbose_name = _('Condition')
         verbose_name_plural = _('Conditions')
 
@@ -88,7 +94,9 @@ class Condition(models.Model):
         super().save(*args, **kwargs)
 
     def copy(self, uri_prefix, key):
-        condition = copy_model(self, uri_prefix=uri_prefix, key=key, source=self.source, target_option=self.target_option)
+        condition = copy_model(
+            self, uri_prefix=uri_prefix, key=key, source=self.source, target_option=self.target_option
+        )
 
         return condition
 
@@ -183,7 +191,6 @@ class Condition(models.Model):
         return True in results
 
     def _resolve_greater_than(self, values):
-
         for value in values:
             try:
                 if float(value.text) > float(self.target_text):
@@ -194,7 +201,6 @@ class Condition(models.Model):
         return False
 
     def _resolve_greater_than_equal(self, values):
-
         for value in values:
             try:
                 if float(value.text) >= float(self.target_text):
@@ -205,7 +211,6 @@ class Condition(models.Model):
         return False
 
     def _resolve_lesser_than(self, values):
-
         for value in values:
             try:
                 if float(value.text) < float(self.target_text):
@@ -216,7 +221,6 @@ class Condition(models.Model):
         return False
 
     def _resolve_lesser_than_equal(self, values):
-
         for value in values:
             try:
                 if float(value.text) <= float(self.target_text):
@@ -227,7 +231,6 @@ class Condition(models.Model):
         return False
 
     def _resolve_not_empty(self, values):
-
         for value in values:
             if bool(value.text) or bool(value.option):
                 return True

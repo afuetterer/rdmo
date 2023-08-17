@@ -11,21 +11,21 @@ urlpatterns = [
 ]
 
 if settings.ACCOUNT_TERMS_OF_USE is True:
-    urlpatterns += [
-        re_path('^terms-of-use/', terms_of_use, name='terms_of_use')
-    ]
+    urlpatterns += [re_path('^terms-of-use/', terms_of_use, name='terms_of_use')]
 
 if settings.ACCOUNT or settings.SOCIALACCOUNT:
     # include django-allauth urls
-    urlpatterns += [
-        re_path(r'^', include('allauth.urls'))
-    ]
+    urlpatterns += [re_path(r'^', include('allauth.urls'))]
 elif settings.SHIBBOLETH:
     urlpatterns += [
-        re_path('^logout/', auth_views.LogoutView.as_view(next_page=settings.SHIBBOLETH_LOGOUT_URL), name='account_logout'),
+        re_path(
+            '^logout/', auth_views.LogoutView.as_view(next_page=settings.SHIBBOLETH_LOGOUT_URL), name='account_logout'
+        ),
     ]
 else:
     urlpatterns += [
         re_path('^login/', auth_views.LoginView.as_view(template_name='account/login.html'), name='account_login'),
-        re_path('^logout/', auth_views.LogoutView.as_view(next_page=settings.LOGIN_REDIRECT_URL), name='account_logout'),
+        re_path(
+            '^logout/', auth_views.LogoutView.as_view(next_page=settings.LOGIN_REDIRECT_URL), name='account_logout'
+        ),
     ]

@@ -6,7 +6,6 @@ from .models import Condition
 
 
 class ConditionUniqueURIValidator(UniqueURIValidator):
-
     model = Condition
 
     def get_uri(self, data):
@@ -18,5 +17,4 @@ class ConditionUniqueURIValidator(UniqueURIValidator):
 
 
 class ConditionLockedValidator(LockedValidator):
-
     pass

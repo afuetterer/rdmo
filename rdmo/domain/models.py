@@ -7,46 +7,45 @@ from rdmo.core.utils import copy_model, join_url
 
 
 class Attribute(MPTTModel):
-
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this attribute (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this attribute (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this attribute.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this attribute.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this attribute.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this attribute.')
     )
     path = models.CharField(
-        max_length=512, db_index=True,
+        max_length=512,
+        db_index=True,
         verbose_name=_('Path'),
-        help_text=_('The path part of the URI of this attribute (auto-generated).')
+        help_text=_('The path part of the URI of this attribute (auto-generated).'),
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional information about this attribute.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional information about this attribute.')
     )
     locked = models.BooleanField(
         default=False,
         verbose_name=_('Locked'),
-        help_text=_('Designates whether this attribute (and its descendants) can be changed.')
+        help_text=_('Designates whether this attribute (and its descendants) can be changed.'),
     )
     parent = TreeForeignKey(
-        'self', null=True, blank=True,
-        on_delete=models.CASCADE, related_name='children', db_index=True,
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='children',
+        db_index=True,
         verbose_name=_('Parent attribute'),
-        help_text=_('Parent attribute in the domain model.')
+        help_text=_('Parent attribute in the domain model.'),
     )
 
     class Meta:
-        ordering = ('uri', )
+        ordering = ('uri',)
         verbose_name = _('Attribute')
         verbose_name_plural = _('Attributes')
 
@@ -80,7 +79,7 @@ class Attribute(MPTTModel):
 
     @property
     def parent_fields(self):
-        return ('parent', )
+        return ('parent',)
 
     @property
     def is_locked(self):

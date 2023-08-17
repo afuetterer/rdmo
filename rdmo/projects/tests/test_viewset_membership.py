@@ -20,13 +20,10 @@ view_membership_permission_map = {
     'author': [1, 3, 5, 8],
     'guest': [1, 3, 5, 9],
     'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
-urlnames = {
-    'list': 'v1-projects:membership-list',
-    'detail': 'v1-projects:membership-detail'
-}
+urlnames = {'list': 'v1-projects:membership-list', 'detail': 'v1-projects:membership-detail'}
 
 projects = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 memberships = [1, 2, 3, 4]
@@ -47,8 +44,11 @@ def test_list(db, client, username, password):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Membership.objects.filter(project__in=view_membership_permission_map.get(username, [])) \
-                                            .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Membership.objects.filter(project__in=view_membership_permission_map.get(username, []))
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401

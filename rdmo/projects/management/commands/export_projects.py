@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument('--answers', action='store_true', help='Export the answers instead of a project')
         parser.add_argument('--view', help='Export a specific view instead of a project')
@@ -39,14 +38,19 @@ class Command(BaseCommand):
 
     def get_queryset(self):
         return Project.objects.prefetch_related(
-            Prefetch('catalog__sections__questionsets',
-                     queryset=QuestionSet.objects.select_related('attribute')),
-            Prefetch('catalog__sections__questionsets__questions',
-                     queryset=Question.objects.select_related('attribute', 'questionset')),
-            Prefetch('catalog__sections__questionsets__questionsets',
-                     queryset=QuestionSet.objects.select_related('attribute')),
-            Prefetch('catalog__sections__questionsets__questionsets__questions',
-                     queryset=Question.objects.select_related('attribute', 'questionset')),
+            Prefetch('catalog__sections__questionsets', queryset=QuestionSet.objects.select_related('attribute')),
+            Prefetch(
+                'catalog__sections__questionsets__questions',
+                queryset=Question.objects.select_related('attribute', 'questionset'),
+            ),
+            Prefetch(
+                'catalog__sections__questionsets__questionsets',
+                queryset=QuestionSet.objects.select_related('attribute'),
+            ),
+            Prefetch(
+                'catalog__sections__questionsets__questionsets__questions',
+                queryset=Question.objects.select_related('attribute', 'questionset'),
+            ),
         )
 
     def export_answers(self):
@@ -62,10 +66,12 @@ class Command(BaseCommand):
                 'project_wrapper': ProjectWrapper(project, current_snapshot),
                 'title': project.title,
                 'format': self.format,
-                'resource_path': get_value_path(project, current_snapshot)
+                'resource_path': get_value_path(project, current_snapshot),
             }
 
-            response = render_to_format(None, context['format'], context['title'], 'projects/project_answers_export.html', context)
+            response = render_to_format(
+                None, context['format'], context['title'], 'projects/project_answers_export.html', context
+            )
             self.write_file(self.path / str(project.id) / 'answers', response)
 
     def export_view(self, key):
@@ -88,10 +94,12 @@ class Command(BaseCommand):
                 'project_wrapper': ProjectWrapper(project, current_snapshot),
                 'title': project.title,
                 'format': self.format,
-                'resource_path': get_value_path(project, current_snapshot)
+                'resource_path': get_value_path(project, current_snapshot),
             }
 
-            response = render_to_format(None, context['format'], context['title'], 'projects/project_view_export.html', context)
+            response = render_to_format(
+                None, context['format'], context['title'], 'projects/project_view_export.html', context
+            )
             self.write_file(self.path / str(project.id) / key, response)
 
     def export_projects(self):

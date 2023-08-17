@@ -9,71 +9,69 @@ from .catalog import Catalog
 
 
 class Section(Model, TranslationMixin):
-
     uri = models.URLField(
-        max_length=640, blank=True,
+        max_length=640,
+        blank=True,
         verbose_name=_('URI'),
-        help_text=_('The Uniform Resource Identifier of this section (auto-generated).')
+        help_text=_('The Uniform Resource Identifier of this section (auto-generated).'),
     )
     uri_prefix = models.URLField(
-        max_length=256,
-        verbose_name=_('URI Prefix'),
-        help_text=_('The prefix for the URI of this section.')
+        max_length=256, verbose_name=_('URI Prefix'), help_text=_('The prefix for the URI of this section.')
     )
     key = models.SlugField(
-        max_length=128, blank=True,
-        verbose_name=_('Key'),
-        help_text=_('The internal identifier of this section.')
+        max_length=128, blank=True, verbose_name=_('Key'), help_text=_('The internal identifier of this section.')
     )
     path = models.CharField(
-        max_length=512, blank=True,
+        max_length=512,
+        blank=True,
         verbose_name=_('Label'),
-        help_text=_('The path part of the URI of this section (auto-generated).')
+        help_text=_('The path part of the URI of this section (auto-generated).'),
     )
     comment = models.TextField(
-        blank=True,
-        verbose_name=_('Comment'),
-        help_text=_('Additional internal information about this section.')
+        blank=True, verbose_name=_('Comment'), help_text=_('Additional internal information about this section.')
     )
     locked = models.BooleanField(
         default=False,
         verbose_name=_('Locked'),
-        help_text=_('Designates whether this section (and its question sets and questions) can be changed.')
+        help_text=_('Designates whether this section (and its question sets and questions) can be changed.'),
     )
     catalog = models.ForeignKey(
-        Catalog, on_delete=models.CASCADE, related_name='sections',
+        Catalog,
+        on_delete=models.CASCADE,
+        related_name='sections',
         verbose_name=_('Catalog'),
-        help_text=_('The catalog this section belongs to.')
+        help_text=_('The catalog this section belongs to.'),
     )
-    order = models.IntegerField(
-        default=0,
-        verbose_name=_('Order'),
-        help_text=_('Position in lists.')
-    )
+    order = models.IntegerField(default=0, verbose_name=_('Order'), help_text=_('Position in lists.'))
     title_lang1 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (primary)'),
-        help_text=_('The title for this section in the primary language.')
+        help_text=_('The title for this section in the primary language.'),
     )
     title_lang2 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (secondary)'),
-        help_text=_('The title for this section in the secondary language.')
+        help_text=_('The title for this section in the secondary language.'),
     )
     title_lang3 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (tertiary)'),
-        help_text=_('The title for this section in the tertiary language.')
+        help_text=_('The title for this section in the tertiary language.'),
     )
     title_lang4 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quaternary)'),
-        help_text=_('The title for this section in the quaternary language.')
+        help_text=_('The title for this section in the quaternary language.'),
     )
     title_lang5 = models.CharField(
-        max_length=256, blank=True,
+        max_length=256,
+        blank=True,
         verbose_name=_('Title (quinary)'),
-        help_text=_('The title for this section in the quinary language.')
+        help_text=_('The title for this section in the quinary language.'),
     )
 
     class Meta:
@@ -104,7 +102,7 @@ class Section(Model, TranslationMixin):
 
     @property
     def parent_fields(self):
-        return ('catalog', )
+        return ('catalog',)
 
     @property
     def title(self):

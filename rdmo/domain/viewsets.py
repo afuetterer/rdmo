@@ -11,26 +11,22 @@ from rdmo.core.viewsets import CopyModelMixin
 from .models import Attribute
 from .renderers import AttributeRenderer
 from .serializers.export import AttributeExportSerializer
-from .serializers.v1 import (AttributeIndexSerializer,
-                             AttributeNestedSerializer, AttributeSerializer)
+from .serializers.v1 import AttributeIndexSerializer, AttributeNestedSerializer, AttributeSerializer
 
 
 class AttributeViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
-    queryset = Attribute.objects.order_by('path') \
-                        .annotate(values_count=models.Count('values')) \
-                        .annotate(projects_count=models.Count('values__project', distinct=True)) \
-                        .prefetch_related('conditions', 'questionsets', 'questions', 'tasks_as_start', 'tasks_as_end')
+    permission_classes = (HasModelPermission,)
+    queryset = (
+        Attribute.objects.order_by('path')
+        .annotate(values_count=models.Count('values'))
+        .annotate(projects_count=models.Count('values__project', distinct=True))
+        .prefetch_related('conditions', 'questionsets', 'questions', 'tasks_as_start', 'tasks_as_end')
+    )
 
     serializer_class = AttributeSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'path',
-        'key',
-        'parent'
-    )
+    filterset_fields = ('uri', 'path', 'key', 'parent')
 
     @action(detail=False)
     def nested(self, request):

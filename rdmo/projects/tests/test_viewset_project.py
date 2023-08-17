@@ -20,20 +20,20 @@ view_project_permission_map = {
     'author': [1, 3, 5, 8],
     'guest': [1, 3, 5, 9],
     'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 change_project_permission_map = {
     'owner': [1, 2, 3, 4, 5, 10],
     'manager': [1, 3, 5, 7],
     'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 delete_project_permission_map = {
     'owner': [1, 2, 3, 4, 5, 10],
     'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 urlnames = {
@@ -41,7 +41,7 @@ urlnames = {
     'detail': 'v1-projects:project-detail',
     'overview': 'v1-projects:project-overview',
     'resolve': 'v1-projects:project-resolve',
-    'progress': 'v1-projects:project-progress'
+    'progress': 'v1-projects:project-progress',
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -66,8 +66,11 @@ def test_list(db, client, username, password):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Project.objects.filter(id__in=view_project_permission_map.get(username, [])) \
-                                         .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Project.objects.filter(id__in=view_project_permission_map.get(username, []))
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401
@@ -100,7 +103,7 @@ def test_create(db, client, username, password):
     data = {
         'title': 'Lorem ipsum dolor sit amet',
         'description': 'At vero eos et accusam et justo duo dolores et ea rebum.',
-        'catalog': catalog_id
+        'catalog': catalog_id,
     }
     response = client.post(url, data)
 
@@ -122,7 +125,7 @@ def test_create_parent(db, client, username, password, project_id):
         'title': 'Lorem ipsum dolor sit amet',
         'description': 'At vero eos et accusam et justo duo dolores et ea rebum.',
         'catalog': catalog_id,
-        'parent': project_id
+        'parent': project_id,
     }
     response = client.post(url, data)
 
@@ -144,11 +147,7 @@ def test_update(db, client, username, password, project_id):
     project = Project.objects.get(pk=project_id)
 
     url = reverse(urlnames['detail'], args=[project_id])
-    data = {
-        'title': 'New title',
-        'description': project.description,
-        'catalog': project.catalog.id
-    }
+    data = {'title': 'New title', 'description': project.description, 'catalog': project.catalog.id}
     response = client.put(url, data, content_type='application/json')
 
     if project_id in change_project_permission_map.get(username, []):

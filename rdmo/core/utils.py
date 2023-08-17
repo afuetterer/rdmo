@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 
 
 def get_script_alias(request):
-    return request.path[:-len(request.path_info)]
+    return request.path[: -len(request.path_info)]
 
 
 def get_referer(request, default=None):
@@ -35,7 +35,7 @@ def get_referer_path_info(request, default=''):
         return default
 
     script_alias = get_script_alias(request)
-    return urlparse(referer).path[len(script_alias):]
+    return urlparse(referer).path[len(script_alias) :]
 
 
 def get_next(request):
@@ -103,8 +103,7 @@ def get_languages():
     languages = []
     for i in range(5):
         try:
-            language = settings.LANGUAGES[i][0], settings.LANGUAGES[i][1],\
-                'lang%i' % (i + 1)
+            language = settings.LANGUAGES[i][0], settings.LANGUAGES[i][1], 'lang%i' % (i + 1)
             languages.append(language)
         except IndexError:
             pass
@@ -112,10 +111,7 @@ def get_languages():
 
 
 def get_language_fields(field_name):
-    return [
-        field_name + '_' + lang_field for lang_code,
-        lang_string, lang_field in get_languages()
-        ]
+    return [field_name + '_' + lang_field for lang_code, lang_string, lang_field in get_languages()]
 
 
 def get_language_warning(obj, field):
@@ -158,12 +154,7 @@ def set_export_reference_document(format, context):
             refdocs.append(settings.EXPORT_REFERENCE_DOCX)
 
     # append the default reference docs
-    refdocs.append(
-        os.path.join(
-            apps.get_app_config('rdmo').path,
-            'share', 'reference' + '.' + format
-        )
-    )
+    refdocs.append(os.path.join(apps.get_app_config('rdmo').path, 'share', 'reference' + '.' + format))
 
     # return the first file in refdocs that actually exists
     for refdoc in refdocs:
@@ -195,9 +186,7 @@ def render_to_format(request, export_format, title, template_src, context):
         if export_format == 'pdf':
             # check pandoc version (the pdf arg changed to version 2)
             if get_pandoc_main_version() == 1:
-                pandoc_args = [arg.replace(
-                    '--pdf-engine=xelatex', '--latex-engine=xelatex'
-                ) for arg in pandoc_args]
+                pandoc_args = [arg.replace('--pdf-engine=xelatex', '--latex-engine=xelatex') for arg in pandoc_args]
 
             # display pdf in browser
             content_disposition = 'filename="%s.%s"' % (title, export_format)
@@ -230,13 +219,11 @@ def render_to_format(request, export_format, title, template_src, context):
         # convert the file using pandoc
         log.info('Export %s document using args %s.', export_format, pandoc_args)
         html = re.sub(
-            r'(<img.+src=["\'])' + settings.STATIC_URL + r'([\w\-\@?^=%&/~\+#]+)', r'\g<1>' +
-            str(Path(settings.STATIC_ROOT)) + r'/\g<2>', html
+            r'(<img.+src=["\'])' + settings.STATIC_URL + r'([\w\-\@?^=%&/~\+#]+)',
+            r'\g<1>' + str(Path(settings.STATIC_ROOT)) + r'/\g<2>',
+            html,
         )
-        pypandoc.convert_text(
-            html, export_format, format='html',
-            outputfile=tmp_filename, extra_args=pandoc_args
-        )
+        pypandoc.convert_text(html, export_format, format='html', outputfile=tmp_filename, extra_args=pandoc_args)
 
         # read the temporary file
         file_handler = os.fdopen(tmp_fd, 'rb')
@@ -261,9 +248,7 @@ def render_to_csv(title, rows, delimiter=','):
 
     writer = csv.writer(response, delimiter=delimiter)
     for row in rows:
-        writer.writerow(
-            ['' if x is None else str(x) for x in row]
-        )
+        writer.writerow(['' if x is None else str(x) for x in row])
     return response
 
 
@@ -351,16 +336,14 @@ def markdown2html(markdown_string):
     html = re.sub(
         r'\[(.*?)\]\{(.*?)\}',
         r'<span data-toggle="tooltip" data-placement="bottom" data-html="true" title="\2">\1</span>',
-        html
+        html,
     )
     return html
 
 
 def parse_metadata(html):
     metadata = None
-    pattern = re.compile(
-        '(<metadata>)(.*)(</metadata>)', re.MULTILINE | re.DOTALL
-    )
+    pattern = re.compile('(<metadata>)(.*)(</metadata>)', re.MULTILINE | re.DOTALL)
     m = re.search(pattern, html)
     if bool(m) is True:
         try:

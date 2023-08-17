@@ -27,7 +27,6 @@ log = logging.getLogger(__name__)
 
 
 class Import(Plugin):
-
     upload = True
 
     def __init__(self, *args, **kwargs):
@@ -87,7 +86,6 @@ class Import(Plugin):
 
 
 class RDMOXMLImport(Import):
-
     def check(self):
         file_type, encoding = mimetypes.guess_type(self.file_name)
         if file_type == 'application/xml' or file_type == 'text/xml':
@@ -184,7 +182,7 @@ class RDMOXMLImport(Import):
             if file_string is not None:
                 value.file_import = {
                     'name': file_node.attrib.get('name', 'file.dat'),
-                    'file': File(io.BytesIO(base64.b64decode(file_string)))
+                    'file': File(io.BytesIO(base64.b64decode(file_string))),
                 }
 
         value_type_node = value_node.find('value_type')
@@ -206,7 +204,6 @@ class RDMOXMLImport(Import):
 
 
 class URLImport(RDMOXMLImport):
-
     upload = False
 
     class Form(forms.Form):
@@ -219,10 +216,9 @@ class URLImport(RDMOXMLImport):
 
     def render(self):
         form = self.Form()
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': 'URL',
-            'form': form
-        }, status=200)
+        return render(
+            self.request, 'projects/project_import_form.html', {'source_title': 'URL', 'form': form}, status=200
+        )
 
     def submit(self):
         form = self.Form(self.request.POST)
@@ -244,27 +240,29 @@ class URLImport(RDMOXMLImport):
             else:
                 return redirect('project_create_import')
 
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': 'URL',
-            'form': form
-        }, status=200)
+        return render(
+            self.request, 'projects/project_import_form.html', {'source_title': 'URL', 'form': form}, status=200
+        )
 
 
 class GitHubImport(GitHubProviderMixin, RDMOXMLImport):
-
     upload = False
 
     class Form(forms.Form):
-        repo = forms.CharField(label=_('GitHub repository'),
-                               help_text=_('Please use the form username/repository or organization/repository.'))
+        repo = forms.CharField(
+            label=_('GitHub repository'),
+            help_text=_('Please use the form username/repository or organization/repository.'),
+        )
         path = forms.CharField(label=_('File path'))
         ref = forms.CharField(label=_('Branch, tag, or commit'), initial='master')
 
     def render(self):
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': 'GitHub',
-            'form': self.Form()
-        }, status=200)
+        return render(
+            self.request,
+            'projects/project_import_form.html',
+            {'source_title': 'GitHub', 'form': self.Form()},
+            status=200,
+        )
 
     def submit(self):
         form = self.Form(self.request.POST)
@@ -282,15 +280,14 @@ class GitHubImport(GitHubProviderMixin, RDMOXMLImport):
                 api_url=self.api_url,
                 repo=quote(form.cleaned_data['repo']),
                 path=quote(form.cleaned_data['path']),
-                ref=quote(form.cleaned_data['ref'])
+                ref=quote(form.cleaned_data['ref']),
             )
 
             return self.get(self.request, url)
 
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': 'GitHub',
-            'form': form
-        }, status=200)
+        return render(
+            self.request, 'projects/project_import_form.html', {'source_title': 'GitHub', 'form': form}, status=200
+        )
 
     def get_success(self, request, response):
         file_content = response.json().get('content')
@@ -303,20 +300,25 @@ class GitHubImport(GitHubProviderMixin, RDMOXMLImport):
 
 
 class GitLabImport(GitLabProviderMixin, RDMOXMLImport):
-
     upload = False
 
     class Form(forms.Form):
-        repo = forms.CharField(label=_('GitLab repository'),
-                               help_text=_('Please use the form username/repository or organization/repository.'))
-        path = forms.CharField(label=_('File path'),)
+        repo = forms.CharField(
+            label=_('GitLab repository'),
+            help_text=_('Please use the form username/repository or organization/repository.'),
+        )
+        path = forms.CharField(
+            label=_('File path'),
+        )
         ref = forms.CharField(label=_('Branch, tag, or commit'), initial='master')
 
     def render(self):
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': self.gitlab_url,
-            'form': self.Form()
-        }, status=200)
+        return render(
+            self.request,
+            'projects/project_import_form.html',
+            {'source_title': self.gitlab_url, 'form': self.Form()},
+            status=200,
+        )
 
     def submit(self):
         form = self.Form(self.request.POST)
@@ -334,15 +336,17 @@ class GitLabImport(GitLabProviderMixin, RDMOXMLImport):
                 api_url=self.api_url,
                 repo=quote(form.cleaned_data['repo'], safe=''),
                 path=quote(form.cleaned_data['path'], safe=''),
-                ref=quote(form.cleaned_data['ref'], safe='')
+                ref=quote(form.cleaned_data['ref'], safe=''),
             )
 
             return self.get(self.request, url)
 
-        return render(self.request, 'projects/project_import_form.html', {
-            'source_title': self.gitlab_url,
-            'form': form
-        }, status=200)
+        return render(
+            self.request,
+            'projects/project_import_form.html',
+            {'source_title': self.gitlab_url, 'form': form},
+            status=200,
+        )
 
     def get_success(self, request, response):
         file_content = response.json().get('content')

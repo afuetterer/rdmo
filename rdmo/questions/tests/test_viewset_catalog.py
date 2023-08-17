@@ -14,21 +14,11 @@ users = (
 )
 
 status_map = {
-    'list': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'detail': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'create': {
-        'editor': 201, 'reviewer': 403, 'api': 201, 'user': 403, 'anonymous': 401
-    },
-    'update': {
-        'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'delete': {
-        'editor': 204, 'reviewer': 403, 'api': 204, 'user': 403, 'anonymous': 401
-    }
+    'list': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401},
+    'detail': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401},
+    'create': {'editor': 201, 'reviewer': 403, 'api': 201, 'user': 403, 'anonymous': 401},
+    'update': {'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 401},
+    'delete': {'editor': 204, 'reviewer': 403, 'api': 204, 'user': 403, 'anonymous': 401},
 }
 
 urlnames = {
@@ -38,7 +28,7 @@ urlnames = {
     'export': 'v1-questions:catalog-export',
     'detail': 'v1-questions:catalog-detail',
     'detail_export': 'v1-questions:catalog-detail-export',
-    'copy': 'v1-questions:catalog-copy'
+    'copy': 'v1-questions:catalog-copy',
 }
 
 
@@ -110,7 +100,7 @@ def test_create(db, client, username, password):
             'comment': instance.comment,
             'order': instance.order,
             'title_en': instance.title_lang1,
-            'title_de': instance.title_lang2
+            'title_de': instance.title_lang2,
         }
         response = client.post(url, data)
         assert response.status_code == status_map['create'][username], response.json()
@@ -129,7 +119,7 @@ def test_update(db, client, username, password):
             'comment': instance.comment,
             'order': instance.order,
             'title_en': instance.title_lang1,
-            'title_de': instance.title_lang2
+            'title_de': instance.title_lang2,
         }
         response = client.put(url, data, content_type='application/json')
         assert response.status_code == status_map['update'][username], response.json()
@@ -184,10 +174,7 @@ def test_copy_wrong(db, client, username, password):
     instance = Catalog.objects.first()
 
     url = reverse(urlnames['copy'], args=[instance.pk])
-    data = {
-        'uri_prefix': instance.uri_prefix,
-        'key': instance.key
-    }
+    data = {'uri_prefix': instance.uri_prefix, 'key': instance.key}
     response = client.put(url, data, content_type='application/json')
 
     if status_map['create'][username] == 201:

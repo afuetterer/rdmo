@@ -17,7 +17,7 @@ users = (
 add_membership_permission_map = change_membership_permission_map = delete_membership_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -49,16 +49,17 @@ def test_membership_create_post(db, client, username, password, project_id, memb
     client.login(username=username, password=password)
 
     url = reverse('membership_create', args=[project_id])
-    data = {
-        'username_or_email': 'user',
-        'role': membership_role
-    }
+    data = {'username_or_email': 'user', 'role': membership_role}
     response = client.post(url, data)
 
     if project_id in add_membership_permission_map.get(username, []):
         assert response.status_code == 302
-        assert Invite.objects.get(project_id=project_id, user__username='user', email='user@example.com', role=membership_role)
-        assert not Membership.objects.filter(project_id=project_id, user__username='user', role=membership_role).exists()
+        assert Invite.objects.get(
+            project_id=project_id, user__username='user', email='user@example.com', role=membership_role
+        )
+        assert not Membership.objects.filter(
+            project_id=project_id, user__username='user', role=membership_role
+        ).exists()
         assert len(mail.outbox) == 1
     else:
         if password:
@@ -77,10 +78,7 @@ def test_membership_create_post_mail(db, client, username, password, project_id,
     client.login(username=username, password=password)
 
     url = reverse('membership_create', args=[project_id])
-    data = {
-        'username_or_email': 'someuser@example.com',
-        'role': membership_role
-    }
+    data = {'username_or_email': 'someuser@example.com', 'role': membership_role}
     response = client.post(url, data)
 
     if project_id in add_membership_permission_map.get(username, []):
@@ -104,10 +102,7 @@ def test_membership_create_post_error(db, client, username, password, membership
 
     project_id = 1
     url = reverse('membership_create', args=[project_id])
-    data = {
-        'username_or_email': 'guest',
-        'role': membership_role
-    }
+    data = {'username_or_email': 'guest', 'role': membership_role}
     response = client.post(url, data)
 
     assert not Invite.objects.exists(), Invite.objects.all()
@@ -129,10 +124,7 @@ def test_membership_create_post_mail_error(db, client, username, password, membe
 
     project_id = 1
     url = reverse('membership_create', args=[project_id])
-    data = {
-        'username_or_email': 'guest@example.com',
-        'role': membership_role
-    }
+    data = {'username_or_email': 'guest@example.com', 'role': membership_role}
     response = client.post(url, data)
 
     assert not Invite.objects.exists(), Invite.objects.all()
@@ -154,11 +146,7 @@ def test_membership_create_post_silent(db, client, username, password, membershi
 
     project_id = 1
     url = reverse('membership_create', args=[project_id])
-    data = {
-        'username_or_email': 'user',
-        'role': membership_role,
-        'silent': True
-    }
+    data = {'username_or_email': 'user', 'role': membership_role, 'silent': True}
     response = client.post(url, data)
 
     if project_id in add_membership_permission_map.get(username, []):
@@ -169,8 +157,12 @@ def test_membership_create_post_silent(db, client, username, password, membershi
             assert Membership.objects.get(project_id=project_id, user__username='user', role=membership_role)
             assert len(mail.outbox) == 0
         else:
-            assert Invite.objects.get(project_id=project_id, user__username='user', email='user@example.com', role=membership_role)
-            assert not Membership.objects.filter(project_id=project_id, user__username='user', role=membership_role).exists()
+            assert Invite.objects.get(
+                project_id=project_id, user__username='user', email='user@example.com', role=membership_role
+            )
+            assert not Membership.objects.filter(
+                project_id=project_id, user__username='user', role=membership_role
+            ).exists()
             assert len(mail.outbox) == 1
 
     else:
@@ -210,9 +202,7 @@ def test_membership_update_post(db, client, username, password, project_id, memb
     membership = Membership.objects.filter(project_id=project_id, id=membership_id).first()
 
     url = reverse('membership_update', args=[project_id, membership_id])
-    data = {
-        'role': membership_role
-    }
+    data = {'role': membership_role}
     response = client.post(url, data)
 
     if membership:

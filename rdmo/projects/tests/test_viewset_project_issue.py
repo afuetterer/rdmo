@@ -20,14 +20,14 @@ view_issue_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_issue_permission_map = delete_issue_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 change_issue_permission_map = {
@@ -35,13 +35,10 @@ change_issue_permission_map = {
     'manager': [1, 3, 5],
     'author': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:project-issue-list',
-    'detail': 'v1-projects:project-issue-detail'
-}
+urlnames = {'list': 'v1-projects:project-issue-list', 'detail': 'v1-projects:project-issue-detail'}
 
 projects = [1, 2, 3, 4, 5]
 issues = [1, 2, 3, 4]
@@ -63,8 +60,7 @@ def test_list(db, client, username, password, project_id):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Issue.objects.filter(project_id=project_id) \
-                                       .order_by('id').values_list('id', flat=True)
+            values_list = Issue.objects.filter(project_id=project_id).order_by('id').values_list('id', flat=True)
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 404
@@ -113,9 +109,7 @@ def test_update(db, client, username, password, project_id, issue_id, status):
     issue = Issue.objects.filter(project_id=project_id, id=issue_id).first()
 
     url = reverse(urlnames['detail'], args=[project_id, issue_id])
-    data = {
-        'status': status
-    }
+    data = {'status': status}
     response = client.put(url, data, content_type='application/json')
 
     if issue and project_id in change_issue_permission_map.get(username, []):

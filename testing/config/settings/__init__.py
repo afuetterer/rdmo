@@ -5,9 +5,7 @@ from .local import *
 
 # add static and templates from local.THEME_DIR to STATICFILES_DIRS and TEMPLATES
 try:
-    STATICFILES_DIRS = [
-        os.path.join(THEME_DIR, 'static/')
-    ]
+    STATICFILES_DIRS = [os.path.join(THEME_DIR, 'static/')]
     TEMPLATES[0]['DIRS'].append(os.path.join(THEME_DIR, 'templates/'))
 except NameError:
     pass

@@ -20,13 +20,10 @@ view_snapshot_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:snapshot-list',
-    'detail': 'v1-projects:snapshot-detail'
-}
+urlnames = {'list': 'v1-projects:snapshot-list', 'detail': 'v1-projects:snapshot-detail'}
 
 snapshots = [1, 3, 7, 4, 5, 6]
 
@@ -45,8 +42,11 @@ def test_list(db, client, username, password):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Snapshot.objects.filter(project__in=view_snapshot_permission_map.get(username, [])) \
-                                          .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Snapshot.objects.filter(project__in=view_snapshot_permission_map.get(username, []))
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401

@@ -8,14 +8,12 @@ from rdmo.questions.models import Question, QuestionSet
 from rdmo.tasks.models import Task
 
 from ..models import Attribute
-from ..validators import (AttributeLockedValidator, AttributeParentValidator,
-                          AttributeUniqueURIValidator)
+from ..validators import AttributeLockedValidator, AttributeParentValidator, AttributeUniqueURIValidator
 
 log = logging.getLogger(__name__)
 
 
 class ConditionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Condition
         fields = (
@@ -26,7 +24,6 @@ class ConditionSerializer(serializers.ModelSerializer):
 
 
 class QuestionSetSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = QuestionSet
         fields = (
@@ -37,7 +34,6 @@ class QuestionSetSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Question
         fields = (
@@ -48,7 +44,6 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Task
         fields = (
@@ -59,7 +54,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class AttributeSerializer(serializers.ModelSerializer):
-
     key = serializers.SlugField(required=True)
     parent = serializers.PrimaryKeyRelatedField(queryset=Attribute.objects.all(), default=None, allow_null=True)
     path = serializers.CharField(required=False)
@@ -88,32 +82,18 @@ class AttributeSerializer(serializers.ModelSerializer):
             'tasks_as_start',
             'tasks_as_end',
             'values_count',
-            'projects_count'
+            'projects_count',
         )
-        validators = (
-            AttributeUniqueURIValidator(),
-            AttributeParentValidator(),
-            AttributeLockedValidator()
-        )
+        validators = (AttributeUniqueURIValidator(), AttributeParentValidator(), AttributeLockedValidator())
 
 
 class AttributeNestedSerializer(serializers.ModelSerializer):
-
     children = serializers.SerializerMethodField()
     xml_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Attribute
-        fields = (
-            'id',
-            'uri',
-            'uri_prefix',
-            'path',
-            'key',
-            'locked',
-            'children',
-            'xml_url'
-        )
+        fields = ('id', 'uri', 'uri_prefix', 'path', 'key', 'locked', 'children', 'xml_url')
 
     def get_children(self, obj):
         # get the children from the cached mptt tree
@@ -124,13 +104,6 @@ class AttributeNestedSerializer(serializers.ModelSerializer):
 
 
 class AttributeIndexSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Attribute
-        fields = (
-            'id',
-            'uri',
-            'uri_prefix',
-            'key',
-            'path'
-        )
+        fields = ('id', 'uri', 'uri_prefix', 'key', 'path')

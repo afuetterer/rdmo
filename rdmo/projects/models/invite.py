@@ -9,41 +9,31 @@ from ..constants import ROLE_CHOICES
 
 
 class Invite(models.Model):
-
     key_salt = 'rdmo.projects.models.invite.Invite'
 
     project = models.ForeignKey(
-        'Project', on_delete=models.CASCADE, related_name='invites',
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='invites',
         verbose_name=_('Project'),
-        help_text=_('The project for this invite.')
+        help_text=_('The project for this invite.'),
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name=_('User'),
-        help_text=_('The user for this membership.')
+        help_text=_('The user for this membership.'),
     )
-    email = models.EmailField(
-        blank=True,
-        verbose_name=_('E-mail'),
-        help_text=_('The e-mail for this membership.')
-    )
+    email = models.EmailField(blank=True, verbose_name=_('E-mail'), help_text=_('The e-mail for this membership.'))
     role = models.CharField(
-        max_length=12, choices=ROLE_CHOICES,
-        verbose_name=_('Role'),
-        help_text=_('The role for this invite.')
+        max_length=12, choices=ROLE_CHOICES, verbose_name=_('Role'), help_text=_('The role for this invite.')
     )
-    token = models.CharField(
-        max_length=20,
-        verbose_name=_('Token'),
-        help_text=_('The token for this invite.')
-    )
-    timestamp = models.DateTimeField(
-        verbose_name=_('Timestamp'),
-        help_text=_('The timestamp for this invite.')
-    )
+    token = models.CharField(max_length=20, verbose_name=_('Token'), help_text=_('The token for this invite.'))
+    timestamp = models.DateTimeField(verbose_name=_('Timestamp'), help_text=_('The timestamp for this invite.'))
 
     class Meta:
-        ordering = ('timestamp', )
+        ordering = ('timestamp',)
         verbose_name = _('Invite')
         verbose_name_plural = _('Invites')
 
