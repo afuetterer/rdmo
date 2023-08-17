@@ -5,18 +5,18 @@ from django.db import models
 from rdmo.core.utils import get_language_fields
 
 from .models import Catalog, Question, QuestionSet, Section
+from .utils import get_widget_type_choices
 from .validators import (
     CatalogLockedValidator,
     CatalogUniqueURIValidator,
     QuestionLockedValidator,
     QuestionSetLockedValidator,
+    QuestionSetQuestionSetValidator,
     QuestionSetUniqueURIValidator,
     QuestionUniqueURIValidator,
     SectionLockedValidator,
     SectionUniqueURIValidator,
-    QuestionSetQuestionSetValidator,
 )
-from .utils import get_widget_type_choices
 
 
 class CatalogAdminForm(forms.ModelForm):
@@ -72,7 +72,7 @@ class QuestionAdminForm(forms.ModelForm):
 class CatalogAdmin(admin.ModelAdmin):
     form = CatalogAdminForm
 
-    search_fields = ['uri'] + get_language_fields('title')
+    search_fields = ['uri', *get_language_fields('title')]
     list_display = ('uri', 'title', 'projects_count', 'available')
     readonly_fields = ('uri',)
     list_filter = ('available',)
@@ -87,7 +87,7 @@ class CatalogAdmin(admin.ModelAdmin):
 class SectionAdmin(admin.ModelAdmin):
     form = SectionAdminForm
 
-    search_fields = ['uri'] + get_language_fields('title')
+    search_fields = ['uri', *get_language_fields('title')]
     list_display = ('uri', 'title')
     readonly_fields = ('uri', 'path')
     list_filter = ('catalog',)
@@ -96,7 +96,7 @@ class SectionAdmin(admin.ModelAdmin):
 class QuestionSetAdmin(admin.ModelAdmin):
     form = QuestionSetAdminForm
 
-    search_fields = ['uri'] + get_language_fields('title') + get_language_fields('help')
+    search_fields = ['uri', *get_language_fields('title'), *get_language_fields('help')]
     list_display = ('uri', 'attribute', 'is_collection')
     readonly_fields = ('uri', 'path')
     list_filter = ('section__catalog', 'section', 'is_collection')
@@ -105,7 +105,7 @@ class QuestionSetAdmin(admin.ModelAdmin):
 class QuestionItemAdmin(admin.ModelAdmin):
     form = QuestionAdminForm
 
-    search_fields = ['uri'] + get_language_fields('help') + get_language_fields('text')
+    search_fields = ['uri', *get_language_fields('help'), *get_language_fields('text')]
     list_display = ('uri', 'attribute', 'text', 'is_collection')
     readonly_fields = ('uri', 'path')
     list_filter = (

@@ -1,10 +1,11 @@
 import mimetypes
 from pathlib import Path
 
-import iso8601
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+import iso8601
 from django_cleanup import cleanup
 
 from rdmo.core.constants import VALUE_TYPE_BOOLEAN, VALUE_TYPE_CHOICES, VALUE_TYPE_DATETIME, VALUE_TYPE_TEXT
@@ -172,7 +173,7 @@ class Value(Model):
         if value is None:
             return ''
         elif self.unit:
-            return '%s %s' % (value, self.unit)
+            return f'{value} {self.unit}'
         else:
             return value
 

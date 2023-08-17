@@ -198,7 +198,7 @@ class Option(models.Model, TranslationMixin):
 
     @property
     def label(self):
-        return '%s ("%s")' % (self.uri, self.text)
+        return f'{self.uri} ("{self.text}")'
 
     @property
     def is_locked(self):
@@ -208,7 +208,7 @@ class Option(models.Model, TranslationMixin):
     def build_path(cls, key, optionset):
         assert key
         assert optionset
-        return '%s/%s' % (optionset.key, key) if (optionset and key) else None
+        return f'{optionset.key}/{key}' if (optionset and key) else None
 
     @classmethod
     def build_uri(cls, uri_prefix, path):

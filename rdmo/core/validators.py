@@ -1,9 +1,10 @@
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist, ValidationError
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework import serializers
 
 
-class InstanceValidator(object):
+class InstanceValidator:
 
     '''
     BaseValidator which should work with model instances, used by

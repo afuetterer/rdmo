@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import TemplateSyntaxError
 from django.template.loader import render_to_string
 from django.views.generic import DetailView, UpdateView
+
 from rest_framework.reverse import reverse
 
 from rdmo.core.mail import send_mail
@@ -129,12 +130,12 @@ class IssueSendView(ObjectPermissionMixin, RedirectViewMixin, DetailView):
 
             attachments = []
             if form.cleaned_data.get('attachments_answers'):
-                title = '{}.{}'.format(project.title, attachments_format)
+                title = f'{project.title}.{attachments_format}'
                 response = self.render_project_answers(project, snapshot, attachments_format)
                 attachments.append((title, response.content, response['content-type']))
 
             for view in form.cleaned_data.get('attachments_views'):
-                title = '{}.{}'.format(project.title, attachments_format)
+                title = f'{project.title}.{attachments_format}'
                 response = self.render_project_views(project, snapshot, view, attachments_format)
                 attachments.append((title, response.content, response['content-type']))
 

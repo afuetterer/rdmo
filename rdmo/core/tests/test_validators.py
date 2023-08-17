@@ -1,5 +1,6 @@
-import pytest
 from django.core.exceptions import ValidationError
+
+import pytest
 from rest_framework import serializers
 
 from ..validators import InstanceValidator

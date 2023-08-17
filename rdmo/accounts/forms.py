@@ -21,7 +21,7 @@ class ProfileForm(forms.ModelForm):
             fields = ('first_name', 'last_name', 'email')
 
     def __init__(self, *args, **kwargs):
-        super(ProfileForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.fields['first_name'].widget = forms.TextInput(attrs={'placeholder': _('First name')})
         self.fields['last_name'].widget = forms.TextInput(attrs={'placeholder': _('Last name')})
@@ -48,7 +48,7 @@ class ProfileForm(forms.ModelForm):
             self.fields[additional_field.key].initial = additional_field_value.value
 
     def save(self, *args, **kwargs):
-        super(ProfileForm, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self._save_additional_values()
 
     def _save_additional_values(self, user=None):
@@ -69,7 +69,7 @@ class SignupForm(ProfileForm):
     use_required_attribute = False
 
     def __init__(self, *args, **kwargs):
-        super(SignupForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # add a consent field, the label is added in the template
         if settings.ACCOUNT_TERMS_OF_USE:
@@ -88,7 +88,7 @@ class RemoveForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         kwargs.setdefault('label_suffix', '')
-        super(RemoveForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     email = forms.CharField(widget=forms.TextInput(attrs={'required': 'false'}))
     email.label = _('E-mail')

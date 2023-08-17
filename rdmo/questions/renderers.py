@@ -10,7 +10,7 @@ class XMLRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'dc:comment', {}, catalog['comment'])
         self.render_text_element(xml, 'order', {}, catalog['order'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'title', {'lang': lang_code}, catalog['title_%s' % lang_code])
             self.render_text_element(xml, 'help', {'lang': lang_code}, catalog['help_%s' % lang_code])
 
@@ -29,7 +29,7 @@ class XMLRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'catalog', {'dc:uri': section['catalog']}, None)
         self.render_text_element(xml, 'order', {}, section['order'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'title', {'lang': lang_code}, section['title_%s' % lang_code])
 
         xml.endElement('section')
@@ -50,7 +50,7 @@ class XMLRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'is_collection', {}, questionset['is_collection'])
         self.render_text_element(xml, 'order', {}, questionset['order'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'title', {'lang': lang_code}, questionset['title_%s' % lang_code])
             self.render_text_element(xml, 'help', {'lang': lang_code}, questionset['help_%s' % lang_code])
             self.render_text_element(
@@ -88,7 +88,7 @@ class XMLRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'is_optional', {}, question['is_optional'])
         self.render_text_element(xml, 'order', {}, question['order'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'help', {'lang': lang_code}, question['help_%s' % lang_code])
             self.render_text_element(xml, 'text', {'lang': lang_code}, question['text_%s' % lang_code])
             self.render_text_element(xml, 'default_text', {'lang': lang_code}, question['default_text_%s' % lang_code])

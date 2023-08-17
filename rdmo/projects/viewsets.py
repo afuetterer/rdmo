@@ -3,8 +3,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Prefetch
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import gettext_lazy as _
-from django_filters.rest_framework import DjangoFilterBackend
 
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound

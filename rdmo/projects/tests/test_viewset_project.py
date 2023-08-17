@@ -1,5 +1,6 @@
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from ..models import Project
 
@@ -214,7 +215,7 @@ def test_overview(db, client, username, password, project_id, condition_id):
 def test_resolve(db, client, username, password, project_id, condition_id):
     client.login(username=username, password=password)
 
-    url = reverse(urlnames['resolve'], args=[project_id]) + '?condition={}'.format(condition_id)
+    url = reverse(urlnames['resolve'], args=[project_id]) + f'?condition={condition_id}'
     response = client.get(url)
 
     if project_id in view_project_permission_map.get(username, []):

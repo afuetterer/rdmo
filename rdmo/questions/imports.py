@@ -15,6 +15,7 @@ from rdmo.domain.models import Attribute
 from rdmo.options.models import Option, OptionSet
 
 from .models import Catalog, Question, QuestionSet, Section
+from .utils import get_widget_types
 from .validators import (
     CatalogLockedValidator,
     CatalogUniqueURIValidator,
@@ -25,7 +26,6 @@ from .validators import (
     SectionLockedValidator,
     SectionUniqueURIValidator,
 )
-from .utils import get_widget_types
 
 logger = logging.getLogger(__name__)
 

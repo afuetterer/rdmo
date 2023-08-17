@@ -1,4 +1,3 @@
-from django.utils.timezone import now, get_current_timezone
 
 from rdmo.core.renderers import BaseXMLRenderer
 from rdmo.core.utils import get_languages
@@ -11,7 +10,7 @@ class ViewsRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'key', {}, view['key'])
         self.render_text_element(xml, 'dc:comment', {}, view['comment'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'title', {'lang': lang_code}, view['title_%s' % lang_code])
             self.render_text_element(xml, 'help', {'lang': lang_code}, view['help_%s' % lang_code])
 

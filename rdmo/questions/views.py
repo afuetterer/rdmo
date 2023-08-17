@@ -20,7 +20,7 @@ class CatalogsView(ModelPermissionMixin, CSRFViewMixin, TemplateView):
     permission_required = 'questions.view_catalog'
 
     def get_context_data(self, **kwargs):
-        context = super(CatalogsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['export_formats'] = settings.EXPORT_FORMATS
         context['meta'] = {
             'Catalog': get_model_field_meta(Catalog),

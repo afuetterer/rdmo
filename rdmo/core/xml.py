@@ -5,7 +5,6 @@ import defusedxml.ElementTree as ET
 
 from .constants import IMPORT_SORT_ORDER
 
-
 log = logging.getLogger(__name__)
 
 
@@ -39,7 +38,7 @@ def flat_xml_to_elements(treenode):
                 element[tag] = subnode.attrib[uri_attrib]
             elif 'lang' in subnode.attrib:
                 # this node has the lang attribute!
-                element['%s_%s' % (tag, subnode.attrib['lang'])] = subnode.text
+                element['{}_{}'.format(tag, subnode.attrib['lang'])] = subnode.text
             elif list(subnode):
                 # this node is a list!
                 element[tag] = [subsubnode.attrib[uri_attrib] for subsubnode in subnode]
@@ -55,7 +54,7 @@ def flat_xml_to_elements(treenode):
 def get_ns_tag(tag, ns_map):
     tag_split = tag.split(':')
     try:
-        return '{%s}%s' % (ns_map[tag_split[0]], tag_split[1])
+        return f'{{{ns_map[tag_split[0]]}}}{tag_split[1]}'
     except KeyError:
         return None
 

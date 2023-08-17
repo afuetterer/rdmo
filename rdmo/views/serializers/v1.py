@@ -1,4 +1,5 @@
 from django.template import Context, Template, TemplateSyntaxError
+
 from rest_framework import exceptions, serializers
 from rest_framework.reverse import reverse
 
@@ -22,7 +23,7 @@ class ViewSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
             except (TemplateSyntaxError, TypeError) as e:
                 raise exceptions.ValidationError({'template': '\n'.join(e.args)})
 
-        return super(ViewSerializer, self).validate(data)
+        return super().validate(data)
 
     class Meta:
         model = View

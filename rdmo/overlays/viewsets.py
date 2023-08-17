@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
+
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated

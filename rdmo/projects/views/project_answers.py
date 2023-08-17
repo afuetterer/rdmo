@@ -8,7 +8,7 @@ from django.views.generic import DetailView
 from rdmo.core.constants import VALUE_TYPE_FILE
 from rdmo.core.utils import render_to_format
 from rdmo.core.views import ObjectPermissionMixin
-from rdmo.questions.models import QuestionSet, Question
+from rdmo.questions.models import Question, QuestionSet
 from rdmo.views.utils import ProjectWrapper
 
 from ..models import Project, Snapshot

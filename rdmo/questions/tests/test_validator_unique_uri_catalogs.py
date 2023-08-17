@@ -1,6 +1,7 @@
-import pytest
 from django.conf import settings
 from django.core.exceptions import ValidationError
+
+import pytest
 from rest_framework.exceptions import ValidationError as RestFameworkValidationError
 
 from ..models import Catalog

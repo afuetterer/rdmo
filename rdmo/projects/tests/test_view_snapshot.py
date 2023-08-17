@@ -1,8 +1,9 @@
 from pathlib import Path
 
-import pytest
 from django.conf import settings
 from django.urls import reverse
+
+import pytest
 
 from rdmo.core.constants import VALUE_TYPE_FILE
 

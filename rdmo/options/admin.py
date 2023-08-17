@@ -47,7 +47,7 @@ class OptionSetAdmin(admin.ModelAdmin):
 class OptionAdmin(admin.ModelAdmin):
     form = OptionAdminForm
 
-    search_fields = ['uri'] + get_language_fields('text')
+    search_fields = ['uri', *get_language_fields('text')]
     list_display = ('uri', 'text', 'additional_input')
     readonly_fields = ('uri', 'path')
     list_filter = ('optionset', 'additional_input')

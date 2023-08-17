@@ -17,7 +17,7 @@ class ProviderValidator:
 
         for key in options:
             if key not in [field.get('key') for field in provider.fields]:
-                raise ValidationError({'options': 'Key "{}" is not valid.'.format(key)})
+                raise ValidationError({'options': f'Key "{key}" is not valid.'})
 
         for field in provider.fields:
             if field.get('required', True) and field.get('key') not in options:

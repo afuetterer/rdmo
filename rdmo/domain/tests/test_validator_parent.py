@@ -1,6 +1,7 @@
-import pytest
 from django.conf import settings
 from django.core.exceptions import ValidationError
+
+import pytest
 from rest_framework.exceptions import ValidationError as RestFameworkValidationError
 
 from ..models import Attribute
@@ -34,7 +35,7 @@ def test_update_error(db):
 
 
 def test_serializer_create(db):
-    class MockedView(object):
+    class MockedView:
         action = 'create'
 
     validator = AttributeParentValidator()
@@ -70,7 +71,7 @@ def test_serializer_update_error(db):
 def test_serializer_copy(db):
     attribute = Attribute.objects.get(uri='http://example.com/terms/domain/individual/single/text')
 
-    class MockedView(object):
+    class MockedView:
         action = 'copy'
 
         def get_object(self):
@@ -86,7 +87,7 @@ def test_serializer_copy(db):
 def test_serializer_copy_error(db):
     attribute = Attribute.objects.get(uri='http://example.com/terms/domain/individual/single/text')
 
-    class MockedView(object):
+    class MockedView:
         action = 'copy'
 
         def get_object(self):

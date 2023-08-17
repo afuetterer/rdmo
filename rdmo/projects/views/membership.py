@@ -14,7 +14,7 @@ from rdmo.core.views import ObjectPermissionMixin, RedirectViewMixin
 
 from ..forms import MembershipCreateForm
 from ..models import Membership, Project
-from ..utils import is_last_owner, get_invite_email_project_path
+from ..utils import get_invite_email_project_path, is_last_owner
 
 logger = logging.getLogger(__name__)
 

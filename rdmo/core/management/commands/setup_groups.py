@@ -7,7 +7,7 @@ from rdmo.accounts.utils import set_group_permissions
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for name, permissions in GROUPS:
+        for name, _permissions in GROUPS:
             group, created = Group.objects.get_or_create(name=name)
 
             if created:

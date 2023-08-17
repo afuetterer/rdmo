@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import Http404
 from django.template import TemplateSyntaxError
 from django.views.generic import DetailView
+
 from rdmo.core.constants import VALUE_TYPE_FILE
 from rdmo.core.utils import render_to_format
 from rdmo.core.views import ObjectPermissionMixin
@@ -22,7 +23,7 @@ class ProjectViewView(ObjectPermissionMixin, DetailView):
     template_name = 'projects/project_view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectViewView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         try:
             context['current_snapshot'] = context['project'].snapshots.get(pk=self.kwargs.get('snapshot_id'))
@@ -65,7 +66,7 @@ class ProjectViewExportView(ObjectPermissionMixin, DetailView):
     def get_context_data(self, **kwargs):
         export_format = self.kwargs.get('format')
 
-        context = super(ProjectViewExportView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         try:
             context['current_snapshot'] = context['project'].snapshots.get(pk=self.kwargs.get('snapshot_id'))

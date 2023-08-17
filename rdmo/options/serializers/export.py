@@ -1,5 +1,6 @@
-from rdmo.core.serializers import TranslationSerializerMixin
 from rest_framework import serializers
+
+from rdmo.core.serializers import TranslationSerializerMixin
 
 from ..models import Option, OptionSet
 

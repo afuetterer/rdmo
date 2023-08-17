@@ -1,12 +1,13 @@
 from collections import defaultdict
 
 from django.utils.functional import cached_property
+
 from mptt.utils import get_cached_trees
 
 from rdmo.conditions.models import Condition
 
 
-class ProjectWrapper(object):
+class ProjectWrapper:
     def __init__(self, project, snapshot=None):
         self._project = project
         self._catalog = project.catalog
