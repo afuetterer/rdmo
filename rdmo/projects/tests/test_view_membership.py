@@ -1,6 +1,7 @@
-import pytest
 from django.core import mail
 from django.urls import reverse
+
+import pytest
 
 from ..models import Invite, Membership
 

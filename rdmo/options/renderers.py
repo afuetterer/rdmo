@@ -29,7 +29,7 @@ class OptionsRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'optionset', {'dc:uri': option['optionset']}, None)
         self.render_text_element(xml, 'order', {}, option['order'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'text', {'lang': lang_code}, option['text_%s' % lang_code])
 
         self.render_text_element(xml, 'additional_input', {}, option['additional_input'])

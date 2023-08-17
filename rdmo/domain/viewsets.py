@@ -1,4 +1,5 @@
 from django.db import models
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response

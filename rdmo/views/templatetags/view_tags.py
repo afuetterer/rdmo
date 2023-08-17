@@ -50,7 +50,7 @@ def get_values(context, attribute, set_prefix='*', set_index='*', index='*', pro
         if index != '*':
             values = filter(lambda value: value.collection_index == index, values)
 
-        return list(map(lambda value: value.as_dict, values))
+        return [value.as_dict for value in values]
 
 
 @register.simple_tag(takes_context=True)
@@ -98,7 +98,7 @@ def get_set_value(context, set, attribute, set_prefix='', index=0, project=None)
 @register.simple_tag(takes_context=True)
 def get_set_prefixes(context, attribute, project=None):
     try:
-        return sorted(set(map(lambda value: value['set_prefix'], get_values(context, attribute, project=project))))
+        return sorted({value['set_prefix'] for value in get_values(context, attribute, project=project)})
     except IndexError:
         return None
 
@@ -107,12 +107,7 @@ def get_set_prefixes(context, attribute, project=None):
 def get_set_indexes(context, attribute, set_prefix='', project=None):
     try:
         return sorted(
-            set(
-                map(
-                    lambda value: value['set_index'],
-                    get_values(context, attribute, set_prefix=set_prefix, project=project),
-                )
-            )
+            {value['set_index'] for value in get_values(context, attribute, set_prefix=set_prefix, project=project)}
         )
     except IndexError:
         return None

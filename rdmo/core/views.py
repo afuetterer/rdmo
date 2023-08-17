@@ -12,6 +12,7 @@ from django.utils import translation
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import View
+
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 from rules.contrib.views import PermissionRequiredMixin as RulesPermissionRequiredMixin
@@ -82,10 +83,10 @@ class RedirectViewMixin(View):
         if 'cancel' in request.POST:
             return HttpResponseRedirect(get_next(request))
         else:
-            return super(RedirectViewMixin, self).post(request, *args, **kwargs)
+            return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context_data = super(RedirectViewMixin, self).get_context_data(**kwargs)
+        context_data = super().get_context_data(**kwargs)
         if 'next' in self.request.GET:
             context_data['next'] = self.request.GET['next']
         else:
@@ -96,10 +97,10 @@ class RedirectViewMixin(View):
         if 'next' in self.request.GET:
             return self.request.GET['next']
         else:
-            return super(RedirectViewMixin, self).get_success_url()
+            return super().get_success_url()
 
 
-class PermissionRedirectMixin(object):
+class PermissionRedirectMixin:
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             raise PermissionDenied(self.get_permission_denied_message())
@@ -107,11 +108,11 @@ class PermissionRedirectMixin(object):
         return redirect_to_login(self.request.get_full_path(), self.get_login_url(), self.get_redirect_field_name())
 
 
-class ModelPermissionMixin(PermissionRedirectMixin, DjangoPermissionRequiredMixin, object):
+class ModelPermissionMixin(PermissionRedirectMixin, DjangoPermissionRequiredMixin):
     pass
 
 
-class ObjectPermissionMixin(PermissionRedirectMixin, RulesPermissionRequiredMixin, object):
+class ObjectPermissionMixin(PermissionRedirectMixin, RulesPermissionRequiredMixin):
     pass
 
 

@@ -1,5 +1,6 @@
-import rules
 from django.contrib.sites.models import Site
+
+import rules
 
 from .utils import is_site_manager as is_site_manager_util
 

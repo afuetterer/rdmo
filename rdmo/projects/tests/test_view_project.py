@@ -1,7 +1,8 @@
 import re
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from rdmo.views.models import View
 
@@ -70,7 +71,7 @@ def test_list(db, client, username, password):
         if username == 'site':
             assert projects == []
         else:
-            assert sorted(list(set([int(project_id) for project_id in projects]))) == view_project_permission_map.get(
+            assert sorted({int(project_id) for project_id in projects}) == view_project_permission_map.get(
                 username, []
             )
     else:

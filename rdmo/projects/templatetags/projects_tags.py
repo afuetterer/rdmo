@@ -33,7 +33,7 @@ def get_labels(context, question, set_prefix='', set_index=0, project=None):
         set_labels = []
 
         for questionset in question.questionset.get_ancestors(ascending=True, include_self=True):
-            set_label = '#{}'.format(set_index + 1)
+            set_label = f'#{set_index + 1}'
 
             if questionset.attribute:
                 # get attribute value

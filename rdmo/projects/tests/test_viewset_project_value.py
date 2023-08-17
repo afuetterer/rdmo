@@ -1,8 +1,9 @@
 from pathlib import Path
 
-import pytest
 from django.conf import settings
 from django.urls import reverse
+
+import pytest
 
 from rdmo.core.constants import VALUE_TYPE_CHOICES, VALUE_TYPE_FILE, VALUE_TYPE_TEXT
 from rdmo.questions.models import Question
@@ -274,7 +275,7 @@ def test_file_get(db, client, files, username, password, project_id, value_id):
     if value and value.value_type == VALUE_TYPE_FILE and project_id in view_value_permission_map.get(username, []):
         assert response.status_code == 200
         assert response['Content-Type'] == value.file_type
-        assert response['Content-Disposition'] == 'attachment; filename={}'.format(value.file_name)
+        assert response['Content-Disposition'] == f'attachment; filename={value.file_name}'
         assert response.content == value.file.read()
     else:
         assert response.status_code == 404

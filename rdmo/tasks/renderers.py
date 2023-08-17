@@ -9,7 +9,7 @@ class TasksRenderer(BaseXMLRenderer):
         self.render_text_element(xml, 'key', {}, task['key'])
         self.render_text_element(xml, 'dc:comment', {}, task['comment'])
 
-        for lang_code, lang_string, lang_field in get_languages():
+        for lang_code, _lang_string, _lang_field in get_languages():
             self.render_text_element(xml, 'title', {'lang': lang_code}, task['title_%s' % lang_code])
             self.render_text_element(xml, 'text', {'lang': lang_code}, task['text_%s' % lang_code])
 

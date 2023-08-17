@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -9,6 +10,7 @@ from rdmo.domain.models import Attribute
 from rdmo.options.models import OptionSet
 
 from ..models import Catalog, Question, QuestionSet, Section
+from ..utils import get_widget_type_choices
 from ..validators import (
     CatalogLockedValidator,
     CatalogUniqueURIValidator,
@@ -20,7 +22,6 @@ from ..validators import (
     SectionLockedValidator,
     SectionUniqueURIValidator,
 )
-from ..utils import get_widget_type_choices
 
 
 class CatalogSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
@@ -320,6 +321,6 @@ class CatalogNestedSerializer(TranslationSerializerMixin, serializers.ModelSeria
 
     def get_export_urls(self, obj):
         urls = {}
-        for key, text in settings.EXPORT_FORMATS:
+        for key, _text in settings.EXPORT_FORMATS:
             urls[key] = reverse('questions_catalog_export', args=[obj.pk, key])
         return urls

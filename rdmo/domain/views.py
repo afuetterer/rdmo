@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, TemplateView
+
 from rdmo.core.exports import XMLResponse
 from rdmo.core.utils import get_model_field_meta, render_to_csv, render_to_format
 from rdmo.core.views import CSRFViewMixin, ModelPermissionMixin
@@ -19,7 +20,7 @@ class DomainView(ModelPermissionMixin, CSRFViewMixin, TemplateView):
     permission_required = 'domain.view_attribute'
 
     def get_context_data(self, **kwargs):
-        context = super(DomainView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['export_formats'] = settings.EXPORT_FORMATS
         context['meta'] = {'Attribute': get_model_field_meta(Attribute)}
         return context

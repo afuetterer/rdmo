@@ -1,7 +1,8 @@
 import os
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from rdmo.core.xml import flat_xml_to_elements, read_xml_file
 

@@ -3,7 +3,7 @@ from django.conf import settings
 from .utils import import_class
 
 
-class Plugin(object):
+class Plugin:
     def __init__(self, key, label, class_name):
         self.key = key
         self.label = label

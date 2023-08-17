@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -9,7 +10,7 @@ from .serializers.v1 import UserSerializer
 from .utils import is_site_manager
 
 
-class UserViewSetMixin(object):
+class UserViewSetMixin:
     def get_users_for_user(self, user):
         if user.is_authenticated:
             if user.has_perm('auth.view_user'):

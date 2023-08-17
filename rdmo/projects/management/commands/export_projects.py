@@ -1,5 +1,4 @@
 import logging
-
 from pathlib import Path
 
 from django.conf import settings
@@ -13,7 +12,6 @@ from rdmo.projects.utils import get_value_path
 from rdmo.questions.models import Question, QuestionSet
 from rdmo.views.models import View
 from rdmo.views.utils import ProjectWrapper
-
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +55,7 @@ class Command(BaseCommand):
         current_snapshot = None
 
         if self.format not in dict(settings.EXPORT_FORMATS):
-            raise CommandError('Format "{}" is not supported for answers.'.format(self.format))
+            raise CommandError(f'Format "{self.format}" is not supported for answers.')
 
         for project in self.get_queryset():
             context = {
@@ -78,12 +76,12 @@ class Command(BaseCommand):
         current_snapshot = None
 
         if self.format not in dict(settings.EXPORT_FORMATS):
-            raise CommandError('Format "{}" is not supported for answers.'.format(self.format))
+            raise CommandError(f'Format "{self.format}" is not supported for answers.')
 
         try:
             view = View.objects.get(key=key)
         except View.DoesNotExist:
-            raise CommandError('A view with the key "{}" was not found.'.format(key))
+            raise CommandError(f'A view with the key "{key}" was not found.')
 
         for project in self.get_queryset():
             context = {
@@ -106,7 +104,7 @@ class Command(BaseCommand):
         for project in self.get_queryset():
             export_plugin = get_plugin('PROJECT_EXPORTS', self.format)
             if export_plugin is None:
-                raise CommandError('Format "{}" is not supported.'.format(self.format))
+                raise CommandError(f'Format "{self.format}" is not supported.')
 
             export_plugin.project = project
             export_plugin.snapshot = None
@@ -119,7 +117,7 @@ class Command(BaseCommand):
         file_path = path / file_name
         file_path.parent.mkdir(exist_ok=True, parents=True)
 
-        print('Writing {}'.format(file_path))
+        print(f'Writing {file_path}')
 
         with file_path.open('wb') as fp:
             fp.write(response.content)

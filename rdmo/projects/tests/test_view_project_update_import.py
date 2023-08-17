@@ -2,8 +2,9 @@ import os
 import re
 from pathlib import Path
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from rdmo.core.constants import VALUE_TYPE_FILE
 
@@ -193,7 +194,7 @@ def test_project_update_import_post_import_file(db, settings, client, files, use
 
         if project_id in change_project_permission_map.get(username, []):
             assert response.status_code == 302
-            assert response.url == '/projects/{}/'.format(project_id)
+            assert response.url == f'/projects/{project_id}/'
 
         else:
             if password:
@@ -258,7 +259,7 @@ def test_project_update_import_post_import_file_cancel(db, settings, client, fil
         assert project.updated == project_updated
 
         assert response.status_code == 302
-        assert response.url == '/projects/{}/'.format(project_id)
+        assert response.url == f'/projects/{project_id}/'
     elif password:
         assert response.status_code == 403
     else:
@@ -309,7 +310,7 @@ def test_project_update_import_post_import_file_empty(db, settings, client, user
         assert project.updated == project_updated
 
         assert response.status_code == 302
-        assert response.url == '/projects/{}/'.format(project_id)
+        assert response.url == f'/projects/{project_id}/'
     elif password:
         assert response.status_code == 403
     else:
@@ -404,7 +405,7 @@ def test_project_update_import_post_import_project_step2(
 
             if project_id in change_project_permission_map.get(username, []):
                 assert response.status_code == 302
-                assert response.url == '/projects/{}/'.format(project_id)
+                assert response.url == f'/projects/{project_id}/'
 
             else:
                 if password:

@@ -1,7 +1,8 @@
 import xml.etree.ElementTree as et
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 users = (
     ('editor', 'editor'),

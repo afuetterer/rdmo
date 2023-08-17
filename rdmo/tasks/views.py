@@ -20,7 +20,7 @@ class TasksView(ModelPermissionMixin, CSRFViewMixin, TemplateView):
     permission_required = 'tasks.view_task'
 
     def get_context_data(self, **kwargs):
-        context = super(TasksView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['export_formats'] = settings.EXPORT_FORMATS
         context['meta'] = {'Task': get_model_field_meta(Task)}
         return context

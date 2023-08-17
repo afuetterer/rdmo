@@ -3,11 +3,11 @@ from pathlib import Path
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect, Http404, HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 
-from rdmo.core.imports import handle_uploaded_file, file_path_exists
+from rdmo.core.imports import handle_uploaded_file
 from rdmo.core.plugins import get_plugin, get_plugins
 from rdmo.questions.models import Question
 
@@ -15,7 +15,7 @@ from .models import Membership, Project
 from .utils import save_import_snapshot_values, save_import_tasks, save_import_values, save_import_views
 
 
-class ProjectImportMixin(object):
+class ProjectImportMixin:
     def get_current_values(self, current_project):
         queryset = current_project.values.filter(snapshot=None).select_related('attribute', 'option')
 

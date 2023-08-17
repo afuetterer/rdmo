@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
+
 from mptt.models import MPTTModel, TreeForeignKey
 
 from rdmo.core.models import Model

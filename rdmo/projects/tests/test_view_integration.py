@@ -1,8 +1,9 @@
 import hmac
 import json
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from ..models import Integration, Issue
 

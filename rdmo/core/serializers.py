@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
+
 from rest_framework import serializers
 
 from rdmo.core.utils import get_languages, markdown2html
@@ -26,7 +27,7 @@ class MarkdownSerializerMixin(serializers.Serializer):
     markdown_fields = ()
 
     def to_representation(self, instance):
-        response = super(MarkdownSerializerMixin, self).to_representation(instance)
+        response = super().to_representation(instance)
 
         for markdown_field in self.markdown_fields:
             if markdown_field in response and response[markdown_field]:
@@ -35,18 +36,18 @@ class MarkdownSerializerMixin(serializers.Serializer):
         return response
 
 
-class TranslationSerializerMixin(object):
+class TranslationSerializerMixin:
     def __init__(self, *args, **kwargs):
-        super(TranslationSerializerMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         meta = getattr(self, 'Meta', None)
         if meta:
-            for lang_code, lang_string, lang_field in get_languages():
+            for lang_code, _lang_string, lang_field in get_languages():
                 for field in meta.trans_fields:
-                    field_name = '%s_%s' % (field, lang_field)
+                    field_name = f'{field}_{lang_field}'
                     model_field = meta.model._meta.get_field(field_name)
 
-                    self.fields['%s_%s' % (field, lang_code)] = serializers.CharField(
+                    self.fields[f'{field}_{lang_code}'] = serializers.CharField(
                         source=field_name,
                         required=not model_field.blank,
                         allow_null=model_field.null,

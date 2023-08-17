@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import DeleteView, DetailView, TemplateView
 from django.views.generic.edit import FormMixin
+
 from django_filters.views import FilterView
 
 from rdmo.accounts.utils import is_site_manager
@@ -60,7 +61,7 @@ class ProjectsView(LoginRequiredMixin, FilterView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['invites'] = Invite.objects.filter(user=self.request.user)
         context['is_site_manager'] = is_site_manager(self.request.user)
         return context
@@ -104,7 +105,7 @@ class ProjectDetailView(ObjectPermissionMixin, DetailView):
     permission_required = 'projects.view_project_object'
 
     def get_context_data(self, **kwargs):
-        context = super(ProjectDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         project = context['project']
         ancestors = project.get_ancestors(include_self=True)
         values = project.values.filter(snapshot=None).select_related('attribute', 'option')

@@ -2,8 +2,9 @@ import os
 import re
 from pathlib import Path
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from rdmo.core.constants import VALUE_TYPE_FILE
 
@@ -149,7 +150,7 @@ def test_project_create_import_post_import_file(db, settings, client, files, use
         if password:
             project = Project.objects.order_by('updated').last()
             assert response.status_code == 302
-            assert response.url == '/projects/{}/'.format(project.pk)
+            assert response.url == f'/projects/{project.pk}/'
 
             # a new project, new values values
             assert Project.objects.count() == projects_count + 1
@@ -246,7 +247,7 @@ def test_project_create_import_post_import_empty(db, settings, client, username,
         if password:
             new_project = Project.objects.order_by('updated').last()
             assert response.status_code == 302
-            assert response.url == '/projects/{}/'.format(new_project.id)
+            assert response.url == f'/projects/{new_project.id}/'
 
             # a new project, but no values
             assert Project.objects.count() == projects_count + 1

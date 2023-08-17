@@ -1,7 +1,8 @@
 import xml.etree.ElementTree as et
 
-import pytest
 from django.urls import reverse
+
+import pytest
 
 from ..models import Option
 
@@ -84,7 +85,7 @@ def test_create(db, client, username, password):
         url = reverse(urlnames['list'])
         data = {
             'uri_prefix': instance.uri_prefix,
-            'key': '%s_new_%s' % (instance.key, username),
+            'key': f'{instance.key}_new_{username}',
             'comment': instance.comment,
             'optionset': instance.optionset.pk,
             'order': instance.order,

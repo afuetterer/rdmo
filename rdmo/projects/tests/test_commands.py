@@ -1,8 +1,9 @@
 import io
 
-import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
+
+import pytest
 
 prune_assignments = [
     ('guest', "['owner', 'guest', 'author', 'manager']", [6]),
@@ -36,7 +37,7 @@ def test_prune_projects_output(db, settings, min_role, role_list, projects):
 
     call_command('prune_projects', '--min_role', min_role, stdout=stdout, stderr=stderr)
 
-    assert stdout.getvalue() == "Found projects without %s:\n%s" % (role_list, get_prune_output(projects))
+    assert stdout.getvalue() == f"Found projects without {role_list}:\n{get_prune_output(projects)}"
     assert not stderr.getvalue()
 
 

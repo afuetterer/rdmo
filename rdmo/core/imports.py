@@ -52,12 +52,12 @@ def set_common_fields(instance, element):
 
 
 def set_lang_field(instance, field_name, element):
-    for lang_code, lang_string, lang_field in get_languages():
-        field = element.get('%s_%s' % (field_name, lang_code))
+    for lang_code, _lang_string, lang_field in get_languages():
+        field = element.get(f'{field_name}_{lang_code}')
         if field:
-            setattr(instance, '%s_%s' % (field_name, lang_field), field)
+            setattr(instance, f'{field_name}_{lang_field}', field)
         else:
-            setattr(instance, '%s_%s' % (field_name, lang_field), '')
+            setattr(instance, f'{field_name}_{lang_field}', '')
 
 
 def get_foreign_field(instance, foreign_uri, foreign_model):
@@ -133,13 +133,11 @@ def validate_instance(instance, *validators):
         return True
     finally:
         if exception_message is not None:
-            message = '{instance_model} {instance_uri} cannot be imported ({exception}).'.format(
-                instance_model=instance._meta.object_name, instance_uri=instance.uri, exception=exception_message
-            )
+            message = f'{instance._meta.object_name} {instance.uri} cannot be imported ({exception_message}).'
             logger.info(message)
             instance.errors.append(message)
 
 
 def fetch_parents(model, instances):
     parents = list(model.objects.values_list('uri', flat=True))
-    return set(sorted(parents))
+    return set(parents)

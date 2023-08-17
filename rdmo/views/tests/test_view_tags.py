@@ -1,5 +1,6 @@
-import pytest
 from django.template import Context
+
+import pytest
 
 from rdmo.projects.models import Project
 from rdmo.views.templatetags.view_tags import get_set_value, get_set_values, get_sets, get_value, get_values

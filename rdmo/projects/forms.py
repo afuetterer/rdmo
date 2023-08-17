@@ -17,17 +17,17 @@ from .models import Integration, IntegrationOption, Invite, Membership, Project,
 
 class CatalogChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return mark_safe('<b>%s</b></br>%s' % (obj.title, markdown2html(obj.help)))
+        return mark_safe(f'<b>{obj.title}</b></br>{markdown2html(obj.help)}')
 
 
 class TasksMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return mark_safe('<b>%s</b></br>%s' % (obj.title, markdown2html(obj.text)))
+        return mark_safe(f'<b>{obj.title}</b></br>{markdown2html(obj.text)}')
 
 
 class ViewsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
-        return mark_safe('<b>%s</b></br>%s' % (obj.title, markdown2html(obj.help)))
+        return mark_safe(f'<b>{obj.title}</b></br>{markdown2html(obj.help)}')
 
 
 class ProjectForm(forms.ModelForm):
@@ -132,11 +132,11 @@ class SnapshotCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.project = kwargs.pop('project')
-        super(SnapshotCreateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         self.instance.project = self.project
-        return super(SnapshotCreateForm, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class MembershipCreateForm(forms.Form):
