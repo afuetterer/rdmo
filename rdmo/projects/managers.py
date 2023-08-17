@@ -8,7 +8,6 @@ from rdmo.core.managers import CurrentSiteManagerMixin
 
 
 class ProjectQuerySet(TreeQuerySet):
-
     def filter_current_site(self):
         return self.filter(site=settings.SITE_ID)
 
@@ -28,7 +27,6 @@ class ProjectQuerySet(TreeQuerySet):
 
 
 class MembershipQuerySet(models.QuerySet):
-
     def filter_current_site(self):
         return self.filter(project__site=settings.SITE_ID)
 
@@ -40,6 +38,7 @@ class MembershipQuerySet(models.QuerySet):
                 return self.filter_current_site()
             else:
                 from .models import Project
+
                 projects = Project.objects.filter_user(user)
                 return self.filter(project__in=projects)
         else:
@@ -47,7 +46,6 @@ class MembershipQuerySet(models.QuerySet):
 
 
 class IssueQuerySet(models.QuerySet):
-
     def filter_current_site(self):
         return self.filter(project__site=settings.SITE_ID)
 
@@ -59,6 +57,7 @@ class IssueQuerySet(models.QuerySet):
                 return self.filter_current_site()
             else:
                 from .models import Project
+
                 projects = Project.objects.filter_user(user)
                 return self.filter(project__in=projects)
         else:
@@ -66,7 +65,6 @@ class IssueQuerySet(models.QuerySet):
 
 
 class IntegrationQuerySet(models.QuerySet):
-
     def filter_current_site(self):
         return self.filter(project__site=settings.SITE_ID)
 
@@ -78,6 +76,7 @@ class IntegrationQuerySet(models.QuerySet):
                 return self.filter_current_site()
             else:
                 from .models import Project
+
                 projects = Project.objects.filter_user(user)
                 return self.filter(project__in=projects)
         else:
@@ -85,7 +84,6 @@ class IntegrationQuerySet(models.QuerySet):
 
 
 class SnapshotQuerySet(models.QuerySet):
-
     def filter_current_site(self):
         return self.filter(project__site=settings.SITE_ID)
 
@@ -97,6 +95,7 @@ class SnapshotQuerySet(models.QuerySet):
                 return self.filter_current_site()
             else:
                 from .models import Project
+
                 projects = Project.objects.filter_user(user)
                 return self.filter(project__in=projects)
         else:
@@ -104,7 +103,6 @@ class SnapshotQuerySet(models.QuerySet):
 
 
 class ValueQuerySet(models.QuerySet):
-
     def filter_current_site(self):
         return self.filter(project__site=settings.SITE_ID)
 
@@ -116,6 +114,7 @@ class ValueQuerySet(models.QuerySet):
                 return self.filter_current_site()
             else:
                 from .models import Project
+
                 projects = Project.objects.filter_user(user)
                 return self.filter(project__in=projects)
         else:
@@ -123,7 +122,6 @@ class ValueQuerySet(models.QuerySet):
 
 
 class ProjectManager(CurrentSiteManagerMixin, TreeManager):
-
     def get_queryset(self):
         return ProjectQuerySet(self.model, using=self._db)
 
@@ -132,7 +130,6 @@ class ProjectManager(CurrentSiteManagerMixin, TreeManager):
 
 
 class MembershipManager(CurrentSiteManagerMixin, models.Manager):
-
     def get_queryset(self):
         return MembershipQuerySet(self.model, using=self._db)
 
@@ -141,7 +138,6 @@ class MembershipManager(CurrentSiteManagerMixin, models.Manager):
 
 
 class IssueManager(CurrentSiteManagerMixin, models.Manager):
-
     def get_queryset(self):
         return IssueQuerySet(self.model, using=self._db)
 
@@ -153,7 +149,6 @@ class IssueManager(CurrentSiteManagerMixin, models.Manager):
 
 
 class IntegrationManager(CurrentSiteManagerMixin, models.Manager):
-
     def get_queryset(self):
         return IntegrationQuerySet(self.model, using=self._db)
 
@@ -162,7 +157,6 @@ class IntegrationManager(CurrentSiteManagerMixin, models.Manager):
 
 
 class SnapshotManager(CurrentSiteManagerMixin, models.Manager):
-
     def get_queryset(self):
         return SnapshotQuerySet(self.model, using=self._db)
 
@@ -171,7 +165,6 @@ class SnapshotManager(CurrentSiteManagerMixin, models.Manager):
 
 
 class ValueManager(CurrentSiteManagerMixin, models.Manager):
-
     def get_queryset(self):
         return ValueQuerySet(self.model, using=self._db)
 

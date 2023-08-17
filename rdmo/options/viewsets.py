@@ -15,28 +15,23 @@ from rdmo.core.viewsets import CopyModelMixin
 
 from .models import Option, OptionSet
 from .renderers import OptionRenderer, OptionSetRenderer
-from .serializers.export import (OptionExportSerializer,
-                                 OptionSetExportSerializer)
-from .serializers.v1 import (OptionIndexSerializer, OptionSerializer,
-                             OptionSetIndexSerializer,
-                             OptionSetNestedSerializer, OptionSetSerializer)
+from .serializers.export import OptionExportSerializer, OptionSetExportSerializer
+from .serializers.v1 import (
+    OptionIndexSerializer,
+    OptionSerializer,
+    OptionSetIndexSerializer,
+    OptionSetNestedSerializer,
+    OptionSetSerializer,
+)
 
 
 class OptionSetViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
-    queryset = OptionSet.objects.order_by('order').prefetch_related(
-        'conditions',
-        'questions',
-        'options'
-    )
+    permission_classes = (HasModelPermission,)
+    queryset = OptionSet.objects.order_by('order').prefetch_related('conditions', 'questions', 'options')
     serializer_class = OptionSetSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'key',
-        'comment'
-    )
+    filterset_fields = ('uri', 'key', 'comment')
 
     @action(detail=False)
     def nested(self, request):
@@ -63,21 +58,18 @@ class OptionSetViewSet(CopyModelMixin, ModelViewSet):
 
 
 class OptionViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
-    queryset = Option.objects.order_by('optionset__order', 'order') \
-                             .annotate(values_count=models.Count('values')) \
-                             .annotate(projects_count=models.Count('values__project', distinct=True)) \
-                             .select_related('optionset') \
-                             .prefetch_related('conditions')
+    permission_classes = (HasModelPermission,)
+    queryset = (
+        Option.objects.order_by('optionset__order', 'order')
+        .annotate(values_count=models.Count('values'))
+        .annotate(projects_count=models.Count('values__project', distinct=True))
+        .select_related('optionset')
+        .prefetch_related('conditions')
+    )
     serializer_class = OptionSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'key',
-        'optionset',
-        'comment'
-    )
+    filterset_fields = ('uri', 'key', 'optionset', 'comment')
 
     @action(detail=False)
     def index(self, request):
@@ -99,5 +91,5 @@ class OptionViewSet(CopyModelMixin, ModelViewSet):
 
 
 class ProviderViewSet(ChoicesViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     queryset = settings.OPTIONSET_PROVIDERS

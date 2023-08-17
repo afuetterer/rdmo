@@ -37,7 +37,14 @@ def get_labels(context, question, set_prefix='', set_index=0, project=None):
 
             if questionset.attribute:
                 # get attribute value
-                value = get_value(context, questionset.attribute.uri, set_prefix=set_prefix, set_index=set_index, index=0, project=project)
+                value = get_value(
+                    context,
+                    questionset.attribute.uri,
+                    set_prefix=set_prefix,
+                    set_index=set_index,
+                    index=0,
+                    project=project,
+                )
                 if value:
                     set_label = '"{}"'.format(value['value'])
 

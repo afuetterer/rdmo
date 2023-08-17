@@ -11,7 +11,6 @@ log = logging.getLogger(__name__)
 
 
 class ProfileForm(forms.ModelForm):
-
     use_required_attribute = False
 
     class Meta:
@@ -32,7 +31,6 @@ class ProfileForm(forms.ModelForm):
 
         # add fields and init values for the Profile model
         for additional_field in self.additional_fields:
-
             if additional_field.type == 'text':
                 field = forms.CharField(widget=forms.TextInput(attrs={'placeholder': additional_field.text}))
             elif additional_field.type == 'textarea':
@@ -68,7 +66,6 @@ class ProfileForm(forms.ModelForm):
 
 
 class SignupForm(ProfileForm):
-
     use_required_attribute = False
 
     def __init__(self, *args, **kwargs):
@@ -88,7 +85,6 @@ class SignupForm(ProfileForm):
 
 
 class RemoveForm(forms.Form):
-
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         kwargs.setdefault('label_suffix', '')

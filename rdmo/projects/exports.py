@@ -12,7 +12,6 @@ from .serializers.export import ProjectSerializer as ExportSerializer
 
 
 class Export(Plugin):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -26,12 +25,14 @@ class Export(Plugin):
         raise NotImplementedError
 
     def get_set(self, path, set_prefix=''):
-        return self.project.values.filter(snapshot=self.snapshot, attribute__path=path, set_prefix=set_prefix) \
-                                  .order_by('set_index', 'collection_index')
+        return self.project.values.filter(snapshot=self.snapshot, attribute__path=path, set_prefix=set_prefix).order_by(
+            'set_index', 'collection_index'
+        )
 
     def get_values(self, path, set_prefix='', set_index=0):
-        return self.project.values.filter(snapshot=self.snapshot, attribute__path=path, set_prefix=set_prefix, set_index=set_index) \
-                                  .order_by('collection_index')
+        return self.project.values.filter(
+            snapshot=self.snapshot, attribute__path=path, set_prefix=set_prefix, set_index=set_index
+        ).order_by('collection_index')
 
     def get_value(self, path, set_prefix='', set_index=0, collection_index=0):
         try:
@@ -78,7 +79,6 @@ class Export(Plugin):
 
 
 class CSVExport(Export):
-
     delimiter = ','
 
     def render(self):
@@ -93,11 +93,16 @@ class CSVExport(Export):
                     set_attribute_uri = question.questionset.attribute.uri.rstrip('/') + '/id'
 
                 for value_set in queryset.filter(attribute__uri=set_attribute_uri):
-                    values = queryset.filter(attribute=question.attribute, set_index=value_set.set_index) \
-                                     .order_by('set_prefix', 'set_index', 'collection_index')
-                    data.append((self.stringify(question.text), self.stringify(value_set.value), self.stringify_values(values)))
+                    values = queryset.filter(attribute=question.attribute, set_index=value_set.set_index).order_by(
+                        'set_prefix', 'set_index', 'collection_index'
+                    )
+                    data.append(
+                        (self.stringify(question.text), self.stringify(value_set.value), self.stringify_values(values))
+                    )
             else:
-                values = queryset.filter(attribute=question.attribute).order_by('set_prefix', 'set_index', 'collection_index')
+                values = queryset.filter(attribute=question.attribute).order_by(
+                    'set_prefix', 'set_index', 'collection_index'
+                )
 
                 data.append((self.stringify(question.text), '', self.stringify_values(values)))
 
@@ -125,7 +130,6 @@ class CSVSemicolonExport(CSVExport):
 
 
 class RDMOXMLExport(Export):
-
     def render(self):
         serializer = ExportSerializer(self.project)
         xmldata = XMLRenderer().render(serializer.data)

@@ -8,7 +8,7 @@ class AdditionalFieldAdmin(admin.ModelAdmin):
 
 
 class AdditionalFieldValueAdmin(admin.ModelAdmin):
-    readonly_fields = ('user', )
+    readonly_fields = ('user',)
 
 
 class ConsentFieldValueAdmin(admin.ModelAdmin):

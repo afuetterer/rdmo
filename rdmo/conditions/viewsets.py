@@ -16,20 +16,14 @@ from .serializers.v1 import ConditionIndexSerializer, ConditionSerializer
 
 
 class ConditionViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
-    queryset = Condition.objects.select_related('source', 'target_option') \
-                                .prefetch_related('optionsets', 'questionsets', 'questions', 'tasks')
+    permission_classes = (HasModelPermission,)
+    queryset = Condition.objects.select_related('source', 'target_option').prefetch_related(
+        'optionsets', 'questionsets', 'questions', 'tasks'
+    )
     serializer_class = ConditionSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'key',
-        'source',
-        'relation',
-        'target_text',
-        'target_option'
-    )
+    filterset_fields = ('uri', 'key', 'source', 'relation', 'target_text', 'target_option')
 
     @action(detail=False)
     def index(self, request):
@@ -51,5 +45,5 @@ class ConditionViewSet(CopyModelMixin, ModelViewSet):
 
 
 class RelationViewSet(ChoicesViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     queryset = Condition.RELATION_CHOICES

@@ -25,20 +25,17 @@ view_snapshot_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_snapshot_permission_map = change_snapshot_permission_map = delete_snapshot_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:project-snapshot-list',
-    'detail': 'v1-projects:project-snapshot-detail'
-}
+urlnames = {'list': 'v1-projects:project-snapshot-list', 'detail': 'v1-projects:project-snapshot-detail'}
 
 projects = [1, 2, 3, 4, 5]
 snapshots = [1, 3, 7, 4, 5, 6]
@@ -59,8 +56,7 @@ def test_list(db, client, username, password, project_id):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Snapshot.objects.filter(project_id=project_id) \
-                                          .order_by('id').values_list('id', flat=True)
+            values_list = Snapshot.objects.filter(project_id=project_id).order_by('id').values_list('id', flat=True)
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
 
     else:
@@ -96,10 +92,7 @@ def test_create(db, client, files, username, password, project_id):
     current_values_count = project.values.filter(snapshot=None).count()
 
     url = reverse(urlnames['list'], args=[project_id])
-    data = {
-        'title': 'A new snapshot',
-        'description': 'Some description'
-    }
+    data = {'title': 'A new snapshot', 'description': 'Some description'}
     response = client.post(url, data)
 
     if project_id in add_snapshot_permission_map.get(username, []):
@@ -134,10 +127,7 @@ def test_update(db, client, username, password, project_id, snapshot_id):
     values_files = [value.file.name for value in project.values.filter(value_type=VALUE_TYPE_FILE)]
 
     url = reverse(urlnames['detail'], args=[project_id, snapshot_id])
-    data = {
-        'title': 'A new title',
-        'description': 'A new description'
-    }
+    data = {'title': 'A new title', 'description': 'A new description'}
     response = client.put(url, data, content_type='application/json')
 
     if snapshot and project_id in change_snapshot_permission_map.get(username, []):

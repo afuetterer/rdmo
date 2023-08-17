@@ -4,8 +4,7 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 
-from rdmo.core.constants import (VALUE_TYPE_CHOICES, VALUE_TYPE_FILE,
-                                 VALUE_TYPE_TEXT)
+from rdmo.core.constants import VALUE_TYPE_CHOICES, VALUE_TYPE_FILE, VALUE_TYPE_TEXT
 from rdmo.questions.models import Question
 
 from ..models import Value
@@ -27,7 +26,7 @@ view_value_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_value_permission_map = change_value_permission_map = delete_value_permission_map = {
@@ -35,14 +34,14 @@ add_value_permission_map = change_value_permission_map = delete_value_permission
     'manager': [1, 3, 5],
     'author': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 urlnames = {
     'list': 'v1-projects:project-value-list',
     'detail': 'v1-projects:project-value-detail',
     'set': 'v1-projects:project-value-set',
-    'file': 'v1-projects:project-value-file'
+    'file': 'v1-projects:project-value-file',
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -70,9 +69,12 @@ def test_list(db, client, username, password, project_id):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Value.objects.filter(project_id=project_id) \
-                                       .filter(snapshot_id=None) \
-                                       .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Value.objects.filter(project_id=project_id)
+                .filter(snapshot_id=None)
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
 
     else:
@@ -110,7 +112,7 @@ def test_create_text(db, client, username, password, project_id, value_type, val
         'collection_index': 0,
         'text': 'Lorem ipsum',
         'value_type': value_type,
-        'unit': ''
+        'unit': '',
     }
     response = client.post(url, data)
 
@@ -137,7 +139,7 @@ def test_create_option(db, client, username, password, project_id, value_type, v
         'collection_index': 0,
         'option': option_id,
         'value_type': value_type,
-        'unit': ''
+        'unit': '',
     }
     response = client.post(url, data)
 
@@ -165,7 +167,7 @@ def test_create_external(db, client, username, password, project_id, value_type,
         'text': 'Lorem ipsum',
         'external_id': '1',
         'value_type': value_type,
-        'unit': ''
+        'unit': '',
     }
     response = client.post(url, data)
 
@@ -193,7 +195,7 @@ def test_update(db, client, username, password, project_id, value_id):
         'collection_index': 0,
         'text': 'Lorem ipsum',
         'value_type': VALUE_TYPE_TEXT,
-        'unit': ''
+        'unit': '',
     }
     response = client.put(url, data, content_type='application/json')
 
@@ -238,10 +240,9 @@ def test_set(db, client, username, password, project_id, value_id):
     set_attributes = Question.objects.filter(questionset__id__in=set_questionsets).values_list('attribute', flat=True)
     values_count = Value.objects.count()
     if value and project_id in delete_value_permission_map.get(username, []):
-        set_values_count = Value.objects.filter(project_id=project_id,
-                                                snapshot=None,
-                                                attribute__in=set_attributes,
-                                                set_index=value.set_index).count()
+        set_values_count = Value.objects.filter(
+            project_id=project_id, snapshot=None, attribute__in=set_attributes, set_index=value.set_index
+        ).count()
 
     url = reverse(urlnames['set'], args=[project_id, value_id])
     response = client.delete(url)

@@ -99,7 +99,7 @@ class ProjectDetailView(ObjectPermissionMixin, DetailView):
         'issues__task__conditions__target_option',
         'tasks',
         'views',
-        'values'
+        'values',
     )
     permission_required = 'projects.view_project_object'
 
@@ -108,24 +108,34 @@ class ProjectDetailView(ObjectPermissionMixin, DetailView):
         project = context['project']
         ancestors = project.get_ancestors(include_self=True)
         values = project.values.filter(snapshot=None).select_related('attribute', 'option')
-        highest = Membership.objects.filter(project__in=ancestors, user_id=OuterRef('user_id')).order_by('-project__level')
-        memberships = Membership.objects.filter(project__in=ancestors) \
-                                        .annotate(highest=Subquery(highest.values('project__level')[:1])) \
-                                        .filter(highest=F('project__level')) \
-                                        .select_related('user')
+        highest = Membership.objects.filter(project__in=ancestors, user_id=OuterRef('user_id')).order_by(
+            '-project__level'
+        )
+        memberships = (
+            Membership.objects.filter(project__in=ancestors)
+            .annotate(highest=Subquery(highest.values('project__level')[:1]))
+            .filter(highest=F('project__level'))
+            .select_related('user')
+        )
 
         integrations = Integration.objects.filter(project__in=ancestors)
-        context['catalogs'] = Catalog.objects.filter_current_site() \
-                                             .filter_group(self.request.user) \
-                                             .filter_availability(self.request.user)
-        context['tasks_available'] = Task.objects.filter_current_site() \
-                                                 .filter_catalog(self.object.catalog) \
-                                                 .filter_group(self.request.user) \
-                                                 .filter_availability(self.request.user).exists()
-        context['views_available'] = View.objects.filter_current_site() \
-                                                 .filter_catalog(self.object.catalog) \
-                                                 .filter_group(self.request.user) \
-                                                 .filter_availability(self.request.user).exists()
+        context['catalogs'] = (
+            Catalog.objects.filter_current_site().filter_group(self.request.user).filter_availability(self.request.user)
+        )
+        context['tasks_available'] = (
+            Task.objects.filter_current_site()
+            .filter_catalog(self.object.catalog)
+            .filter_group(self.request.user)
+            .filter_availability(self.request.user)
+            .exists()
+        )
+        context['views_available'] = (
+            View.objects.filter_current_site()
+            .filter_catalog(self.object.catalog)
+            .filter_group(self.request.user)
+            .filter_availability(self.request.user)
+            .exists()
+        )
         context['memberships'] = memberships.order_by('user__last_name', '-project__level')
         context['integrations'] = integrations.order_by('provider_key', '-project__level')
         context['providers'] = get_plugins('PROJECT_ISSUE_PROVIDERS')
@@ -160,21 +170,14 @@ class ProjectJoinView(LoginRequiredMixin, RedirectViewMixin, TemplateView):
                 invite.delete()
                 return redirect(invite.project.get_absolute_url())
             else:
-                Membership.objects.create(
-                    project=invite.project,
-                    user=request.user,
-                    role=invite.role
-                )
+                Membership.objects.create(project=invite.project, user=request.user, role=invite.role)
                 invite.delete()
                 return redirect(invite.project.get_absolute_url())
 
         except Invite.DoesNotExist:
             error = _('Sorry, the invitation link is not valid.')
 
-        return self.render_to_response({
-            'title': _('Error'),
-            'errors': [error]
-        })
+        return self.render_to_response({'title': _('Error'), 'errors': [error]})
 
 
 class ProjectCancelView(LoginRequiredMixin, RedirectViewMixin, TemplateView):

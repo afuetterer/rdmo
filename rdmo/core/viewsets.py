@@ -12,29 +12,25 @@ from .serializers import GroupSerializer, SiteSerializer
 
 
 class SettingsViewSet(viewsets.GenericViewSet):
-
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
-        return Response({
-            key.lower(): getattr(settings, key) for key in settings.SETTINGS_API
-        })
+        return Response({key.lower(): getattr(settings, key) for key in settings.SETTINGS_API})
 
 
 class SitesViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
 
 class CopyModelMixin:
-
     @action(detail=True, methods=['PUT'], permission_classes=[HasModelPermission])
     def copy(self, request, pk=None):
         # get the instance to be copied
@@ -57,10 +53,7 @@ class CopyModelMixin:
 
         # merge the original_serializer with the data from the request and validate
         data = original_serializer.data
-        data.update({
-            'uri_prefix': uri_prefix,
-            'key': key
-        })
+        data.update({'uri_prefix': uri_prefix, 'key': key})
         for parent_field, parent_id in zip(parent_fields, parent_ids):
             data[parent_field] = parent_id
         validation_serializer = self.get_serializer(data=data)

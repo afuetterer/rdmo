@@ -7,12 +7,10 @@ from rest_framework.renderers import BaseRenderer
 
 
 class BaseXMLRenderer(BaseRenderer):
-
     media_type = 'application/xml'
     format = 'xml'
 
     def render(self, data):
-
         if data is None:
             return ''
 

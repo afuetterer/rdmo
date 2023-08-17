@@ -10,65 +10,40 @@ from ..models import Role
 
 
 class SiteSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Site
-        fields = (
-            'id',
-            'name',
-            'domain'
-        )
+        fields = ('id', 'name', 'domain')
 
 
 class GroupSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Group
-        fields = (
-            'id',
-            'name'
-        )
+        fields = ('id', 'name')
 
 
 class RoleSerializer(serializers.ModelSerializer):
-
     member = SiteSerializer(many=True)
     manager = SiteSerializer(many=True)
 
     class Meta:
         model = Role
-        fields = (
-            'id',
-            'member',
-            'manager'
-        )
+        fields = ('id', 'member', 'manager')
 
 
 class MembershipSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Membership
-        fields = (
-            'id',
-            'project',
-            'role'
-        )
+        fields = ('id', 'project', 'role')
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     groups = GroupSerializer(many=True)
     role = RoleSerializer()
     memberships = MembershipSerializer(many=True)
 
     class Meta:
         model = get_user_model()
-        fields = [
-            'id',
-            'groups',
-            'role',
-            'memberships'
-        ]
+        fields = ['id', 'groups', 'role', 'memberships']
         if settings.USER_API:
             fields += [
                 'username',

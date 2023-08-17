@@ -3,8 +3,7 @@ from django.contrib import admin
 from django.db import models
 
 from .models import Attribute
-from .validators import (AttributeLockedValidator, AttributeParentValidator,
-                         AttributeUniqueURIValidator)
+from .validators import AttributeLockedValidator, AttributeParentValidator, AttributeUniqueURIValidator
 
 
 class AttributeAdminForm(forms.ModelForm):
@@ -24,13 +23,16 @@ class AttributeAdmin(admin.ModelAdmin):
     form = AttributeAdminForm
 
     list_display = ('uri', 'projects_count', 'values_count')
-    search_fields = ('uri', )
+    search_fields = ('uri',)
     readonly_fields = ('uri', 'path', 'projects_count', 'values_count')
 
     def get_queryset(self, request):
-        return super().get_queryset(request) \
-                      .annotate(values_count=models.Count('values')) \
-                      .annotate(projects_count=models.Count('values__project', distinct=True))
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(values_count=models.Count('values'))
+            .annotate(projects_count=models.Count('values__project', distinct=True))
+        )
 
     def values_count(self, obj):
         return obj.values_count

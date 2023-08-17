@@ -2,9 +2,7 @@ import logging
 
 from django.contrib.sites.models import Site
 from rdmo.conditions.models import Condition
-from rdmo.core.imports import (get_foreign_field, get_m2m_instances,
-                               set_common_fields, set_lang_field,
-                               validate_instance)
+from rdmo.core.imports import get_foreign_field, get_m2m_instances, set_common_fields, set_lang_field, validate_instance
 from rdmo.domain.models import Attribute
 from rdmo.questions.models import Catalog
 

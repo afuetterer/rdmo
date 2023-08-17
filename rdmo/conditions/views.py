@@ -22,9 +22,7 @@ class ConditionsView(ModelPermissionMixin, CSRFViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ConditionsView, self).get_context_data(**kwargs)
         context['export_formats'] = settings.EXPORT_FORMATS
-        context['meta'] = {
-            'Condition': get_model_field_meta(Condition)
-        }
+        context['meta'] = {'Condition': get_model_field_meta(Condition)}
         return context
 
 

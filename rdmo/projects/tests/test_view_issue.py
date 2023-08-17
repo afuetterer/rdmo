@@ -22,7 +22,7 @@ view_issue_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 change_issue_permission_map = {
@@ -30,14 +30,14 @@ change_issue_permission_map = {
     'manager': [1, 3, 5],
     'author': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 delete_issue_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 
@@ -79,9 +79,7 @@ def test_issue_update_post(db, client, username, password, project_id, issue_id,
     issue = Issue.objects.filter(project_id=project_id, id=issue_id).first()
 
     url = reverse('issue_update', args=[project_id, issue_id])
-    data = {
-        'status': status
-    }
+    data = {'status': status}
     response = client.post(url, data)
 
     if issue:
@@ -128,11 +126,7 @@ def test_issue_send_post_email(db, client, username, password, project_id, issue
     issue = Issue.objects.filter(project_id=project_id, id=issue_id).first()
 
     url = reverse('issue_send', args=[project_id, issue_id])
-    data = {
-        'subject': 'Subject',
-        'message': 'Message',
-        'recipients': ['email@example.com']
-    }
+    data = {'subject': 'Subject', 'message': 'Message', 'recipients': ['email@example.com']}
     response = client.post(url, data)
 
     if issue:
@@ -173,7 +167,7 @@ def test_issue_send_post_attachements(db, client, files, username, password, pro
                 'attachments_views': str(view.id),
                 'attachments_files': str(file.id),
                 'attachments_snapshot': '',
-                'attachments_format': 'html'
+                'attachments_format': 'html',
             }
             response = client.post(url, data)
 
@@ -208,11 +202,7 @@ def test_issue_send_post_integration(db, client, username, password, project_id,
     issue = Issue.objects.filter(project_id=project_id, id=issue_id).first()
 
     url = reverse('issue_send', args=[project_id, issue_id])
-    data = {
-        'subject': 'Subject',
-        'message': 'Message',
-        'integration': [integration_pk]
-    }
+    data = {'subject': 'Subject', 'message': 'Message', 'integration': [integration_pk]}
     response = client.post(url, data)
 
     if issue:

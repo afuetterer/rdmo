@@ -6,7 +6,6 @@ from .models import View
 
 
 class ViewUniqueURIValidator(UniqueURIValidator):
-
     model = View
 
     def get_uri(self, data):
@@ -18,5 +17,4 @@ class ViewUniqueURIValidator(UniqueURIValidator):
 
 
 class ViewLockedValidator(LockedValidator):
-
     pass

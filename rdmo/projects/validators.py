@@ -7,7 +7,6 @@ from rdmo.core.utils import human2bytes
 
 
 class ValueValidator(object):
-
     requires_context = True
 
     def __call__(self, data, serializer):
@@ -18,6 +17,4 @@ class ValueValidator(object):
                 project = serializer.context['view'].project
 
                 if project.file_size > human2bytes(settings.PROJECT_FILE_QUOTA):
-                    raise serializers.ValidationError({
-                        'value': [_('You reached the file quota for this project.')]
-                    })
+                    raise serializers.ValidationError({'value': [_('You reached the file quota for this project.')]})

@@ -1,13 +1,11 @@
 from django.utils.translation import gettext_lazy as _
 
-from rdmo.core.validators import (InstanceValidator, LockedValidator,
-                                  UniqueURIValidator)
+from rdmo.core.validators import InstanceValidator, LockedValidator, UniqueURIValidator
 
 from .models import Attribute
 
 
 class AttributeUniqueURIValidator(UniqueURIValidator):
-
     model = Attribute
 
     def get_uri(self, data):
@@ -20,7 +18,6 @@ class AttributeUniqueURIValidator(UniqueURIValidator):
 
 
 class AttributeParentValidator(InstanceValidator):
-
     def __call__(self, data):
         parent = data.get('parent')
         if parent:
@@ -30,18 +27,27 @@ class AttributeParentValidator(InstanceValidator):
                 if view and view.action == 'copy':
                     # get the original from the view when cloning an attribute
                     if parent in view.get_object().get_descendants(include_self=True):
-                        self.raise_validation_error({
-                            'parent': [_('An attribute may not be cloned to be a child of itself or one of its descendants.')]
-                        })
+                        self.raise_validation_error(
+                            {
+                                'parent': [
+                                    _(
+                                        'An attribute may not be cloned to be a child of itself or one of its descendants.'
+                                    )
+                                ]
+                            }
+                        )
 
             # only check updated attributes
             if self.instance:
                 if parent in self.instance.get_descendants(include_self=True):
-                    self.raise_validation_error({
-                        'parent': [_('An attribute may not be moved to be a child of itself or one of its descendants.')]
-                    })
+                    self.raise_validation_error(
+                        {
+                            'parent': [
+                                _('An attribute may not be moved to be a child of itself or one of its descendants.')
+                            ]
+                        }
+                    )
 
 
 class AttributeLockedValidator(LockedValidator):
-
     parent_field = 'parent'

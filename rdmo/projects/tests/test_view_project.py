@@ -23,27 +23,27 @@ view_project_permission_map = {
     'author': [1, 3, 5, 8],
     'guest': [1, 3, 5, 9],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 change_project_permission_map = {
     'owner': [1, 2, 3, 4, 5, 10],
     'manager': [1, 3, 5, 7],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 delete_project_permission_map = {
     'owner': [1, 2, 3, 4, 5, 10],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 export_project_permission_map = {
     'owner': [1, 2, 3, 4, 5, 10],
     'manager': [1, 3, 5, 7],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 }
 
 projects = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -70,8 +70,9 @@ def test_list(db, client, username, password):
         if username == 'site':
             assert projects == []
         else:
-            assert sorted(list(set([int(project_id) for project_id in projects]))) \
-                == view_project_permission_map.get(username, [])
+            assert sorted(list(set([int(project_id) for project_id in projects]))) == view_project_permission_map.get(
+                username, []
+            )
     else:
         assert response.status_code == 302
 
@@ -86,8 +87,7 @@ def test_site(db, client, username, password):
     projects = re.findall(r'/projects/(\d+)/update/', response.content.decode())
 
     if username == 'site':
-        assert sorted([int(project_id) for project_id in projects]) \
-            == view_project_permission_map.get(username, [])
+        assert sorted([int(project_id) for project_id in projects]) == view_project_permission_map.get(username, [])
     elif password:
         assert response.status_code == 403
     else:
@@ -134,11 +134,7 @@ def test_project_create_post(db, client, username, password):
     project_count = Project.objects.count()
 
     url = reverse('project_create')
-    data = {
-        'title': 'A new project',
-        'description': 'Some description',
-        'catalog': catalog_id
-    }
+    data = {'title': 'A new project', 'description': 'Some description', 'catalog': catalog_id}
     response = client.post(url, data)
 
     if password:
@@ -159,7 +155,7 @@ def test_project_create_parent_post(db, client, username, password):
         'title': 'A new project',
         'description': 'Some description',
         'catalog': catalog_id,
-        'parent': parent_project_id
+        'parent': parent_project_id,
     }
     response = client.post(url, data)
 
@@ -198,11 +194,7 @@ def test_project_update_post(db, client, username, password, project_id):
     project = Project.objects.get(pk=project_id)
 
     url = reverse('project_update', args=[project_id])
-    data = {
-        'title': 'New title',
-        'description': project.description,
-        'catalog': project.catalog.pk
-    }
+    data = {'title': 'New title', 'description': project.description, 'catalog': project.catalog.pk}
     response = client.post(url, data)
 
     if project_id in change_project_permission_map.get(username, []):
@@ -228,7 +220,7 @@ def test_project_update_post_parent(db, client, username, password, project_id):
         'title': project.title,
         'description': project.description,
         'catalog': project.catalog.pk,
-        'parent': parent_project_id
+        'parent': parent_project_id,
     }
     response = client.post(url, data)
 
@@ -274,7 +266,7 @@ def test_project_update_information_post(db, client, username, password, project
     url = reverse('project_update_information', args=[project_id])
     data = {
         'title': 'Lorem ipsum dolor sit amet',
-        'description': 'At vero eos et accusam et justo duo dolores et ea rebum.'
+        'description': 'At vero eos et accusam et justo duo dolores et ea rebum.',
     }
     response = client.post(url, data)
 
@@ -314,9 +306,7 @@ def test_project_update_catalog_post(db, client, username, password, project_id)
     project = Project.objects.get(pk=project_id)
 
     url = reverse('project_update_catalog', args=[project_id])
-    data = {
-        'catalog': catalog_id
-    }
+    data = {'catalog': catalog_id}
     response = client.post(url, data)
 
     if project_id in change_project_permission_map.get(username, []):
@@ -355,9 +345,7 @@ def test_project_update_tasks_post(db, client, username, password, project_id):
     project = Project.objects.get(pk=project_id)
 
     url = reverse('project_update_tasks', args=[project_id])
-    data = {
-        'tasks': []
-    }
+    data = {'tasks': []}
     response = client.post(url, data)
 
     if project_id in change_project_permission_map.get(username, []):
@@ -396,9 +384,7 @@ def test_project_update_views_post(db, client, username, password, project_id):
     project = Project.objects.get(pk=project_id)
 
     url = reverse('project_update_views', args=[project_id])
-    data = {
-        'views': []
-    }
+    data = {'views': []}
     response = client.post(url, data)
 
     if project_id in change_project_permission_map.get(username, []):
@@ -437,9 +423,7 @@ def test_project_update_parent_post(db, client, username, password, project_id):
     project = Project.objects.get(pk=project_id)
 
     url = reverse('project_update_parent', args=[project_id])
-    data = {
-        'parent': parent_project_id
-    }
+    data = {'parent': parent_project_id}
     response = client.post(url, data)
 
     if project_id in change_project_permission_map.get(username, []):

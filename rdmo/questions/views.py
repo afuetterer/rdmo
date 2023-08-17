@@ -39,19 +39,24 @@ class CatalogExportView(ModelPermissionMixin, DetailView):
     def get_queryset(self):
         return Catalog.objects.prefetch_related(
             'sections',
-            Prefetch('sections__questionsets', queryset=QuestionSet.objects.filter(questionset=None).prefetch_related(
-                'conditions',
-                'questions',
-                'questions__attribute',
-                'questions__optionsets',
-                'questionsets',
-                'questionsets__attribute',
-                'questionsets__conditions',
-                'questionsets__questions',
-                'questionsets__questions__attribute',
-                'questionsets__questions__optionsets',
-                'questionsets__questionsets'
-            ).select_related('attribute'))
+            Prefetch(
+                'sections__questionsets',
+                queryset=QuestionSet.objects.filter(questionset=None)
+                .prefetch_related(
+                    'conditions',
+                    'questions',
+                    'questions__attribute',
+                    'questions__optionsets',
+                    'questionsets',
+                    'questionsets__attribute',
+                    'questionsets__conditions',
+                    'questionsets__questions',
+                    'questionsets__questions__attribute',
+                    'questionsets__questions__optionsets',
+                    'questionsets__questionsets',
+                )
+                .select_related('attribute'),
+            ),
         )
 
     def render_to_response(self, context, **response_kwargs):
@@ -61,4 +66,6 @@ class CatalogExportView(ModelPermissionMixin, DetailView):
             xml = CatalogRenderer().render([serializer.data])
             return XMLResponse(xml, name=context['catalog'].key)
         else:
-            return render_to_format(self.request, format, context['catalog'].title, 'questions/catalog_export.html', context)
+            return render_to_format(
+                self.request, format, context['catalog'].title, 'questions/catalog_export.html', context
+            )

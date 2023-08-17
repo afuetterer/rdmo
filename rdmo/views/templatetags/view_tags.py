@@ -2,8 +2,7 @@ from urllib.parse import urlparse
 
 from django import template
 
-from rdmo.core.constants import (VALUE_TYPE_DATETIME, VALUE_TYPE_INTEGER,
-                                 VALUE_TYPE_TEXT)
+from rdmo.core.constants import VALUE_TYPE_DATETIME, VALUE_TYPE_INTEGER, VALUE_TYPE_TEXT
 from rdmo.projects.models import Value
 
 register = template.Library()
@@ -63,7 +62,9 @@ def get_numbers(context, attribute, set_prefix='*', set_index='*', index='*', pr
 @register.simple_tag(takes_context=True)
 def get_value(context, attribute, set_prefix='', set_index=0, index=0, project=None):
     try:
-        return get_values(context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project)[0]
+        return get_values(context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project)[
+            0
+        ]
     except IndexError:
         return None
 
@@ -87,7 +88,9 @@ def get_set_values(context, set, attribute, set_prefix='', project=None):
 def get_set_value(context, set, attribute, set_prefix='', index=0, project=None):
     try:
         set_index = set.get('set_index')
-        return get_values(context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project)[0]
+        return get_values(context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project)[
+            0
+        ]
     except IndexError:
         return None
 
@@ -103,7 +106,14 @@ def get_set_prefixes(context, attribute, project=None):
 @register.simple_tag(takes_context=True)
 def get_set_indexes(context, attribute, set_prefix='', project=None):
     try:
-        return sorted(set(map(lambda value: value['set_index'], get_values(context, attribute, set_prefix=set_prefix, project=project))))
+        return sorted(
+            set(
+                map(
+                    lambda value: value['set_index'],
+                    get_values(context, attribute, set_prefix=set_prefix, project=project),
+                )
+            )
+        )
     except IndexError:
         return None
 
@@ -127,7 +137,9 @@ def get_set(context, attribute, set_prefix='', project=None):
 
 @register.inclusion_tag('views/tags/value.html', takes_context=True)
 def render_value(context, attribute, set_prefix='', set_index=0, index=0, project=None):
-    context['value'] = get_value(context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project)
+    context['value'] = get_value(
+        context, attribute, set_prefix=set_prefix, set_index=set_index, index=index, project=project
+    )
     return context
 
 

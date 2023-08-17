@@ -18,6 +18,5 @@ urlpatterns = [
     path('questions/', include('rdmo.questions.urls.v1')),
     path('tasks/', include('rdmo.tasks.urls.v1')),
     path('views/', include('rdmo.views.urls.v1')),
-
     path('core/', include(router.urls)),
 ]

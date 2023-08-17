@@ -12,12 +12,8 @@ users = (
 )
 
 status_map = {
-    'catalogs': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302
-    },
-    'questions_catalog_export': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302
-    }
+    'catalogs': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302},
+    'questions_catalog_export': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 302},
 }
 
 catalog_pk = 1

@@ -50,7 +50,7 @@ def test_post_profile_update(db, client):
         'first_name': 'Albert',
         'last_name': 'Admin',
         'text': 'text',
-        'textarea': 'textarea'
+        'textarea': 'textarea',
     }
     response = client.post(url, data)
 
@@ -69,12 +69,7 @@ def test_post_profile_update_cancel(db, client):
     client.login(username='user', password='user')
 
     url = reverse('profile_update')
-    data = {
-        'email': 'test@example.com',
-        'first_name': 'Albert',
-        'last_name': 'Admin',
-        'cancel': 'cancel'
-    }
+    data = {'email': 'test@example.com', 'first_name': 'Albert', 'last_name': 'Admin', 'cancel': 'cancel'}
     response = client.post(url, data)
 
     if settings.PROFILE_UPDATE:
@@ -97,7 +92,7 @@ def test_post_profile_update_cancel2(db, client):
         'first_name': 'Albert',
         'last_name': 'Admin',
         'cancel': 'cancel',
-        'next': reverse('projects')
+        'next': reverse('projects'),
     }
     response = client.post(url, data)
 
@@ -122,7 +117,7 @@ def test_post_profile_update_next(db, client):
         'last_name': 'Admin',
         'text': 'text',
         'textarea': 'textarea',
-        'next': reverse('projects')
+        'next': reverse('projects'),
     }
     response = client.post(url, data)
 
@@ -147,7 +142,7 @@ def test_post_profile_update_next2(db, client):
         'last_name': 'Admin',
         'text': 'text',
         'textarea': 'textarea',
-        'next': reverse('profile_update')
+        'next': reverse('profile_update'),
     }
     response = client.post(url, data)
 
@@ -225,13 +220,15 @@ def test_password_reset_post_valid(db, client):
         assert len(mail.outbox) == 1
 
         # get the link from the mail
-        urls = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', mail.outbox[0].body)
+        urls = re.findall(
+            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', mail.outbox[0].body
+        )
         assert len(urls) == 1
 
         # get the password_reset page
         response = client.get(urls[0])
         assert response.status_code == 302
-        assert response.url == reverse('account_reset_password_from_key', args=['4','set-password'])
+        assert response.url == reverse('account_reset_password_from_key', args=['4', 'set-password'])
 
 
 def test_remove_user_get(db, client):
@@ -248,11 +245,7 @@ def test_remove_user_post(db, client):
         client.login(username='user', password='user')
 
         url = reverse('profile_remove')
-        data = {
-            'email': 'user@example.com',
-            'password': 'user',
-            'consent': True
-        }
+        data = {'email': 'user@example.com', 'password': 'user', 'consent': True}
         response = client.post(url, data)
         assert response.status_code == 200
         assert not get_user_model().objects.filter(username='user').exists()
@@ -263,11 +256,7 @@ def test_remove_user_post_invalid_email(db, client):
         client.login(username='user', password='user')
 
         url = reverse('profile_remove')
-        data = {
-            'email': 'invalid',
-            'password': 'user',
-            'consent': True
-        }
+        data = {'email': 'invalid', 'password': 'user', 'consent': True}
         response = client.post(url, data)
         assert response.status_code == 200
         assert get_user_model().objects.filter(username='user').exists()
@@ -278,11 +267,7 @@ def test_remove_user_post_invalid_password(db, client):
         client.login(username='user', password='user')
 
         url = reverse('profile_remove')
-        data = {
-            'email': 'user@example.com',
-            'password': 'invalid',
-            'consent': True
-        }
+        data = {'email': 'user@example.com', 'password': 'invalid', 'consent': True}
         response = client.post(url, data)
         assert response.status_code == 200
         assert get_user_model().objects.filter(username='user').exists()
@@ -293,11 +278,7 @@ def test_remove_user_post_invalid_consent(db, client):
         client.login(username='user', password='user')
 
         url = reverse('profile_remove')
-        data = {
-            'email': 'user@example.com',
-            'password': 'user',
-            'consent': False
-        }
+        data = {'email': 'user@example.com', 'password': 'user', 'consent': False}
 
         response = client.post(url, data)
         assert response.status_code == 200
@@ -306,14 +287,17 @@ def test_remove_user_post_invalid_consent(db, client):
 
 def test_signup(db, client):
     url = reverse('account_signup')
-    response = client.post(url, {
-        'email': 'test@example.com',
-        'username': 'test',
-        'first_name': 'test',
-        'last_name': 'test',
-        'password1': 'test',
-        'password2': 'test',
-    })
+    response = client.post(
+        url,
+        {
+            'email': 'test@example.com',
+            'username': 'test',
+            'first_name': 'test',
+            'last_name': 'test',
+            'password1': 'test',
+            'password2': 'test',
+        },
+    )
 
     assert response.status_code == 302
     assert response.url == '/'
@@ -321,14 +305,17 @@ def test_signup(db, client):
 
 def test_signup_next(db, client):
     url = reverse('account_signup') + '?next=/about/'
-    response = client.post(url, {
-        'email': 'test@example.com',
-        'username': 'test',
-        'first_name': 'test',
-        'last_name': 'test',
-        'password1': 'test',
-        'password2': 'test',
-    })
+    response = client.post(
+        url,
+        {
+            'email': 'test@example.com',
+            'username': 'test',
+            'first_name': 'test',
+            'last_name': 'test',
+            'password1': 'test',
+            'password2': 'test',
+        },
+    )
 
     assert response.status_code == 302
     assert response.url == '/about/'

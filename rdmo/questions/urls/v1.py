@@ -2,8 +2,14 @@ from django.urls import include, path
 
 from rest_framework import routers
 
-from ..viewsets import (CatalogViewSet, QuestionSetViewSet, QuestionViewSet,
-                        SectionViewSet, ValueTypeViewSet, WidgetTypeViewSet)
+from ..viewsets import (
+    CatalogViewSet,
+    QuestionSetViewSet,
+    QuestionViewSet,
+    SectionViewSet,
+    ValueTypeViewSet,
+    WidgetTypeViewSet,
+)
 
 app_name = 'v1-questions'
 

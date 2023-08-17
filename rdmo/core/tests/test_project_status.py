@@ -1,6 +1,7 @@
 from django.core.management import call_command
 import pytest
 
+
 def test_makemigrations_has_no_changes(db, capsys):
     call_command("makemigrations", check=True, dry_run=True)
     captured = capsys.readouterr()

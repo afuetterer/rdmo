@@ -7,7 +7,6 @@ from rdmo.conditions.models import Condition
 
 
 class ProjectWrapper(object):
-
     def __init__(self, project, snapshot=None):
         self._project = project
         self._catalog = project.catalog
@@ -45,7 +44,7 @@ class ProjectWrapper(object):
                 'title': self._snapshot.title,
                 'description': self._snapshot.description,
                 'created': self._snapshot.created,
-                'updated': self._snapshot.updated
+                'updated': self._snapshot.updated,
             }
         else:
             return {}
@@ -76,10 +75,9 @@ class ProjectWrapper(object):
 
     @cached_property
     def _conditions(self):
-        return list(Condition.objects.select_related('source', 'target_option').prefetch_related(
-            'questions',
-            'questionsets'
-        ))
+        return list(
+            Condition.objects.select_related('source', 'target_option').prefetch_related('questions', 'questionsets')
+        )
 
     def _check_conditions(self, conditions, set_prefix=None, set_index=None):
         # caches the result of the check in the wrapper
@@ -96,16 +94,17 @@ class ProjectWrapper(object):
         if self._checked_conditions[condition.id][set_prefix][set_index] == []:
             # find the question in the catalog, to resolve complex value structures
             from rdmo.questions.models import Question
+
             question = Question.objects.filter_by_catalog(self._catalog).filter(attribute=condition.source).first()
 
-            self._checked_conditions[condition.id][set_prefix][set_index] = \
-                condition.resolve(self._values, set_prefix, set_index, question)
+            self._checked_conditions[condition.id][set_prefix][set_index] = condition.resolve(
+                self._values, set_prefix, set_index, question
+            )
 
         return self._checked_conditions[condition.id][set_prefix][set_index]
 
     def _build_tree(self, projects):
-        return [{
-            'id': project.id,
-            'level': project.level,
-            'children': self.build_tree(project.get_children())
-        } for project in projects]
+        return [
+            {'id': project.id, 'level': project.level, 'children': self.build_tree(project.get_children())}
+            for project in projects
+        ]

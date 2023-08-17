@@ -2,8 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import \
-    PermissionRequiredMixin as DjangoPermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin as DjangoPermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
@@ -15,8 +14,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import View
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
-from rules.contrib.views import \
-    PermissionRequiredMixin as RulesPermissionRequiredMixin
+from rules.contrib.views import PermissionRequiredMixin as RulesPermissionRequiredMixin
 
 from .serializers import ChoicesSerializer
 from .utils import get_next, get_referer, get_referer_path_info
@@ -32,12 +30,11 @@ def home(request):
             return render(request, 'core/home.html')
         elif settings.ACCOUNT or settings.SOCIALACCOUNT:
             from allauth.account.forms import LoginForm
-            return render(request, 'core/home.html', {
-                'form': LoginForm(),
-                'signup_url': reverse("account_signup")
-            })
+
+            return render(request, 'core/home.html', {'form': LoginForm(), 'signup_url': reverse("account_signup")})
         else:
             from django.contrib.auth.forms import AuthenticationForm
+
             return render(request, 'core/home.html', {'form': AuthenticationForm()})
 
 
@@ -75,14 +72,12 @@ def internal_server_error(request):
 
 
 class CSRFViewMixin(View):
-
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         return super().get(self, request, *args, **kwargs)
 
 
 class RedirectViewMixin(View):
-
     def post(self, request, *args, **kwargs):
         if 'cancel' in request.POST:
             return HttpResponseRedirect(get_next(request))
@@ -105,7 +100,6 @@ class RedirectViewMixin(View):
 
 
 class PermissionRedirectMixin(object):
-
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             raise PermissionDenied(self.get_permission_denied_message())
@@ -126,8 +120,5 @@ class ChoicesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class SettingsViewSet(viewsets.GenericViewSet):
-
     def list(self, request, *args, **kwargs):
-        return Response({
-            'default_uri_prefix': settings.DEFAULT_URI_PREFIX
-        })
+        return Response({'default_uri_prefix': settings.DEFAULT_URI_PREFIX})

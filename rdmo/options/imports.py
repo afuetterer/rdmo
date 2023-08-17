@@ -1,13 +1,22 @@
 import logging
 
 from rdmo.conditions.models import Condition
-from rdmo.core.imports import (fetch_parents, get_foreign_field,
-                               get_m2m_instances, set_common_fields,
-                               set_lang_field, validate_instance)
+from rdmo.core.imports import (
+    fetch_parents,
+    get_foreign_field,
+    get_m2m_instances,
+    set_common_fields,
+    set_lang_field,
+    validate_instance,
+)
 
 from .models import Option, OptionSet
-from .validators import (OptionLockedValidator, OptionSetLockedValidator,
-                         OptionSetUniqueURIValidator, OptionUniqueURIValidator)
+from .validators import (
+    OptionLockedValidator,
+    OptionSetLockedValidator,
+    OptionSetUniqueURIValidator,
+    OptionUniqueURIValidator,
+)
 
 logger = logging.getLogger(__name__)
 

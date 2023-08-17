@@ -80,7 +80,6 @@ class IntegrationDeleteView(ObjectPermissionMixin, RedirectViewMixin, DeleteView
 
 @method_decorator(csrf_exempt, name='dispatch')
 class IntegrationWebhookView(View):
-
     def post(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
         project_id = kwargs.get('project_id')

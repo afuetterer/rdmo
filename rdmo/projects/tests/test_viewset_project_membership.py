@@ -21,19 +21,16 @@ view_membership_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_membership_permission_map = change_membership_permission_map = delete_membership_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:project-membership-list',
-    'detail': 'v1-projects:project-membership-detail'
-}
+urlnames = {'list': 'v1-projects:project-membership-list', 'detail': 'v1-projects:project-membership-detail'}
 
 projects = [1, 2, 3, 4, 5]
 memberships = [1, 2, 3, 4]
@@ -54,8 +51,7 @@ def test_list(db, client, username, password, project_id):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Membership.objects.filter(project_id=project_id) \
-                                            .order_by('id').values_list('id', flat=True)
+            values_list = Membership.objects.filter(project_id=project_id).order_by('id').values_list('id', flat=True)
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 404
@@ -88,10 +84,7 @@ def test_create(db, client, username, password, project_id, membership_role):
     user = get_user_model().objects.get(username='user')
 
     url = reverse(urlnames['list'], args=[project_id])
-    data = {
-        'user': user.pk,
-        'role': membership_role
-    }
+    data = {'user': user.pk, 'role': membership_role}
     response = client.post(url, data)
 
     if project_id in add_membership_permission_map.get(username, []):
@@ -111,9 +104,7 @@ def test_update(db, client, username, password, project_id, membership_id, membe
     membership = Membership.objects.filter(project_id=project_id, id=membership_id).first()
 
     url = reverse(urlnames['detail'], args=[project_id, membership_id])
-    data = {
-        'role': membership_role
-    }
+    data = {'role': membership_role}
     response = client.put(url, data, content_type='application/json')
 
     if membership and project_id in change_membership_permission_map.get(username, []):

@@ -3,10 +3,7 @@ from django.urls import reverse
 
 from ..models import Overlay
 
-users = (
-    ('user', 'user'),
-    ('anonymous', None)
-)
+users = (('user', 'user'), ('anonymous', None))
 
 
 @pytest.mark.parametrize('username,password', users)

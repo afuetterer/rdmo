@@ -14,21 +14,11 @@ users = (
 )
 
 status_map = {
-    'list': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'detail': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'create': {
-        'editor': 201, 'reviewer': 403, 'api': 201, 'user': 403, 'anonymous': 401
-    },
-    'update': {
-        'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 401
-    },
-    'delete': {
-        'editor': 204, 'reviewer': 403, 'api': 204, 'user': 403, 'anonymous': 401
-    }
+    'list': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401},
+    'detail': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 403, 'anonymous': 401},
+    'create': {'editor': 201, 'reviewer': 403, 'api': 201, 'user': 403, 'anonymous': 401},
+    'update': {'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 401},
+    'delete': {'editor': 204, 'reviewer': 403, 'api': 204, 'user': 403, 'anonymous': 401},
 }
 
 urlnames = {
@@ -38,7 +28,7 @@ urlnames = {
     'export': 'v1-questions:question-export',
     'detail': 'v1-questions:question-detail',
     'detail_export': 'v1-questions:question-detail-export',
-    'copy': 'v1-questions:question-copy'
+    'copy': 'v1-questions:question-copy',
 }
 
 
@@ -127,7 +117,7 @@ def test_create(db, client, username, password):
             'step': instance.step or '',
             'unit': instance.unit or '',
             'optionsets': [optionset.pk for optionset in instance.optionsets.all()],
-            'conditions': [condition.pk for condition in instance.conditions.all()]
+            'conditions': [condition.pk for condition in instance.conditions.all()],
         }
         response = client.post(url, data, content_type='application/json')
         assert response.status_code == status_map['create'][username], response.json()
@@ -207,7 +197,7 @@ def test_copy(db, client, username, password):
         data = {
             'uri_prefix': instance.uri_prefix + '-',
             'key': instance.key + '-',
-            'questionset': instance.questionset.id
+            'questionset': instance.questionset.id,
         }
         response = client.put(url, data, content_type='application/json')
         assert response.status_code == status_map['create'][username], response.json()
@@ -219,11 +209,7 @@ def test_copy_wrong(db, client, username, password):
     instance = Question.objects.first()
 
     url = reverse(urlnames['copy'], args=[instance.pk])
-    data = {
-        'uri_prefix': instance.uri_prefix,
-        'key': instance.key,
-        'questionset': instance.questionset.id
-    }
+    data = {'uri_prefix': instance.uri_prefix, 'key': instance.key, 'questionset': instance.questionset.id}
     response = client.put(url, data, content_type='application/json')
 
     if status_map['create'][username] == 201:

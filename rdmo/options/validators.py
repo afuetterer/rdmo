@@ -6,7 +6,6 @@ from .models import Option, OptionSet
 
 
 class OptionSetUniqueURIValidator(UniqueURIValidator):
-
     model = OptionSet
 
     def get_uri(self, data):
@@ -18,7 +17,6 @@ class OptionSetUniqueURIValidator(UniqueURIValidator):
 
 
 class OptionUniqueURIValidator(UniqueURIValidator):
-
     model = Option
 
     def get_uri(self, data):
@@ -33,10 +31,8 @@ class OptionUniqueURIValidator(UniqueURIValidator):
 
 
 class OptionSetLockedValidator(LockedValidator):
-
     pass
 
 
 class OptionLockedValidator(LockedValidator):
-
     parent_field = 'optionset'

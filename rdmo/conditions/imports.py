@@ -1,7 +1,6 @@
 import logging
 
-from rdmo.core.imports import (get_foreign_field, set_common_fields,
-                               validate_instance)
+from rdmo.core.imports import get_foreign_field, set_common_fields, validate_instance
 from rdmo.domain.models import Attribute
 from rdmo.options.models import Option
 

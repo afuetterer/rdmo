@@ -22,10 +22,7 @@ class OptionsView(ModelPermissionMixin, CSRFViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(OptionsView, self).get_context_data(**kwargs)
         context['export_formats'] = settings.EXPORT_FORMATS
-        context['meta'] = {
-            'OptionSet': get_model_field_meta(OptionSet),
-            'Option': get_model_field_meta(Option)
-        }
+        context['meta'] = {'OptionSet': get_model_field_meta(OptionSet), 'Option': get_model_field_meta(Option)}
         return context
 
 

@@ -13,43 +13,18 @@ users = (
     ('anonymous', None),
 )
 
-files = (
-    'conditions.xml',
-    'domain.xml',
-    'options.xml',
-    'questions.xml',
-    'tasks.xml',
-    'views.xml'
-)
+files = ('conditions.xml', 'domain.xml', 'options.xml', 'questions.xml', 'tasks.xml', 'views.xml')
 
 status_map = {
-    'upload_get': {
-        'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302
-    },
-    'upload_post': {
-        'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 302
-    },
-    'upload_post_empty': {
-        'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302
-    },
-    'upload_post_error': {
-        'editor': 400, 'reviewer': 400, 'api': 400, 'user': 400, 'anonymous': 302
-    },
-    'import_get': {
-        'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302
-    },
-    'import_post': {
-        'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 302
-    },
-    'import_post_cancel': {
-        'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302
-    },
-    'import_post_empty': {
-        'editor': 302, 'reviewer': 403, 'api': 302, 'user': 403, 'anonymous': 302
-    },
-    'import_post_error': {
-        'editor': 400, 'reviewer': 400, 'api': 400, 'user': 400, 'anonymous': 302
-    }
+    'upload_get': {'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302},
+    'upload_post': {'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 302},
+    'upload_post_empty': {'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302},
+    'upload_post_error': {'editor': 400, 'reviewer': 400, 'api': 400, 'user': 400, 'anonymous': 302},
+    'import_get': {'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302},
+    'import_post': {'editor': 200, 'reviewer': 403, 'api': 200, 'user': 403, 'anonymous': 302},
+    'import_post_cancel': {'editor': 302, 'reviewer': 302, 'api': 302, 'user': 302, 'anonymous': 302},
+    'import_post_empty': {'editor': 302, 'reviewer': 403, 'api': 302, 'user': 403, 'anonymous': 302},
+    'import_post_error': {'editor': 400, 'reviewer': 400, 'api': 400, 'user': 400, 'anonymous': 302},
 }
 
 

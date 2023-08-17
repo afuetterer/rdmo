@@ -9,11 +9,7 @@ users = (
     ('anonymous', None),
 )
 
-status_map = {
-    'list': {
-        'editor': 200, 'reviewer': 200, 'api': 200, 'user': 200, 'anonymous': 401
-    }
-}
+status_map = {'list': {'editor': 200, 'reviewer': 200, 'api': 200, 'user': 200, 'anonymous': 401}}
 
 urlnames = {
     'list': 'v1-conditions:relation-list',

@@ -18,13 +18,10 @@ view_questionset_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:project-questionset-list',
-    'detail': 'v1-projects:project-questionset-detail'
-}
+urlnames = {'list': 'v1-projects:project-questionset-list', 'detail': 'v1-projects:project-questionset-detail'}
 
 projects = [1, 2, 3, 4, 5]
 questionsets = [1]

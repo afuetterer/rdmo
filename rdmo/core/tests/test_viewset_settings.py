@@ -12,9 +12,7 @@ users = (
 )
 
 status_map = {
-    'list': {
-        'owner': 200, 'manager': 200, 'author': 200, 'guest': 200, 'api': 200, 'user': 200, 'anonymous': 401
-    }
+    'list': {'owner': 200, 'manager': 200, 'author': 200, 'guest': 200, 'api': 200, 'user': 200, 'anonymous': 401}
 }
 
 urlnames = {

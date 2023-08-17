@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from rdmo.core.serializers import (MarkdownSerializerMixin, SiteSerializer,
-                                   TranslationSerializerMixin)
+from rdmo.core.serializers import MarkdownSerializerMixin, SiteSerializer, TranslationSerializerMixin
 from rdmo.core.utils import get_language_warning
 
 from ..models import Task
@@ -10,7 +9,6 @@ from ..validators import TaskLockedValidator, TaskUniqueURIValidator
 
 
 class TaskSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
-
     key = serializers.SlugField(required=True)
 
     class Meta:
@@ -30,21 +28,14 @@ class TaskSerializer(TranslationSerializerMixin, serializers.ModelSerializer):
             'end_attribute',
             'days_before',
             'days_after',
-            'conditions'
+            'conditions',
         )
-        trans_fields = (
-            'title',
-            'text'
-        )
-        validators = (
-            TaskUniqueURIValidator(),
-            TaskLockedValidator()
-        )
+        trans_fields = ('title', 'text')
+        validators = (TaskUniqueURIValidator(), TaskLockedValidator())
 
 
 class TaskIndexSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
-
-    markdown_fields = ('text', )
+    markdown_fields = ('text',)
 
     sites = SiteSerializer(many=True, read_only=True)
     warning = serializers.SerializerMethodField()
@@ -63,7 +54,7 @@ class TaskIndexSerializer(MarkdownSerializerMixin, serializers.ModelSerializer):
             'title',
             'text',
             'warning',
-            'xml_url'
+            'xml_url',
         )
 
     def get_warning(self, obj):

@@ -11,7 +11,6 @@ from ..managers import IssueManager
 
 
 class Issue(models.Model):
-
     objects = IssueManager()
 
     ISSUE_STATUS_OPEN = 'open'
@@ -20,27 +19,33 @@ class Issue(models.Model):
     ISSUE_STATUS_CHOICES = (
         (ISSUE_STATUS_OPEN, _('open')),
         (ISSUE_STATUS_IN_PROGRESS, _('in progress')),
-        (ISSUE_STATUS_CLOSED, _('closed'))
+        (ISSUE_STATUS_CLOSED, _('closed')),
     )
 
     project = models.ForeignKey(
-        'Project', on_delete=models.CASCADE, related_name='issues',
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='issues',
         verbose_name=_('Project'),
-        help_text=_('The project for this issue.')
+        help_text=_('The project for this issue.'),
     )
     task = models.ForeignKey(
-        Task, on_delete=models.CASCADE, related_name='issues',
+        Task,
+        on_delete=models.CASCADE,
+        related_name='issues',
         verbose_name=_('Task'),
-        help_text=_('The task for this issue.')
+        help_text=_('The task for this issue.'),
     )
     status = models.CharField(
-        max_length=12, choices=ISSUE_STATUS_CHOICES, default=ISSUE_STATUS_OPEN,
+        max_length=12,
+        choices=ISSUE_STATUS_CHOICES,
+        default=ISSUE_STATUS_OPEN,
         verbose_name=_('Status'),
-        help_text=_('The status for this issue.')
+        help_text=_('The status for this issue.'),
     )
 
     class Meta:
-        ordering = ('project__title', )
+        ordering = ('project__title',)
         verbose_name = _('Issue')
         verbose_name_plural = _('Issues')
 
@@ -74,7 +79,6 @@ class Issue(models.Model):
 
         dates = []
         for start_value, end_value in zip_longest(start_values, end_values):
-
             if start_value and start_value.value and isinstance(start_value.value, date):
                 start_date = start_value.value
             else:
@@ -88,29 +92,29 @@ class Issue(models.Model):
             if start_date and end_date:
                 dates.append((start_date - days_before, end_date + days_after))
             elif start_date:
-                dates.append((start_date - days_before + days_after, ))
+                dates.append((start_date - days_before + days_after,))
             elif end_date:
-                dates.append((end_date - days_before + days_after, ))
+                dates.append((end_date - days_before + days_after,))
 
         return dates
 
 
 class IssueResource(models.Model):
-
     issue = models.ForeignKey(
-        'Issue', on_delete=models.CASCADE, related_name='resources',
+        'Issue',
+        on_delete=models.CASCADE,
+        related_name='resources',
         verbose_name=_('Issue'),
-        help_text=_('The issue for this issue resource.')
+        help_text=_('The issue for this issue resource.'),
     )
     integration = models.ForeignKey(
-        'Integration', on_delete=models.CASCADE, related_name='resources',
+        'Integration',
+        on_delete=models.CASCADE,
+        related_name='resources',
         verbose_name=_('Integration'),
-        help_text=_('The integration for this issue resource.')
+        help_text=_('The integration for this issue resource.'),
     )
-    url = models.URLField(
-        verbose_name=_('URL'),
-        help_text=_('The URL of this issue resource.')
-    )
+    url = models.URLField(verbose_name=_('URL'), help_text=_('The URL of this issue resource.'))
 
     class Meta:
         ordering = ('issue__project__title', 'issue')

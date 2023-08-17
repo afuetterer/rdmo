@@ -22,14 +22,10 @@ view_value_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
-urlnames = {
-    'list': 'v1-projects:value-list',
-    'detail': 'v1-projects:value-detail',
-    'file': 'v1-projects:value-file'
-}
+urlnames = {'list': 'v1-projects:value-list', 'detail': 'v1-projects:value-detail', 'file': 'v1-projects:value-file'}
 
 values = [1, 2, 3, 4, 5, 6, 7, 238, 242, 243, 244, 245]
 snapshots = [1, 3, 7, 4, 5, 6]
@@ -49,9 +45,12 @@ def test_list(db, client, username, password):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Value.objects.filter(project__in=view_value_permission_map.get(username, [])) \
-                                       .filter(snapshot_id=None) \
-                                       .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Value.objects.filter(project__in=view_value_permission_map.get(username, []))
+                .filter(snapshot_id=None)
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401
@@ -72,9 +71,12 @@ def test_list_snapshot(db, client, username, password, snapshot_id):
         if username == 'user':
             assert sorted([item['id'] for item in response.json()]) == []
         else:
-            values_list = Value.objects.filter(project__in=view_value_permission_map.get(username, [])) \
-                                       .filter(snapshot_id=snapshot_id) \
-                                       .order_by('id').values_list('id', flat=True)
+            values_list = (
+                Value.objects.filter(project__in=view_value_permission_map.get(username, []))
+                .filter(snapshot_id=snapshot_id)
+                .order_by('id')
+                .values_list('id', flat=True)
+            )
             assert sorted([item['id'] for item in response.json()]) == list(values_list)
     else:
         assert response.status_code == 401

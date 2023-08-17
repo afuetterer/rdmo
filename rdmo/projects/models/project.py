@@ -20,49 +20,53 @@ from ..managers import ProjectManager
 
 
 class Project(MPTTModel, Model):
-
     objects = ProjectManager()
 
     parent = TreeForeignKey(
-        'self', null=True, blank=True,
-        on_delete=models.DO_NOTHING, related_name='children', db_index=True,
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.DO_NOTHING,
+        related_name='children',
+        db_index=True,
         verbose_name=_('Parent project'),
-        help_text=_('The parent project of this project.')
+        help_text=_('The parent project of this project.'),
     )
     user = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, through='Membership', related_name='projects',
+        settings.AUTH_USER_MODEL,
+        through='Membership',
+        related_name='projects',
         verbose_name=_('User'),
-        help_text=_('The list of users for this project.')
+        help_text=_('The list of users for this project.'),
     )
     site = models.ForeignKey(
-        Site, on_delete=models.SET_NULL, null=True,
+        Site,
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name=_('Site'),
-        help_text=_('The site this project belongs to (in a multi site setup).')
+        help_text=_('The site this project belongs to (in a multi site setup).'),
     )
-    title = models.CharField(
-        max_length=256,
-        verbose_name=_('Title'),
-        help_text=_('The title for this project.')
-    )
+    title = models.CharField(max_length=256, verbose_name=_('Title'), help_text=_('The title for this project.'))
     description = models.TextField(
-        blank=True,
-        verbose_name=_('Description'),
-        help_text=_('A description for this project (optional).')
+        blank=True, verbose_name=_('Description'), help_text=_('A description for this project (optional).')
     )
     catalog = models.ForeignKey(
-        Catalog, related_name='projects', on_delete=models.SET_NULL, null=True,
+        Catalog,
+        related_name='projects',
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name=_('Catalog'),
-        help_text=_('The catalog which will be used for this project.')
+        help_text=_('The catalog which will be used for this project.'),
     )
     tasks = models.ManyToManyField(
-        Task, blank=True, through='Issue',
+        Task,
+        blank=True,
+        through='Issue',
         verbose_name=_('Tasks'),
-        help_text=_('The tasks that will be used for this project.')
+        help_text=_('The tasks that will be used for this project.'),
     )
     views = models.ManyToManyField(
-        View, blank=True,
-        verbose_name=_('Views'),
-        help_text=_('The views that will be used for this project.')
+        View, blank=True, verbose_name=_('Views'), help_text=_('The views that will be used for this project.')
     )
 
     class Meta:
@@ -71,7 +75,7 @@ class Project(MPTTModel, Model):
         verbose_name_plural = _('Projects')
 
     class MPTTMeta:
-        order_insertion_by = ('title', )
+        order_insertion_by = ('title',)
 
     def __str__(self):
         return self.title
@@ -81,16 +85,17 @@ class Project(MPTTModel, Model):
 
     def clean(self):
         if self.id and self.parent in self.get_descendants(include_self=True):
-            raise ValidationError({
-                'parent': [_('A project may not be moved to be a child of itself or one of its descendants.')]
-            })
+            raise ValidationError(
+                {'parent': [_('A project may not be moved to be a child of itself or one of its descendants.')]}
+            )
 
     @property
     def progress(self):
         # create a queryset for the attributes of the catalog for this project
         # the subquery is used to query only attributes which have a question in the catalog, which is not optional
-        questions = Question.objects.filter(attribute_id=OuterRef('pk'), questionset__section__catalog_id=self.catalog.id) \
-                                    .exclude(is_optional=True)
+        questions = Question.objects.filter(
+            attribute_id=OuterRef('pk'), questionset__section__catalog_id=self.catalog.id
+        ).exclude(is_optional=True)
         attributes = Attribute.objects.annotate(active=Exists(questions)).filter(active=True).distinct()
 
         # query the total number of attributes from the qs above
@@ -98,22 +103,25 @@ class Project(MPTTModel, Model):
 
         # query all current values with attributes from the qs above, but where the text, option, or file field is set,
         # and count only one value per attribute
-        values = self.values.filter(snapshot=None) \
-                            .filter(attribute__in=attributes) \
-                            .exclude((models.Q(text='') | models.Q(text=None)) & models.Q(option=None) &
-                                     (models.Q(file='') | models.Q(file=None))) \
-                            .distinct().values('attribute').count()
+        values = (
+            self.values.filter(snapshot=None)
+            .filter(attribute__in=attributes)
+            .exclude(
+                (models.Q(text='') | models.Q(text=None))
+                & models.Q(option=None)
+                & (models.Q(file='') | models.Q(file=None))
+            )
+            .distinct()
+            .values('attribute')
+            .count()
+        )
 
         try:
             ratio = values / total
         except ZeroDivisionError:
             ratio = 0
 
-        return {
-            'total': total,
-            'values': values,
-            'ratio': ratio
-        }
+        return {'total': total, 'values': values, 'ratio': ratio}
 
     @property
     def catalog_uri(self):

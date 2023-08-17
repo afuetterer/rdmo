@@ -13,55 +13,62 @@ from rdmo.core.views import ChoicesViewSet
 from rdmo.core.viewsets import CopyModelMixin
 
 from .models import Catalog, Question, QuestionSet, Section
-from .renderers import (CatalogRenderer, QuestionRenderer, QuestionSetRenderer,
-                        SectionRenderer)
-from .serializers.export import (CatalogExportSerializer,
-                                 QuestionExportSerializer,
-                                 QuestionSetExportSerializer,
-                                 SectionExportSerializer)
-from .serializers.v1 import (CatalogIndexSerializer, CatalogNestedSerializer,
-                             CatalogSerializer, QuestionIndexSerializer,
-                             QuestionNestedSerializer, QuestionSerializer,
-                             QuestionSetIndexSerializer,
-                             QuestionSetNestedSerializer,
-                             QuestionSetSerializer, SectionIndexSerializer,
-                             SectionNestedSerializer, SectionSerializer)
+from .renderers import CatalogRenderer, QuestionRenderer, QuestionSetRenderer, SectionRenderer
+from .serializers.export import (
+    CatalogExportSerializer,
+    QuestionExportSerializer,
+    QuestionSetExportSerializer,
+    SectionExportSerializer,
+)
+from .serializers.v1 import (
+    CatalogIndexSerializer,
+    CatalogNestedSerializer,
+    CatalogSerializer,
+    QuestionIndexSerializer,
+    QuestionNestedSerializer,
+    QuestionSerializer,
+    QuestionSetIndexSerializer,
+    QuestionSetNestedSerializer,
+    QuestionSetSerializer,
+    SectionIndexSerializer,
+    SectionNestedSerializer,
+    SectionSerializer,
+)
 from .utils import get_widget_type_choices
 
 
 class CatalogViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     serializer_class = CatalogSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'key',
-        'comment',
-        'sites'
-    )
+    filterset_fields = ('uri', 'key', 'comment', 'sites')
 
     def get_queryset(self):
-        queryset = Catalog.objects.annotate(projects_count=models.Count('projects')) \
-                                  .prefetch_related('sites', 'groups')
+        queryset = Catalog.objects.annotate(projects_count=models.Count('projects')).prefetch_related('sites', 'groups')
         if self.action in ('nested', 'detail_export'):
             return queryset.prefetch_related(
                 'sections',
-                Prefetch('sections__questionsets', queryset=QuestionSet.objects.filter(questionset=None).prefetch_related(
-                    'conditions',
-                    'questions',
-                    'questions__attribute',
-                    'questions__optionsets',
-                    'questions__conditions',
-                    'questionsets',
-                    'questionsets__attribute',
-                    'questionsets__conditions',
-                    'questionsets__questions',
-                    'questionsets__questions__attribute',
-                    'questionsets__questions__optionsets',
-                    'questionsets__questions__conditions',
-                    'questionsets__questionsets'
-                ).select_related('attribute'))
+                Prefetch(
+                    'sections__questionsets',
+                    queryset=QuestionSet.objects.filter(questionset=None)
+                    .prefetch_related(
+                        'conditions',
+                        'questions',
+                        'questions__attribute',
+                        'questions__optionsets',
+                        'questions__conditions',
+                        'questionsets',
+                        'questionsets__attribute',
+                        'questionsets__conditions',
+                        'questionsets__questions',
+                        'questionsets__questions__attribute',
+                        'questionsets__questions__optionsets',
+                        'questionsets__questions__conditions',
+                        'questionsets__questionsets',
+                    )
+                    .select_related('attribute'),
+                ),
             )
         else:
             return queryset
@@ -91,37 +98,36 @@ class CatalogViewSet(CopyModelMixin, ModelViewSet):
 
 
 class SectionViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     serializer_class = SectionSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'uri',
-        'path',
-        'key',
-        'catalog',
-        'comment'
-    )
+    filterset_fields = ('uri', 'path', 'key', 'catalog', 'comment')
 
     def get_queryset(self):
         queryset = Section.objects.all()
         if self.action in ('nested', 'detail_export'):
             return queryset.prefetch_related(
-                Prefetch('questionsets', queryset=QuestionSet.objects.filter(questionset=None).prefetch_related(
-                    'conditions',
-                    'questions',
-                    'questions__attribute',
-                    'questions__optionsets',
-                    'questions__conditions',
+                Prefetch(
                     'questionsets',
-                    'questionsets__attribute',
-                    'questionsets__conditions',
-                    'questionsets__questions',
-                    'questionsets__questions__attribute',
-                    'questionsets__questions__optionsets',
-                    'questionsets__questions__conditions',
-                    'questionsets__questionsets'
-                ).select_related('attribute'))
+                    queryset=QuestionSet.objects.filter(questionset=None)
+                    .prefetch_related(
+                        'conditions',
+                        'questions',
+                        'questions__attribute',
+                        'questions__optionsets',
+                        'questions__conditions',
+                        'questionsets',
+                        'questionsets__attribute',
+                        'questionsets__conditions',
+                        'questionsets__questions',
+                        'questionsets__questions__attribute',
+                        'questionsets__questions__optionsets',
+                        'questionsets__questions__conditions',
+                        'questionsets__questionsets',
+                    )
+                    .select_related('attribute'),
+                )
             )
         else:
             return queryset
@@ -151,19 +157,11 @@ class SectionViewSet(CopyModelMixin, ModelViewSet):
 
 
 class QuestionSetViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     serializer_class = QuestionSetSerializer
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'attribute',
-        'uri',
-        'path',
-        'key',
-        'section',
-        'comment',
-        'is_collection'
-    )
+    filterset_fields = ('attribute', 'uri', 'path', 'key', 'section', 'comment', 'is_collection')
 
     def get_queryset(self):
         queryset = QuestionSet.objects.all()
@@ -181,7 +179,7 @@ class QuestionSetViewSet(CopyModelMixin, ModelViewSet):
                 'questionsets__questions__attribute',
                 'questionsets__questions__optionsets',
                 'questionsets__questions__conditions',
-                'questionsets__questionsets'
+                'questionsets__questionsets',
             ).select_related('attribute')
         else:
             return queryset
@@ -211,7 +209,7 @@ class QuestionSetViewSet(CopyModelMixin, ModelViewSet):
 
 
 class QuestionViewSet(CopyModelMixin, ModelViewSet):
-    permission_classes = (HasModelPermission, )
+    permission_classes = (HasModelPermission,)
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
@@ -226,18 +224,13 @@ class QuestionViewSet(CopyModelMixin, ModelViewSet):
         'value_type',
         'widget_type',
         'unit',
-        'comment'
+        'comment',
     )
 
     def get_queryset(self):
         queryset = Question.objects.all()
         if self.action in ('nested', 'detail_export'):
-            return queryset.prefetch_related(
-                'optionsets',
-                'conditions'
-            ).select_related(
-                'attribute'
-            )
+            return queryset.prefetch_related('optionsets', 'conditions').select_related('attribute')
         else:
             return queryset
 
@@ -266,10 +259,10 @@ class QuestionViewSet(CopyModelMixin, ModelViewSet):
 
 
 class WidgetTypeViewSet(ChoicesViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     queryset = get_widget_type_choices()
 
 
 class ValueTypeViewSet(ChoicesViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     queryset = VALUE_TYPE_CHOICES

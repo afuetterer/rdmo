@@ -22,14 +22,14 @@ view_integration_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 add_integration_permission_map = change_integration_permission_map = delete_integration_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -58,25 +58,15 @@ def test_integration_create_post(db, client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('integration_create', args=[project_id, 'github'])
-    data = {
-        'repo': 'example/example1'
-    }
+    data = {'repo': 'example/example1'}
     response = client.post(url, data)
 
     if project_id in add_integration_permission_map.get(username, []):
         assert response.status_code == 302
         values = Integration.objects.order_by('id').last().options.values('key', 'value', 'secret')
         assert sorted(values, key=lambda obj: obj['key']) == [
-            {
-                'key': 'repo',
-                'value': 'example/example1',
-                'secret': False
-            },
-            {
-                'key': 'secret',
-                'value': '',
-                'secret': True
-            }
+            {'key': 'repo', 'value': 'example/example1', 'secret': False},
+            {'key': 'secret', 'value': '', 'secret': True},
         ]
     elif password:
         assert response.status_code == 403
@@ -113,27 +103,20 @@ def test_integration_update_post(db, client, username, password, project_id, int
     integration = Integration.objects.filter(project_id=project_id, id=integration_id).first()
 
     url = reverse('integration_update', args=[project_id, integration_id])
-    data = {
-        'repo': 'example/example2',
-        'secret': 'super_secret'
-    }
+    data = {'repo': 'example/example2', 'secret': 'super_secret'}
     response = client.post(url, data)
 
     if integration:
         if project_id in change_integration_permission_map.get(username, []):
             assert response.status_code == 302
-            values = Integration.objects.filter(project_id=project_id, id=integration_id).first().options.values('key', 'value', 'secret')
+            values = (
+                Integration.objects.filter(project_id=project_id, id=integration_id)
+                .first()
+                .options.values('key', 'value', 'secret')
+            )
             assert sorted(values, key=lambda obj: obj['key']) == [
-                {
-                    'key': 'repo',
-                    'value': 'example/example2',
-                    'secret': False
-                },
-                {
-                    'key': 'secret',
-                    'value': 'super_secret',
-                    'secret': True
-                }
+                {'key': 'repo', 'value': 'example/example2', 'secret': False},
+                {'key': 'secret', 'value': 'super_secret', 'secret': True},
             ]
         elif password:
             assert response.status_code == 403
@@ -203,12 +186,7 @@ def test_integration_webhook_post(db, client, project_id, integration_id):
 
     secret = 'super_duper_secret'
     url = reverse('integration_webhook', args=[project_id, integration_id])
-    data = {
-        'action': 'closed',
-        'issue': {
-            'html_url': 'https://github.com/example/example/issues/1'
-        }
-    }
+    data = {'action': 'closed', 'issue': {'html_url': 'https://github.com/example/example/issues/1'}}
     body = json.dumps(data)
     signature = 'sha1=' + hmac.new(secret.encode(), body.encode(), 'sha1').hexdigest()
 

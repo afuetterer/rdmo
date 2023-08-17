@@ -13,6 +13,7 @@ from rdmo.views.utils import ProjectWrapper
 
 from ..models import Project, Snapshot
 from ..utils import get_value_path
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,9 +21,17 @@ class ProjectAnswersView(ObjectPermissionMixin, DetailView):
     model = Project
     queryset = Project.objects.prefetch_related(
         Prefetch('catalog__sections__questionsets', queryset=QuestionSet.objects.select_related('attribute')),
-        Prefetch('catalog__sections__questionsets__questions', queryset=Question.objects.select_related('attribute', 'questionset')),
-        Prefetch('catalog__sections__questionsets__questionsets', queryset=QuestionSet.objects.select_related('attribute')),
-        Prefetch('catalog__sections__questionsets__questionsets__questions', queryset=Question.objects.select_related('attribute', 'questionset')),
+        Prefetch(
+            'catalog__sections__questionsets__questions',
+            queryset=Question.objects.select_related('attribute', 'questionset'),
+        ),
+        Prefetch(
+            'catalog__sections__questionsets__questionsets', queryset=QuestionSet.objects.select_related('attribute')
+        ),
+        Prefetch(
+            'catalog__sections__questionsets__questionsets__questions',
+            queryset=Question.objects.select_related('attribute', 'questionset'),
+        ),
     )
 
     permission_required = 'projects.view_project_object'
@@ -47,15 +56,20 @@ class ProjectAnswersView(ObjectPermissionMixin, DetailView):
             context['current_snapshot'] = None
 
         # collect values with files, remove double files and order them.
-        context['attachments'] = context['project'].values.filter(snapshot=context['current_snapshot']) \
-                                                          .filter(value_type=VALUE_TYPE_FILE) \
-                                                          .order_by('file')
+        context['attachments'] = (
+            context['project']
+            .values.filter(snapshot=context['current_snapshot'])
+            .filter(value_type=VALUE_TYPE_FILE)
+            .order_by('file')
+        )
 
-        context.update({
-            'project_wrapper': ProjectWrapper(context['project'], context['current_snapshot']),
-            'snapshots': list(context['project'].snapshots.values('id', 'title')),
-            'export_formats': settings.EXPORT_FORMATS
-        })
+        context.update(
+            {
+                'project_wrapper': ProjectWrapper(context['project'], context['current_snapshot']),
+                'snapshots': list(context['project'].snapshots.values('id', 'title')),
+                'export_formats': settings.EXPORT_FORMATS,
+            }
+        )
 
         return context
 
@@ -64,9 +78,17 @@ class ProjectAnswersExportView(ObjectPermissionMixin, DetailView):
     model = Project
     queryset = Project.objects.prefetch_related(
         Prefetch('catalog__sections__questionsets', queryset=QuestionSet.objects.select_related('attribute')),
-        Prefetch('catalog__sections__questionsets__questions', queryset=Question.objects.select_related('attribute', 'questionset')),
-        Prefetch('catalog__sections__questionsets__questionsets', queryset=QuestionSet.objects.select_related('attribute')),
-        Prefetch('catalog__sections__questionsets__questionsets__questions', queryset=Question.objects.select_related('attribute', 'questionset')),
+        Prefetch(
+            'catalog__sections__questionsets__questions',
+            queryset=Question.objects.select_related('attribute', 'questionset'),
+        ),
+        Prefetch(
+            'catalog__sections__questionsets__questionsets', queryset=QuestionSet.objects.select_related('attribute')
+        ),
+        Prefetch(
+            'catalog__sections__questionsets__questionsets__questions',
+            queryset=Question.objects.select_related('attribute', 'questionset'),
+        ),
     )
     permission_required = 'projects.view_project_object'
 
@@ -78,14 +100,18 @@ class ProjectAnswersExportView(ObjectPermissionMixin, DetailView):
         except Snapshot.DoesNotExist:
             context['current_snapshot'] = None
 
-        context.update({
-            'project_wrapper': ProjectWrapper(context['project'], context['current_snapshot']),
-            'title': context['project'].title,
-            'format': self.kwargs.get('format'),
-            'resource_path': get_value_path(context['project'], context['current_snapshot'])
-        })
+        context.update(
+            {
+                'project_wrapper': ProjectWrapper(context['project'], context['current_snapshot']),
+                'title': context['project'].title,
+                'format': self.kwargs.get('format'),
+                'resource_path': get_value_path(context['project'], context['current_snapshot']),
+            }
+        )
 
         return context
 
     def render_to_response(self, context, **response_kwargs):
-        return render_to_format(self.request, context['format'], context['title'], 'projects/project_answers_export.html', context)
+        return render_to_format(
+            self.request, context['format'], context['title'], 'projects/project_answers_export.html', context
+        )

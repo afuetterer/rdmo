@@ -1,8 +1,7 @@
 import logging
 
 from django.contrib.sites.models import Site
-from django.http import (HttpResponseBadRequest, HttpResponseForbidden,
-                         HttpResponseRedirect)
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -48,14 +47,13 @@ class MembershipCreateView(ObjectPermissionMixin, RedirectViewMixin, FormView):
     def form_valid(self, form):
         invite = form.save()
         if invite is not None:
-
             project_invite_path = get_invite_email_project_path(invite)
             context = {
                 'invite_url': self.request.build_absolute_uri(project_invite_path),
                 'invite_user': invite.user,
                 'project': invite.project,
                 'user': self.request.user,
-                'site': Site.objects.get_current()
+                'site': Site.objects.get_current(),
             }
 
             subject = render_to_string('projects/email/project_invite_subject.txt', context)
@@ -68,7 +66,7 @@ class MembershipCreateView(ObjectPermissionMixin, RedirectViewMixin, FormView):
 
 
 class MembershipUpdateView(ObjectPermissionMixin, RedirectViewMixin, UpdateView):
-    fields = ('role', )
+    fields = ('role',)
     permission_required = 'projects.change_membership_object'
 
     def get_queryset(self):
@@ -90,7 +88,9 @@ class MembershipDeleteView(ObjectPermissionMixin, RedirectViewMixin, DeleteView)
         if (self.request.user in self.obj.project.owners) or is_site_manager(self.request.user):
             # user is owner or site manager
             if is_last_owner(self.obj.project, self.obj.user):
-                logger.info('User "%s" not allowed to remove last user "%s"', self.request.user.username, self.obj.user.username)
+                logger.info(
+                    'User "%s" not allowed to remove last user "%s"', self.request.user.username, self.obj.user.username
+                )
                 return HttpResponseBadRequest()
             else:
                 logger.info('User "%s" deletes user "%s"', self.request.user.username, self.obj.user.username)

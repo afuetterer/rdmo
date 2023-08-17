@@ -65,15 +65,17 @@ def get_foreign_field(instance, foreign_uri, foreign_model):
         try:
             return foreign_model.objects.get(uri=foreign_uri)
         except foreign_model.DoesNotExist:
-            logger.info('{foreign_model} {foreign_uri} for {instance_model} {instance_uri} does not exist.'.format(
-                foreign_model=foreign_model._meta.object_name,
-                foreign_uri=foreign_uri,
-                instance_model=instance._meta.object_name,
-                instance_uri=instance.uri
-            ))
+            logger.info(
+                '{foreign_model} {foreign_uri} for {instance_model} {instance_uri} does not exist.'.format(
+                    foreign_model=foreign_model._meta.object_name,
+                    foreign_uri=foreign_uri,
+                    instance_model=instance._meta.object_name,
+                    instance_uri=instance.uri,
+                )
+            )
             instance.missing[foreign_uri] = {
                 'foreign_model': foreign_model._meta.verbose_name,
-                'foreign_uri': foreign_uri
+                'foreign_uri': foreign_uri,
             }
 
     # return None by default
@@ -89,15 +91,17 @@ def get_m2m_instances(instance, foreign_uris, foreign_model):
                 foreign_instance = foreign_model.objects.get(uri=foreign_uri)
                 foreign_instances.append(foreign_instance)
             except foreign_model.DoesNotExist:
-                logger.info('{foreign_model} {foreign_uri} for imported {instance_model} {instance_uri} does not exist.'.format(
-                    foreign_model=foreign_model._meta.object_name,
-                    foreign_uri=foreign_uri,
-                    instance_model=instance._meta.object_name,
-                    instance_uri=instance.uri
-                ))
+                logger.info(
+                    '{foreign_model} {foreign_uri} for imported {instance_model} {instance_uri} does not exist.'.format(
+                        foreign_model=foreign_model._meta.object_name,
+                        foreign_uri=foreign_uri,
+                        instance_model=instance._meta.object_name,
+                        instance_uri=instance.uri,
+                    )
+                )
                 instance.missing[foreign_uri] = {
                     'foreign_model': foreign_model._meta.verbose_name,
-                    'foreign_uri': foreign_uri
+                    'foreign_uri': foreign_uri,
                 }
 
     return foreign_instances
@@ -118,7 +122,9 @@ def validate_instance(instance, *validators):
 
     except ValidationError as e:
         try:
-            exception_message = '; '.join(['{}: {}'.format(key, ', '.join(messages)) for key, messages in e.message_dict.items()])
+            exception_message = '; '.join(
+                ['{}: {}'.format(key, ', '.join(messages)) for key, messages in e.message_dict.items()]
+            )
         except AttributeError:
             exception_message = ''.join(e.messages)
     except ObjectDoesNotExist as e:
@@ -128,9 +134,7 @@ def validate_instance(instance, *validators):
     finally:
         if exception_message is not None:
             message = '{instance_model} {instance_uri} cannot be imported ({exception}).'.format(
-                instance_model=instance._meta.object_name,
-                instance_uri=instance.uri,
-                exception=exception_message
+                instance_model=instance._meta.object_name, instance_uri=instance.uri, exception=exception_message
             )
             logger.info(message)
             instance.errors.append(message)

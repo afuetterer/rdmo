@@ -7,21 +7,26 @@ from rdmo.questions.models import QuestionSet
 
 
 class Continuation(Model):
-
     project = models.ForeignKey(
-        'Project', on_delete=models.CASCADE, related_name='+',
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='+',
         verbose_name=_('Project'),
-        help_text=_('The project for this continuation.')
+        help_text=_('The project for this continuation.'),
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='+',
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='+',
         verbose_name=_('User'),
-        help_text=_('The user for this continuation.')
+        help_text=_('The user for this continuation.'),
     )
     questionset = models.ForeignKey(
-        QuestionSet, on_delete=models.CASCADE, related_name='+',
+        QuestionSet,
+        on_delete=models.CASCADE,
+        related_name='+',
         verbose_name=_('Question set'),
-        help_text=_('The question set for this continuation.')
+        help_text=_('The question set for this continuation.'),
     )
 
     class Meta:

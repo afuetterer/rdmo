@@ -1,8 +1,7 @@
 import logging
 
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.permissions import (DjangoModelPermissions,
-                                        DjangoObjectPermissions)
+from rest_framework.permissions import DjangoModelPermissions, DjangoObjectPermissions
 
 logger = logging.getLogger(__name__)
 
@@ -12,20 +11,27 @@ def log_result(func):
     A decorator to automatically log the arguments and the results of calls
     to has_permission and has_object_permission.
     '''
+
     def wrapper(self, request, *args):
         result = func(self, request, *args)
 
         class_name = self.__class__.__name__
         func_name = func.__name__
-        logger.debug('%s.%s path=%s method=%s user=%s result=%s',
-                     class_name, func_name, request.path, request.method, request.user, result)
+        logger.debug(
+            '%s.%s path=%s method=%s user=%s result=%s',
+            class_name,
+            func_name,
+            request.path,
+            request.method,
+            request.user,
+            result,
+        )
         return result
 
     return wrapper
 
 
 class HasModelPermission(DjangoModelPermissions):
-
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],
         'OPTIONS': ['%(app_label)s.view_%(model_name)s'],
@@ -50,7 +56,6 @@ class HasModelPermission(DjangoModelPermissions):
 
 
 class HasObjectPermission(DjangoObjectPermissions):
-
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s_object'],
         'OPTIONS': ['%(app_label)s.view_%(model_name)s_object'],

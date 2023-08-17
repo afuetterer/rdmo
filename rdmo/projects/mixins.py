@@ -12,12 +12,10 @@ from rdmo.core.plugins import get_plugin, get_plugins
 from rdmo.questions.models import Question
 
 from .models import Membership, Project
-from .utils import (save_import_snapshot_values, save_import_tasks,
-                    save_import_values, save_import_views)
+from .utils import save_import_snapshot_values, save_import_tasks, save_import_values, save_import_views
 
 
 class ProjectImportMixin(object):
-
     def get_current_values(self, current_project):
         queryset = current_project.values.filter(snapshot=None).select_related('attribute', 'option')
 
@@ -27,9 +25,11 @@ class ProjectImportMixin(object):
         return current_values
 
     def get_questions(self, catalog):
-        queryset = Question.objects.filter(questionset__section__catalog=catalog) \
-                                   .select_related('attribute') \
-                                   .order_by('attribute__uri')
+        queryset = (
+            Question.objects.filter(questionset__section__catalog=catalog)
+            .select_related('attribute')
+            .order_by('attribute__uri')
+        )
 
         questions = {}
         for question in queryset:
@@ -45,10 +45,12 @@ class ProjectImportMixin(object):
             if value.attribute:
                 value.pk = None
                 value.question = questions.get(value.attribute.uri)
-                value.current = current_values.get(value.attribute.uri, {}) \
-                                              .get(value.set_prefix, {}) \
-                                              .get(value.set_index, {}) \
-                                              .get(value.collection_index)
+                value.current = (
+                    current_values.get(value.attribute.uri, {})
+                    .get(value.set_prefix, {})
+                    .get(value.set_index, {})
+                    .get(value.collection_index)
+                )
 
         for snapshot in snapshots:
             snapshot.pk = None
@@ -57,10 +59,12 @@ class ProjectImportMixin(object):
                 if value.attribute:
                     value.pk = None
                     value.question = questions.get(value.attribute.uri)
-                    value.current = current_values.get(value.attribute.uri, {}) \
-                                                  .get(value.set_prefix, {}) \
-                                                  .get(value.set_index, {}) \
-                                                  .get(value.collection_index)
+                    value.current = (
+                        current_values.get(value.attribute.uri, {})
+                        .get(value.set_prefix, {})
+                        .get(value.set_index, {})
+                        .get(value.collection_index)
+                    )
 
     def get_import_plugin(self, key, current_project=None):
         import_plugin = get_plugin('PROJECT_IMPORTS', key)
@@ -76,10 +80,12 @@ class ProjectImportMixin(object):
         try:
             uploaded_file = self.request.FILES['uploaded_file']
         except KeyError:
-            return render(self.request, 'core/error.html', {
-                'title': _('Import error'),
-                'errors': [_('There has been an error with your import.')]
-            }, status=400)
+            return render(
+                self.request,
+                'core/error.html',
+                {'title': _('Import error'), 'errors': [_('There has been an error with your import.')]},
+                status=400,
+            )
         else:
             self.request.session['import_file_name'] = handle_uploaded_file(uploaded_file)
             self.request.session['import_source_title'] = uploaded_file.name
@@ -93,10 +99,17 @@ class ProjectImportMixin(object):
         import_file_name = self.request.session.get('import_file_name')
         import_source_title = self.request.session.get('import_source_title')
         if import_file_name is None or not Path(import_file_name).is_file():
-            return render(self.request, 'core/error.html', {
-                'title': _('Import error'),
-                'errors': [_('There has been an error with your import. No uploaded or retrieved file could be found.')]
-            }, status=400)
+            return render(
+                self.request,
+                'core/error.html',
+                {
+                    'title': _('Import error'),
+                    'errors': [
+                        _('There has been an error with your import. No uploaded or retrieved file could be found.')
+                    ],
+                },
+                status=400,
+            )
 
         for import_key, import_plugin in get_plugins('PROJECT_IMPORTS').items():
             import_plugin.current_project = current_project
@@ -107,32 +120,39 @@ class ProjectImportMixin(object):
                 try:
                     import_plugin.process()
                 except ValidationError as e:
-                    return render(self.request, 'core/error.html', {
-                        'title': _('Import error'),
-                        'errors': e
-                    }, status=400)
+                    return render(
+                        self.request, 'core/error.html', {'title': _('Import error'), 'errors': e}, status=400
+                    )
 
                 # store information in session for ProjectCreateImportView
                 self.request.session['import_key'] = import_key
 
                 # attach questions and current values
-                self.update_values(current_project, import_plugin.catalog, import_plugin.values, import_plugin.snapshots)
+                self.update_values(
+                    current_project, import_plugin.catalog, import_plugin.values, import_plugin.snapshots
+                )
 
-                return render(self.request, 'projects/project_import.html', {
-                    'method': 'import_file',
-                    'current_project': current_project,
-                    'source_title': import_plugin.source_title,
-                    'source_project': import_plugin.project,
-                    'values': import_plugin.values,
-                    'snapshots': import_plugin.snapshots if not current_project else None,
-                    'tasks': import_plugin.tasks,
-                    'views': import_plugin.views
-                })
+                return render(
+                    self.request,
+                    'projects/project_import.html',
+                    {
+                        'method': 'import_file',
+                        'current_project': current_project,
+                        'source_title': import_plugin.source_title,
+                        'source_project': import_plugin.project,
+                        'values': import_plugin.values,
+                        'snapshots': import_plugin.snapshots if not current_project else None,
+                        'tasks': import_plugin.tasks,
+                        'views': import_plugin.views,
+                    },
+                )
 
-        return render(self.request, 'core/error.html', {
-            'title': _('Import error'),
-            'errors': [_('Files of this type cannot be imported.')]
-        }, status=400)
+        return render(
+            self.request,
+            'core/error.html',
+            {'title': _('Import error'), 'errors': [_('Files of this type cannot be imported.')]},
+            status=400,
+        )
 
     def import_file(self):
         current_project = self.object
@@ -147,10 +167,12 @@ class ProjectImportMixin(object):
             import_tmpfile_name = self.request.session.pop('import_file_name')
             import_key = self.request.session.pop('import_key')
         except KeyError:
-            return render(self.request, 'core/error.html', {
-                'title': _('Import error'),
-                'errors': [_('There has been an error with your import.')]
-            }, status=400)
+            return render(
+                self.request,
+                'core/error.html',
+                {'title': _('Import error'), 'errors': [_('There has been an error with your import.')]},
+                status=400,
+            )
 
         checked = [key for key, value in self.request.POST.items() if 'on' in value]
 
@@ -162,13 +184,14 @@ class ProjectImportMixin(object):
                 try:
                     import_plugin.process()
                 except ValidationError as e:
-                    return render(self.request, 'core/error.html', {
-                        'title': _('Import error'),
-                        'errors': e
-                    }, status=400)
+                    return render(
+                        self.request, 'core/error.html', {'title': _('Import error'), 'errors': e}, status=400
+                    )
 
                 # attach questions and current values
-                self.update_values(current_project, import_plugin.catalog, import_plugin.values, import_plugin.snapshots)
+                self.update_values(
+                    current_project, import_plugin.catalog, import_plugin.values, import_plugin.snapshots
+                )
 
                 if current_project:
                     save_import_values(self.object, import_plugin.values, checked)
@@ -196,10 +219,12 @@ class ProjectImportMixin(object):
 
                     return HttpResponseRedirect(import_plugin.project.get_absolute_url())
 
-        return render(self.request, 'core/error.html', {
-            'title': _('Import error'),
-            'errors': [_('There has been an error with your import.')]
-        }, status=400)
+        return render(
+            self.request,
+            'core/error.html',
+            {'title': _('Import error'), 'errors': [_('There has been an error with your import.')]},
+            status=400,
+        )
 
     def import_project(self):
         current_project = self.object
@@ -217,8 +242,7 @@ class ProjectImportMixin(object):
         if not self.request.user.has_perm('projects.view_project_object', project):
             self.handle_no_permission()
 
-        values = project.values.filter(snapshot=None) \
-                               .select_related('attribute', 'option')
+        values = project.values.filter(snapshot=None).select_related('attribute', 'option')
 
         # attach questions and current values
         self.update_values(current_project, current_project.catalog, values)
@@ -229,10 +253,14 @@ class ProjectImportMixin(object):
             return HttpResponseRedirect(current_project.get_absolute_url())
 
         else:
-            return render(self.request, 'projects/project_import.html', {
-                'method': 'import_project',
-                'source': project.id,
-                'source_title': project.title,
-                'current_project': current_project,
-                'values': values,
-            })
+            return render(
+                self.request,
+                'projects/project_import.html',
+                {
+                    'method': 'import_project',
+                    'source': project.id,
+                    'source_title': project.title,
+                    'current_project': current_project,
+                    'values': values,
+                },
+            )

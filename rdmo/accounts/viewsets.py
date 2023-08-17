@@ -10,7 +10,6 @@ from .utils import is_site_manager
 
 
 class UserViewSetMixin(object):
-
     def get_users_for_user(self, user):
         if user.is_authenticated:
             if user.has_perm('auth.view_user'):
@@ -22,7 +21,7 @@ class UserViewSetMixin(object):
 
 
 class UserViewSet(UserViewSetMixin, ReadOnlyModelViewSet):
-    permission_classes = (HasModelPermission | HasObjectPermission, )
+    permission_classes = (HasModelPermission | HasObjectPermission,)
     serializer_class = UserSerializer
 
     filter_backends = (DjangoFilterBackend,)
@@ -35,5 +34,6 @@ class UserViewSet(UserViewSetMixin, ReadOnlyModelViewSet):
     )
 
     def get_queryset(self):
-        return self.get_users_for_user(self.request.user) \
-                   .prefetch_related('groups', 'role__member', 'role__manager', 'memberships')
+        return self.get_users_for_user(self.request.user).prefetch_related(
+            'groups', 'role__member', 'role__manager', 'memberships'
+        )

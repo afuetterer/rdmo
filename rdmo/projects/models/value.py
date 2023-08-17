@@ -7,8 +7,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_cleanup import cleanup
 
-from rdmo.core.constants import (VALUE_TYPE_BOOLEAN, VALUE_TYPE_CHOICES,
-                                 VALUE_TYPE_DATETIME, VALUE_TYPE_TEXT)
+from rdmo.core.constants import VALUE_TYPE_BOOLEAN, VALUE_TYPE_CHOICES, VALUE_TYPE_DATETIME, VALUE_TYPE_TEXT
 from rdmo.core.models import Model
 from rdmo.domain.models import Attribute
 from rdmo.options.models import Option
@@ -22,72 +21,79 @@ def get_file_upload_to(instance, filename):
 
 
 class Value(Model):
-
     objects = ValueManager()
 
     FALSE_TEXT = [None, '', '0', 'f', 'F', 'false', 'False']
 
     project = models.ForeignKey(
-        'Project', on_delete=models.CASCADE, related_name='values',
+        'Project',
+        on_delete=models.CASCADE,
+        related_name='values',
         verbose_name=_('Project'),
-        help_text=_('The project this value belongs to.')
+        help_text=_('The project this value belongs to.'),
     )
     snapshot = models.ForeignKey(
-        'Snapshot', blank=True, null=True,
-        on_delete=models.CASCADE, related_name='values',
+        'Snapshot',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='values',
         verbose_name=_('Snapshot'),
-        help_text=_('The snapshot this value belongs to.')
+        help_text=_('The snapshot this value belongs to.'),
     )
     attribute = models.ForeignKey(
-        Attribute, blank=True, null=True,
-        on_delete=models.SET_NULL, related_name='values',
+        Attribute,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='values',
         verbose_name=_('Attribute'),
-        help_text=_('The attribute this value belongs to.')
+        help_text=_('The attribute this value belongs to.'),
     )
     set_prefix = models.CharField(
-        max_length=16, blank=True, default='',
+        max_length=16,
+        blank=True,
+        default='',
         verbose_name=_('Set prefix'),
-        help_text=_('The position of this value with respect to superior sets (i.e. for nested question sets).')
+        help_text=_('The position of this value with respect to superior sets (i.e. for nested question sets).'),
     )
     set_index = models.IntegerField(
         default=0,
         verbose_name=_('Set index'),
-        help_text=_('The position of this value in a set (i.e. for a question set tagged as collection).')
+        help_text=_('The position of this value in a set (i.e. for a question set tagged as collection).'),
     )
     collection_index = models.IntegerField(
         default=0,
         verbose_name=_('Collection index'),
-        help_text=_('The position of this value in a list (i.e. for a question tagged as collection).')
+        help_text=_('The position of this value in a list (i.e. for a question tagged as collection).'),
     )
-    text = models.TextField(
-        blank=True,
-        verbose_name=_('Text'),
-        help_text=_('The string stored for this value.')
-    )
+    text = models.TextField(blank=True, verbose_name=_('Text'), help_text=_('The string stored for this value.'))
     option = models.ForeignKey(
-        Option, blank=True, null=True, on_delete=models.SET_NULL, related_name='values',
+        Option,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='values',
         verbose_name=_('Option'),
-        help_text=_('The option stored for this value.')
+        help_text=_('The option stored for this value.'),
     )
     file = models.FileField(
-        upload_to=get_file_upload_to, null=True, blank=True,
+        upload_to=get_file_upload_to,
+        null=True,
+        blank=True,
         verbose_name=_('File'),
-        help_text=_('The file stored for this value.')
+        help_text=_('The file stored for this value.'),
     )
     value_type = models.CharField(
-        max_length=8, choices=VALUE_TYPE_CHOICES, default=VALUE_TYPE_TEXT,
+        max_length=8,
+        choices=VALUE_TYPE_CHOICES,
+        default=VALUE_TYPE_TEXT,
         verbose_name=_('Value type'),
-        help_text=_('Type of this value.')
+        help_text=_('Type of this value.'),
     )
-    unit = models.CharField(
-        max_length=64, blank=True,
-        verbose_name=_('Unit'),
-        help_text=_('Unit for this value.')
-    )
+    unit = models.CharField(max_length=64, blank=True, verbose_name=_('Unit'), help_text=_('Unit for this value.'))
     external_id = models.CharField(
-        max_length=256, blank=True,
-        verbose_name=_('External id'),
-        help_text=_('External id for this value.')
+        max_length=256, blank=True, verbose_name=_('External id'), help_text=_('External id for this value.')
     )
 
     class Meta:
@@ -117,16 +123,18 @@ class Value(Model):
             'is_true': self.is_true,
             'is_false': self.is_false,
             'is_empty': self.is_empty,
-            'as_number': self.as_number
+            'as_number': self.as_number,
         }
 
         if self.file:
-            value_dict.update({
-                'file_name': self.file_name,
-                'file_url': self.file_url,
-                'file_type': self.file_type,
-                'file_path': self.file_path
-            })
+            value_dict.update(
+                {
+                    'file_name': self.file_name,
+                    'file_url': self.file_url,
+                    'file_type': self.file_type,
+                    'file_path': self.file_path,
+                }
+            )
 
         return value_dict
 
@@ -170,30 +178,15 @@ class Value(Model):
 
     @property
     def is_true(self):
-        return any([
-            self.text not in self.FALSE_TEXT,
-            self.option,
-            self.file,
-            self.external_id != ''
-        ])
+        return any([self.text not in self.FALSE_TEXT, self.option, self.file, self.external_id != ''])
 
     @property
     def is_false(self):
-        return all([
-            self.text in self.FALSE_TEXT,
-            not self.option,
-            not self.file,
-            self.external_id == ''
-        ])
+        return all([self.text in self.FALSE_TEXT, not self.option, not self.file, self.external_id == ''])
 
     @property
     def is_empty(self):
-        return all([
-            self.text == '',
-            not self.option,
-            not self.file,
-            self.external_id == ''
-        ])
+        return all([self.text == '', not self.option, not self.file, self.external_id == ''])
 
     @property
     def as_number(self):

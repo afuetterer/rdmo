@@ -35,7 +35,7 @@ def render_lang_template(template_name, escape_html=False):
         template_name + '_' + loc + '.html',
         template_name + '_' + settings.LANGUAGES[0][0] + '.html',
         template_name + '_en.html',
-        template_name + '.html'
+        template_name + '.html',
     ]
     for el in lst:
         try:
@@ -63,13 +63,13 @@ def vendor(vendor_key):
                 tag = '<script src="%(url)s/%(path)s" integrity="%(sri)s" crossorigin="anonymous"></script>' % {
                     'url': vendor_config['url'].rstrip('/'),
                     'path': file['path'],
-                    'sri': file['sri'] if 'sri' in file else ''
+                    'sri': file['sri'] if 'sri' in file else '',
                 }
             else:
                 tag = '<script src="%(static_url)s/%(vendor_key)s/%(path)s"></script>' % {
                     'static_url': settings.STATIC_URL.rstrip('/'),
                     'vendor_key': vendor_key,
-                    'path': file['path']
+                    'path': file['path'],
                 }
 
             tags.append(tag)
@@ -77,16 +77,19 @@ def vendor(vendor_key):
     if 'css' in vendor_config:
         for file in vendor_config['css']:
             if settings.VENDOR_CDN:
-                tag = '<link rel="stylesheet" href="%(url)s/%(path)s" integrity="%(sri)s" crossorigin="anonymous" />' % {
-                    'url': vendor_config['url'].rstrip('/'),
-                    'path': file['path'],
-                    'sri': file['sri'] if 'sri' in file else ''
-                }
+                tag = (
+                    '<link rel="stylesheet" href="%(url)s/%(path)s" integrity="%(sri)s" crossorigin="anonymous" />'
+                    % {
+                        'url': vendor_config['url'].rstrip('/'),
+                        'path': file['path'],
+                        'sri': file['sri'] if 'sri' in file else '',
+                    }
+                )
             else:
                 tag = '<link rel="stylesheet" href="%(static_url)s/%(vendor_key)s/%(path)s" />' % {
                     'static_url': settings.STATIC_URL.rstrip('/'),
                     'vendor_key': vendor_key,
-                    'path': file['path']
+                    'path': file['path'],
                 }
 
             tags.append(tag)
@@ -147,9 +150,9 @@ def back_to_project_link(context):
                 project_id = resolver_match.kwargs.get('project_id')
 
             if project_id is not None:
-                return render_to_string('core/back_to_project_link.html', {
-                    'project_id': project_id
-                }, request=context.request)
+                return render_to_string(
+                    'core/back_to_project_link.html', {'project_id': project_id}, request=context.request
+                )
     except Resolver404:
         pass
 

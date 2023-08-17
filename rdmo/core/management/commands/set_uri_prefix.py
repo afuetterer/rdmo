@@ -9,12 +9,10 @@ from rdmo.views.models import View
 
 
 class Command(BaseCommand):
-
     def add_arguments(self, parser):
         parser.add_argument('uri_prefix', action='store', help='URI prefix to be used for all elements.')
 
     def handle(self, *args, **options):
-
         for obj in Condition.objects.all():
             self._set_uri_prefix(obj, options['uri_prefix'])
 

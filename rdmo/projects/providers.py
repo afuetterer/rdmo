@@ -11,7 +11,6 @@ from rdmo.services.providers import OauthProviderMixin, GitHubProviderMixin, Git
 
 
 class IssueProvider(Plugin):
-
     def send_issue(self, request, issue, integration, subject, message, attachments):
         raise NotImplementedError
 
@@ -20,7 +19,6 @@ class IssueProvider(Plugin):
 
 
 class OauthIssueProvider(OauthProviderMixin, IssueProvider):
-
     def send_issue(self, request, issue, integration, subject, message, attachments):
         url = self.get_post_url(request, issue, integration, subject, message, attachments)
         data = self.get_post_data(request, issue, integration, subject, message, attachments)
@@ -29,10 +27,15 @@ class OauthIssueProvider(OauthProviderMixin, IssueProvider):
         self.store_in_session(request, 'integration_id', integration.id)
 
         if url is None or data is None:
-            return render(request, 'core/error.html', {
-                'title': _('Integration error'),
-                'errors': [_('The Integration is not configured correctly.') % message]
-            }, status=200)
+            return render(
+                request,
+                'core/error.html',
+                {
+                    'title': _('Integration error'),
+                    'errors': [_('The Integration is not configured correctly.') % message],
+                },
+                status=200,
+            )
 
         return self.post(request, url, data)
 
@@ -74,8 +77,10 @@ class OauthIssueProvider(OauthProviderMixin, IssueProvider):
 class GitHubIssueProvider(GitHubProviderMixin, OauthIssueProvider):
     add_label = _('Add GitHub integration')
     send_label = _('Send to GitHub')
-    description = _('This integration allow the creation of issues in arbitrary GitHub repositories. '
-                    'The upload of attachments is not supported by GitHub.')
+    description = _(
+        'This integration allow the creation of issues in arbitrary GitHub repositories. '
+        'The upload of attachments is not supported by GitHub.'
+    )
 
     def get_repo(self, integration):
         try:
@@ -95,10 +100,7 @@ class GitHubIssueProvider(GitHubProviderMixin, OauthIssueProvider):
             return 'https://api.github.com/repos/{}/issues'.format(repo)
 
     def get_post_data(self, request, issue, integration, subject, message, attachments):
-        return {
-            'title': subject,
-            'body': message
-        }
+        return {'title': subject, 'body': message}
 
     def get_issue_url(self, response):
         return response.json().get('html_url')
@@ -141,15 +143,15 @@ class GitHubIssueProvider(GitHubProviderMixin, OauthIssueProvider):
             {
                 'key': 'repo',
                 'placeholder': 'user_name/repo_name',
-                'help': _('The GitHub repository to send issues to.')
+                'help': _('The GitHub repository to send issues to.'),
             },
             {
                 'key': 'secret',
                 'placeholder': 'Secret (random) string',
                 'help': _('The secret for a GitHub webhook to close a task.'),
                 'required': False,
-                'secret': True
-            }
+                'secret': True,
+            },
         ]
 
 
@@ -159,8 +161,10 @@ class GitLabIssueProvider(GitLabProviderMixin, OauthIssueProvider):
 
     @property
     def description(self):
-        return _('This integration allow the creation of issues in arbitrary repositories on {}. '
-                 'The upload of attachments is not supported by GitLab.'.format(self.gitlab_url))
+        return _(
+            'This integration allow the creation of issues in arbitrary repositories on {}. '
+            'The upload of attachments is not supported by GitLab.'.format(self.gitlab_url)
+        )
 
     def get_repo(self, integration):
         try:
@@ -180,10 +184,7 @@ class GitLabIssueProvider(GitLabProviderMixin, OauthIssueProvider):
             return '{}/api/v4/projects/{}/issues'.format(self.gitlab_url, quote(repo, safe=''))
 
     def get_post_data(self, request, issue, integration, subject, message, attachments):
-        return {
-            'title': subject,
-            'description': message
-        }
+        return {'title': subject, 'description': message}
 
     def get_issue_url(self, response):
         return response.json().get('web_url')
@@ -223,13 +224,13 @@ class GitLabIssueProvider(GitLabProviderMixin, OauthIssueProvider):
             {
                 'key': 'repo',
                 'placeholder': 'user_name/repo_name',
-                'help': _('The GitLab repository to send issues to.')
+                'help': _('The GitLab repository to send issues to.'),
             },
             {
                 'key': 'secret',
                 'placeholder': 'Secret (random) string',
                 'help': _('The secret for a GitLab webhook to close a task.'),
                 'required': False,
-                'secret': True
-            }
+                'secret': True,
+            },
         ]

@@ -3,20 +3,15 @@ from django.urls import reverse
 
 from ..models import Overlay
 
-users = (
-    ('user', 'user'),
-    ('anonymous', None)
-)
+users = (('user', 'user'), ('anonymous', None))
 
 urlnames = {
     'current': 'v1-overlays:overlay-current',
     'next': 'v1-overlays:overlay-next',
-    'dismiss': 'v1-overlays:overlay-dismiss'
+    'dismiss': 'v1-overlays:overlay-dismiss',
 }
 
-url_names = [
-    'projects'
-]
+url_names = ['projects']
 
 
 @pytest.mark.parametrize('username,password', users)
@@ -44,9 +39,7 @@ def test_next(db, client, username, password, url_name):
 
     if password:
         assert response.status_code == 200
-        assert response.json().get('overlay') == Overlay.objects.get(
-            user__username=username, url_name=url_name
-        ).current
+        assert response.json().get('overlay') == Overlay.objects.get(user__username=username, url_name=url_name).current
     else:
         assert response.status_code == 401
 
@@ -62,8 +55,6 @@ def test_dismiss(db, client, username, password, url_name):
     if password:
         assert response.status_code == 200
         assert response.json().get('overlay') == ''
-        assert response.json().get('overlay') == Overlay.objects.get(
-            user__username=username, url_name=url_name
-        ).current
+        assert response.json().get('overlay') == Overlay.objects.get(user__username=username, url_name=url_name).current
     else:
         assert response.status_code == 401

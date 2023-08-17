@@ -16,6 +16,4 @@ def reset_overlays(request):
         Overlay.objects.filter(user=request.user).delete()
         return redirect(get_next(request))
 
-    return render(request, 'overlays/reset_overlays.html', {
-        'next': get_referer_path_info(request, default='/')
-    })
+    return render(request, 'overlays/reset_overlays.html', {'next': get_referer_path_info(request, default='/')})

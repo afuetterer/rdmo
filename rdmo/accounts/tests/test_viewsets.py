@@ -10,27 +10,14 @@ users = (
 )
 
 status_map = {
-    'list': {
-        'site': 200, 'api': 200, 'user': 200, 'anonymous': 401
-    },
-    'detail': {
-        'site': 200, 'api': 200, 'user': 404, 'anonymous': 401
-    },
-    'create': {
-        'site': 405, 'api': 405, 'user': 405, 'anonymous': 401
-    },
-    'update': {
-        'site': 405, 'api': 405, 'user': 405, 'anonymous': 401
-    },
-    'delete': {
-        'site': 405, 'api': 405, 'user': 405, 'anonymous': 401
-    }
+    'list': {'site': 200, 'api': 200, 'user': 200, 'anonymous': 401},
+    'detail': {'site': 200, 'api': 200, 'user': 404, 'anonymous': 401},
+    'create': {'site': 405, 'api': 405, 'user': 405, 'anonymous': 401},
+    'update': {'site': 405, 'api': 405, 'user': 405, 'anonymous': 401},
+    'delete': {'site': 405, 'api': 405, 'user': 405, 'anonymous': 401},
 }
 
-urlnames = {
-    'list': 'v1-accounts:user-list',
-    'detail': 'v1-accounts:user-detail'
-}
+urlnames = {'list': 'v1-accounts:user-list', 'detail': 'v1-accounts:user-detail'}
 
 
 @pytest.mark.parametrize('username,password', users)

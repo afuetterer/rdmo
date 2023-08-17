@@ -9,33 +9,14 @@ from rdmo.projects.models import Membership
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
+        parser.add_argument('--id', default='.*', help='find users by id')
+        parser.add_argument('--email', default='.*', help='find users by email')
+        parser.add_argument('--username', default='.*', help='find users by username')
+        parser.add_argument('--first_name', default='.*', help='find users by first name')
+        parser.add_argument('--last_name', default='.*', help='find users by last name')
+        parser.add_argument('-p', '--print', action='store_true', help='print found users, don\'t save them to csv')
         parser.add_argument(
-            '--id', default='.*',
-            help='find users by id'
-        )
-        parser.add_argument(
-            '--email', default='.*',
-            help='find users by email'
-        )
-        parser.add_argument(
-            '--username', default='.*',
-            help='find users by username'
-        )
-        parser.add_argument(
-            '--first_name', default='.*',
-            help='find users by first name'
-        )
-        parser.add_argument(
-            '--last_name', default='.*',
-            help='find users by last name'
-        )
-        parser.add_argument(
-            '-p', '--print',  action='store_true',
-            help='print found users, don\'t save them to csv'
-        )
-        parser.add_argument(
-            '-o', '--output_file', default='found_users.csv',
-            help='output file, default is \'found_users.csv\''
+            '-o', '--output_file', default='found_users.csv', help='output file, default is \'found_users.csv\''
         )
 
     def save_csv(self, data, filename):
@@ -57,9 +38,7 @@ class Command(BaseCommand):
         arr = []
         memberships = Membership.objects.all().values_list('user')
         for mem in memberships:
-            arr.append(
-                User.objects.filter(id=mem[0]).values('id')[0]['id']
-            )
+            arr.append(User.objects.filter(id=mem[0]).values('id')[0]['id'])
         return arr
 
     def rx_match(self, regex, s):
@@ -102,13 +81,7 @@ class Command(BaseCommand):
         print('Total no of users:    %d' % (no_total_users))
         found_users = self.find_users(options)
 
-        print(
-            'Matching the filter:  %d  %.2f%%'
-            % (
-                len(found_users),
-                (100/no_total_users)*len(found_users)
-            )
-        )
+        print('Matching the filter:  %d  %.2f%%' % (len(found_users), (100 / no_total_users) * len(found_users)))
 
         self.save_csv(found_users, options['output_file'])
         if options['print'] is True:

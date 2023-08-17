@@ -1,7 +1,6 @@
 import pytest
 from django.core.exceptions import ValidationError
-from rest_framework.exceptions import \
-    ValidationError as RestFameworkValidationError
+from rest_framework.exceptions import ValidationError as RestFameworkValidationError
 
 from ..models import Condition
 from ..serializers.v1 import ConditionSerializer
@@ -9,23 +8,17 @@ from ..validators import ConditionLockedValidator
 
 
 def test_create(db):
-    ConditionLockedValidator()({
-        'locked': False
-    })
+    ConditionLockedValidator()({'locked': False})
 
 
 def test_create_locked(db):
-    ConditionLockedValidator()({
-        'locked': True
-    })
+    ConditionLockedValidator()({'locked': True})
 
 
 def test_update(db):
     condition = Condition.objects.first()
 
-    ConditionLockedValidator(condition)({
-        'locked': False
-    })
+    ConditionLockedValidator(condition)({'locked': False})
 
 
 def test_update_error(db):
@@ -34,17 +27,13 @@ def test_update_error(db):
     condition.save()
 
     with pytest.raises(ValidationError):
-        ConditionLockedValidator(condition)({
-            'locked': True
-        })
+        ConditionLockedValidator(condition)({'locked': True})
 
 
 def test_update_lock(db):
     condition = Condition.objects.first()
 
-    ConditionLockedValidator(condition)({
-        'locked': True
-    })
+    ConditionLockedValidator(condition)({'locked': True})
 
 
 def test_update_unlock(db):
@@ -52,27 +41,21 @@ def test_update_unlock(db):
     condition.locked = True
     condition.save()
 
-    ConditionLockedValidator(condition)({
-        'locked': False
-    })
+    ConditionLockedValidator(condition)({'locked': False})
 
 
 def test_serializer_create(db):
     validator = ConditionLockedValidator()
     validator.set_context(ConditionSerializer())
 
-    validator({
-        'locked': False
-    })
+    validator({'locked': False})
 
 
 def test_serializer_create_locked(db):
     validator = ConditionLockedValidator()
     validator.set_context(ConditionSerializer())
 
-    validator({
-        'locked': True
-    })
+    validator({'locked': True})
 
 
 def test_serializer_update(db):
@@ -93,9 +76,7 @@ def test_serializer_update_error(db):
     validator.set_context(ConditionSerializer(instance=condition))
 
     with pytest.raises(RestFameworkValidationError):
-        validator({
-            'locked': True
-        })
+        validator({'locked': True})
 
 
 def test_serializer_update_lock(db):
@@ -104,9 +85,7 @@ def test_serializer_update_lock(db):
     validator = ConditionLockedValidator()
     validator.set_context(ConditionSerializer(instance=condition))
 
-    validator({
-        'locked': True
-    })
+    validator({'locked': True})
 
 
 def test_serializer_update_unlock(db):
@@ -117,6 +96,4 @@ def test_serializer_update_unlock(db):
     validator = ConditionLockedValidator()
     validator.set_context(ConditionSerializer(instance=condition))
 
-    validator({
-        'locked': False
-    })
+    validator({'locked': False})

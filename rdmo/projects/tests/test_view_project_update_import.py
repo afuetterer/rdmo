@@ -25,14 +25,14 @@ view_project_permission_map = {
     'author': [1, 3, 5],
     'guest': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 change_project_permission_map = {
     'owner': [1, 2, 3, 4, 5],
     'manager': [1, 3, 5],
     'api': [1, 2, 3, 4, 5],
-    'site': [1, 2, 3, 4, 5]
+    'site': [1, 2, 3, 4, 5],
 }
 
 projects = [1, 2, 3, 4, 5]
@@ -61,9 +61,7 @@ def test_project_update_import_post_error(db, settings, client, username, passwo
     client.login(username=username, password=password)
 
     url = reverse('project_update_import', args=[project_id])
-    response = client.post(url, {
-        'method': 'wrong'
-    })
+    response = client.post(url, {'method': 'wrong'})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 404
@@ -82,10 +80,7 @@ def test_project_update_import_post_upload_file(db, settings, client, username, 
     url = reverse('project_update_import', args=[project_id])
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
         if project_id in change_project_permission_map.get(username, []):
             assert response.status_code == 302
@@ -110,10 +105,7 @@ def test_project_update_import_post_upload_file_error(db, settings, client, user
     url = reverse('project_update_import', args=[project_id])
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'error.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 302
@@ -136,9 +128,7 @@ def test_project_update_import_post_upload_file_empty(db, client, username, pass
     client.login(username=username, password=password)
 
     url = reverse('project_update_import', args=[project_id])
-    response = client.post(url, {
-        'method': 'upload_file'
-    })
+    response = client.post(url, {'method': 'upload_file'})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 400
@@ -166,10 +156,7 @@ def test_project_update_import_post_import_file(db, settings, client, files, use
     url = reverse('project_update_import', args=[project_id])
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url,  {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 302
@@ -238,10 +225,7 @@ def test_project_update_import_post_import_file_cancel(db, settings, client, fil
     url = reverse('project_update_import', args=[project_id])
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url,  {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 302
@@ -298,10 +282,7 @@ def test_project_update_import_post_import_file_empty(db, settings, client, user
     url = reverse('project_update_import', args=[project_id])
     xml_file = os.path.join(settings.BASE_DIR, 'xml', 'project.xml')
     with open(xml_file, encoding='utf8') as f:
-        response = client.post(url, {
-            'method': 'upload_file',
-            'uploaded_file': f
-        })
+        response = client.post(url, {'method': 'upload_file', 'uploaded_file': f})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 302
@@ -313,9 +294,7 @@ def test_project_update_import_post_import_file_empty(db, settings, client, user
         assert response.status_code == 200
 
         # post the form empty
-        response = client.post(url, {
-            'method': 'import_file'
-        })
+        response = client.post(url, {'method': 'import_file'})
 
         # check if all the files are where are supposed to be
         for file_value in Value.objects.filter(value_type=VALUE_TYPE_FILE):
@@ -341,14 +320,13 @@ def test_project_update_import_post_import_file_empty(db, settings, client, user
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
 @pytest.mark.parametrize('source_id', projects)
-def test_project_update_import_post_import_project_step1(db, settings, client, username, password, project_id, source_id):
+def test_project_update_import_post_import_project_step1(
+    db, settings, client, username, password, project_id, source_id
+):
     client.login(username=username, password=password)
 
     url = reverse('project_update_import', args=[project_id])
-    response = client.post(url, {
-        'method': 'import_project',
-        'source': source_id
-    })
+    response = client.post(url, {'method': 'import_project', 'source': source_id})
 
     if project_id in change_project_permission_map.get(username, []):
         if source_id in view_project_permission_map.get(username, []):
@@ -366,7 +344,9 @@ def test_project_update_import_post_import_project_step1(db, settings, client, u
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
 @pytest.mark.parametrize('source_id', projects)
-def test_project_update_import_post_import_project_step2(db, settings, client, username, password, project_id, source_id):
+def test_project_update_import_post_import_project_step2(
+    db, settings, client, username, password, project_id, source_id
+):
     client.login(username=username, password=password)
     projects_count = Project.objects.count()
 
@@ -382,10 +362,7 @@ def test_project_update_import_post_import_project_step2(db, settings, client, u
     source_values_count = source.values.count()
 
     url = reverse('project_update_import', args=[project_id])
-    response = client.post(url, {
-        'method': 'import_project',
-        'source': source_id
-    })
+    response = client.post(url, {'method': 'import_project', 'source': source_id})
 
     if project_id in change_project_permission_map.get(username, []):
         if source_id in view_project_permission_map.get(username, []):
@@ -397,10 +374,7 @@ def test_project_update_import_post_import_project_step2(db, settings, client, u
             # import file
             url = reverse('project_update_import', args=[project_id])
             data = {key: ['on'] for key in keys}
-            data.update({
-                'method': 'import_project',
-                'source': source_id
-            })
+            data.update({'method': 'import_project', 'source': source_id})
             response = client.post(url, data)
 
             # check if all the files are where are supposed to be
@@ -455,9 +429,7 @@ def test_project_update_import_post_import_project_error(db, settings, client, u
 
     # upload file
     url = reverse('project_update_import', args=[project_id])
-    response = client.post(url, {
-        'method': 'import_project'
-    })
+    response = client.post(url, {'method': 'import_project'})
 
     if project_id in change_project_permission_map.get(username, []):
         assert response.status_code == 404
