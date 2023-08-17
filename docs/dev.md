@@ -145,7 +145,7 @@ EMAIL_PORT = 8025
 and using:
 
 ```bash
-# for python versions >= 3.7 
+# for python versions >= 3.7
 pip install aiosmtpd
 
 python -m aiosmtpd -n -l localhost:8025
