@@ -1,8 +1,8 @@
 name: CI
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - master
       - 'releases/**'
     tags:
@@ -38,7 +38,7 @@ jobs:
     - name: Run black and ruff via pre-commit
       run: pre-commit run --all-files --color=always
       continue-on-error: true # TODO: remove once files are reformatted
-  
+
   test:
     runs-on: ubuntu-22.04
     strategy:
@@ -62,11 +62,11 @@ jobs:
         python -m pip install --upgrade pip
         pandoc --version
     - name: Install rdmo
-      run: | 
+      run: |
         pip install -e .[ci]
       if: matrix.db-backend == 'sqlite3'
     - name: Install rdmo[mysql] and start mysql
-      run: | 
+      run: |
         pip install -e .[ci,mysql]
         sudo systemctl start mysql.service
       if: matrix.db-backend == 'mysql'
