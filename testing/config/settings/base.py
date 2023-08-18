@@ -130,7 +130,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 DEBUG_LOGGING = False
 SECRET_KEY = "this is a not very secret key"
-PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
+# PASSWORD_HASHERS = ("django.contrib.auth.hashers.MD5PasswordHasher",)
 MIDDLEWARE = (
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
