@@ -21,7 +21,7 @@ requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
-  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 3.2",# TODO
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
@@ -43,46 +43,46 @@ dependencies = [
   "django-cleanup~=6.0.0",
   "django-compressor~=4.4",
   "django-extensions~=3.2.0",
-  "django-filter~=21.1",
+  "django-filter~=23.2",
   "django-libsass==0.9",
   "django-mathfilters~=1.0.0",
   "django-mptt~=0.13.4",
   "django-rest-swagger~=2.2.0",
   "django-settings-export~=1.2.1",
-  "django-widget-tweaks~=1.4.8",
+  "django-widget-tweaks~=1.5",
   "djangorestframework~=3.12.4",
   "drf-extensions~=0.7.0",
   "iso8601~=2.0.0",
   "jsonfield~=3.1.0",
   "Markdown~=3.3.7",
-  "pypandoc~=1.10.0",
+  "pypandoc~=1.11",
   "rules~=3.3.0",
 ]
 
 [project.optional-dependencies]
 ci = [
-  "coveralls",
+  "coveralls",# TODO
   "rdmo[dev]",
 ]
 dev = [
-  "django-debug-toolbar",
-  "pre-commit",
+  "django-debug-toolbar",# TODO
+  "pre-commit",# TODO
   "rdmo[pytest]",
 ]
 gunicorn = [
-  "gunicorn>=19.9",
+  "gunicorn>=19.9", # TODO
 ]
 ldap = [
-  "django-auth-ldap>=2",
+  "django-auth-ldap>=2",# TODO
 ]
 memcached = [
-  "python-memcached>=1.58",
+  "python-memcached>=1.58",# TODO
 ]
 mysql = [
-  "mysqlclient~=2.2.0",
+  "mysqlclient~=2.2.0",# TODO
 ]
 postgres = [
-  "psycopg2-binary~=2.9.6",
+  "psycopg2-binary~=2.9.6",# TODO
 ]
 pytest = [
   "pytest~=7.4.0",
