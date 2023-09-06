@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from django.urls import include, re_path
+from django.urls import include, path, re_path
 
 from ..views import profile_update, remove_user, shibboleth_login, shibboleth_logout, terms_of_use, token
 
 urlpatterns = [
     # edit own profile
-    re_path(r'^$', profile_update, name='profile_update'),
+    path('', profile_update, name='profile_update'),
     re_path('^remove', remove_user, name='profile_remove'),
 ]
 
@@ -28,7 +28,7 @@ if settings.SHIBBOLETH:
 if settings.ACCOUNT or settings.SOCIALACCOUNT:
     # include django-allauth urls
     urlpatterns += [
-        re_path(r'^', include('allauth.urls'))
+        path('', include('allauth.urls'))
     ]
 else:
     urlpatterns += [
@@ -41,5 +41,5 @@ else:
 
 if settings.ACCOUNT_ALLOW_USER_TOKEN:
     urlpatterns += [
-        re_path(r'^token/$', token, name='account_token')
+        path('token/', token, name='account_token')
     ]

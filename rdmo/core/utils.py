@@ -26,11 +26,11 @@ def get_script_alias(request):
 
 
 def get_referer(request, default=None):
-    return request.META.get('HTTP_REFERER', default)
+    return request.headers.get('referer', default)
 
 
 def get_referer_path_info(request, default=''):
-    referer = request.META.get('HTTP_REFERER', None)
+    referer = request.headers.get('referer', None)
     if not referer:
         return default
 
