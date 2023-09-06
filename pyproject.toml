@@ -21,7 +21,7 @@ requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
-  "Framework :: Django :: 4.2",# TODO
+  "Framework :: Django :: 4.2",
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
@@ -38,7 +38,7 @@ dynamic = [
 dependencies = [
   "defusedcsv~=2.0",
   "defusedxml~=0.7",
-  "Django~=4.2", # TODO
+  "Django~=4.2",
   "django-allauth~=0.55",
   "django-cleanup~=8.0",
   "django-compressor~=4.4",
