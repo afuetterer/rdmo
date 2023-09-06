@@ -21,7 +21,7 @@ requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
-  "Framework :: Django :: 3.2",# TODO
+  "Framework :: Django :: 4.2",# TODO
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
@@ -38,7 +38,7 @@ dynamic = [
 dependencies = [
   "defusedcsv~=2.0",
   "defusedxml~=0.7",
-  "Django~=3.2.20", # TODO
+  "Django~=4.2", # TODO
   "django-allauth~=0.55",
   "django-cleanup~=8.0",
   "django-compressor~=4.4",
@@ -50,7 +50,7 @@ dependencies = [
   "django-rest-swagger~=2.2",
   "django-settings-export~=1.2",
   "django-widget-tweaks~=1.5",
-  "djangorestframework~=3.14", # TODO
+  "djangorestframework~=3.14",
   "drf-extensions~=0.7",
   "iso8601~=2.0",
   "jsonfield~=3.1",
