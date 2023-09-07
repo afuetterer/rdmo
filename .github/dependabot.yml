@@ -1,12 +1,29 @@
 version: 2
 updates:
   - package-ecosystem: pip
-    directory: "/"
+    directory: /
     schedule:
       interval: monthly
-    target-branch: master
+    target-branch: dependency-updates
+    labels:
+      - dependencies
+      - python
+      - type:maintainance
   - package-ecosystem: github-actions
-    directory: "/"
+    directory: /
     schedule:
       interval: monthly
-    target-branch: master
+    target-branch: dependency-updates
+    labels:
+      - dependencies
+      - github_actions
+      - type:maintainance
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    target-branch: dependency-updates
+    labels:
+      - dependencies
+      - javascript
+      - type:maintainance

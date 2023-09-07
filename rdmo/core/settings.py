@@ -85,6 +85,8 @@ AUTHENTICATION_BACKENDS = [
 
 MULTISITE = False
 
+GROUPS = False
+
 LOGIN_FORM = True
 
 PROFILE_UPDATE = True
@@ -191,6 +193,7 @@ SETTINGS_EXPORT = [
     'SHIBBOLETH',
     'SHIBBOLETH_LOGIN_URL',
     'MULTISITE',
+    'GROUPS',
     'EXPORT_FORMATS',
     'PROJECT_ISSUES',
     'PROJECT_VIEWS',
@@ -205,7 +208,11 @@ SETTINGS_EXPORT = [
 SETTINGS_API = [
     'PROJECT_QUESTIONS_AUTOSAVE',
     'PROJECT_QUESTIONS_CYCLE_SETS',
-    'DEFAULT_URI_PREFIX'
+    'DEFAULT_URI_PREFIX',
+    'LANGUAGES',
+    'MULTISITE',
+    'GROUPS',
+    'EXPORT_FORMATS',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -262,6 +269,8 @@ EXPORT_PANDOC_ARGS = {
     'rtf': ['--standalone']
 }
 
+EXPORT_CONTENT_DISPOSITION = 'attachment'
+
 PROJECT_ISSUES = True
 
 PROJECT_ISSUE_PROVIDERS = []
@@ -270,8 +279,9 @@ PROJECT_VIEWS = True
 
 PROJECT_EXPORTS = [
     ('xml', _('RDMO XML'), 'rdmo.projects.exports.RDMOXMLExport'),
-    ('csvcomma', _('CSV comma separated'), 'rdmo.projects.exports.CSVCommaExport'),
-    ('csvsemicolon', _('CSV semicolon separated'), 'rdmo.projects.exports.CSVSemicolonExport')
+    ('csvcomma', _('CSV (comma separated)'), 'rdmo.projects.exports.CSVCommaExport'),
+    ('csvsemicolon', _('CSV (semicolon separated)'), 'rdmo.projects.exports.CSVSemicolonExport'),
+    ('json', _('JSON'), 'rdmo.projects.exports.JSONExport'),
 ]
 
 PROJECT_IMPORTS = [
