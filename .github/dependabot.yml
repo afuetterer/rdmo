@@ -10,6 +10,13 @@ updates:
       - dependencies
       - python
       - type:maintenance
+    groups:
+      django:
+        patterns:
+        - 'django*'
+      pytest:
+        patterns:
+        - 'pytest*'
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -20,6 +27,11 @@ updates:
       - dependencies
       - github_actions
       - type:maintenance
+    groups:
+      # create a single pull request containing all updates for GitHub Actions
+      github-actions:
+        patterns:
+        - '*'
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -30,3 +42,9 @@ updates:
       - dependencies
       - javascript
       - type:maintenance
+    groups:
+      react:
+        patterns:
+        - 'react*'
+      development-dependencies:
+        dependency-type: 'development'
