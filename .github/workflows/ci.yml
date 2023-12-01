@@ -111,18 +111,18 @@ jobs:
 #         DJANGO_DEBUG: True
 #         GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
 
-  coveralls:
-    name: Indicate completion to coveralls
-    needs: test
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Run Coveralls finish
-      run: |
-        python -m pip install coveralls
-        coveralls --service=github --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # coveralls:
+  #   name: Indicate completion to coveralls
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   container: python:3-slim
+  #   steps:
+  #   - name: Run Coveralls finish
+  #     run: |
+  #       python -m pip install coveralls
+  #       coveralls --service=github --finish
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-wheel:
     name: Build python wheel
@@ -190,17 +190,17 @@ jobs:
       - run: python -m pip freeze
       - run: python -m pip list --outdated
 
-  required-checks-pass:
-    if: always()
-    needs:
-      - lint
-      - test
-      - coveralls
-      - build-wheel
-      - dev-setup
-      - optional-dependencies
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+  # required-checks-pass:
+  #   if: always()
+  #   needs:
+  #     - lint
+  #     - test
+  #     - coveralls
+  #     - build-wheel
+  #     - dev-setup
+  #     - optional-dependencies
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: re-actors/alls-green@release/v1
+  #       with:
+  #         jobs: ${{ toJSON(needs) }}
