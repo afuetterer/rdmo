@@ -145,7 +145,7 @@ jobs:
 
     - name: Update version
       run: |
-        NEW_VERSION="${{ steps.current-version.outputs.current_version }}.dev${{ steps.short-sha.outputs.sha }}"
+        NEW_VERSION="${{ steps.current-version.outputs.current_version }}dev${{ steps.short-sha.outputs.sha }}"
         sed -i "s/__version__ = .*/__version__ = \"$NEW_VERSION\"/" rdmo/__init__.py
 
     - run: cat rdmo/__init__.py
