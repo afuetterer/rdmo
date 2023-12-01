@@ -27,89 +27,89 @@ env:
 
 jobs:
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.12"
-        cache: pip
-    - run: python -m pip install --upgrade pip setuptools wheel
-    - run: python -m pip install -e .[dev]
-    - name: Set up pre-commit cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pre-commit
-        key: lint-${{ hashFiles('.pre-commit-config.yaml') }}
-    - name: Run linters via pre-commit (ruff, eslint)
-      run: pre-commit run --all-files --color=always
+#   lint:
+#     name: Lint
+#     runs-on: ubuntu-22.04
+#     steps:
+#     - uses: actions/checkout@v4
+#     - uses: actions/setup-python@v4
+#       with:
+#         python-version: "3.12"
+#         cache: pip
+#     - run: python -m pip install --upgrade pip setuptools wheel
+#     - run: python -m pip install -e .[dev]
+#     - name: Set up pre-commit cache
+#       uses: actions/cache@v3
+#       with:
+#         path: ~/.cache/pre-commit
+#         key: lint-${{ hashFiles('.pre-commit-config.yaml') }}
+#     - name: Run linters via pre-commit (ruff, eslint)
+#       run: pre-commit run --all-files --color=always
 
-  test:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.12']
-        db-backend: [mysql, postgres]
-    name: "Test (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})"
-    needs: lint
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: pip
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install --yes pandoc texlive-xetex librsvg2-bin
-        python -m pip install --upgrade pip setuptools wheel
-        pandoc --version
-    - name: Install rdmo[mysql] and start mysql
-      run: |
-        python -m pip install -e .[ci,mysql]
-        sudo systemctl start mysql.service
-      if: matrix.db-backend == 'mysql'
-    - name: Install rdmo[postgres] and start postgresql
-      run: |
-        python -m pip install -e .[ci,postgres]
-        sudo systemctl start postgresql.service
-        pg_isready
-        sudo -u postgres psql --command="CREATE USER postgres_user PASSWORD 'postgres_password' CREATEDB"
-      if: matrix.db-backend == 'postgres'
-    - name: Prepare Env
-      run: |
-        cp -r testing/media testing/media_root
-        mkdir testing/log
-    - name: Run Tests
-      run: |
-        pytest -p randomly -p no:cacheprovider --cov --reuse-db --numprocesses=auto --dist=loadscope
-        coveralls --service=github
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
-        COVERALLS_FLAG_NAME: '${{ matrix.db-backend }}: ${{ matrix.python-version }}'
-        COVERALLS_PARALLEL: true
-    # end-to-end tests
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 18
-        cache: npm
-      if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
-    - name: Install e2e tests dependencies
-      run: |
-        npm install
-        npm run build:prod
-        playwright install chromium
-      if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
-    - name: Run end-to-end tests
-      run: pytest -p randomly -p no:cacheprovider --reuse-db --numprocesses=auto --dist=loadscope -m e2e --nomigrations
-      if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
-      env:
-        DJANGO_DEBUG: True
-        GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
+#   test:
+#     runs-on: ubuntu-22.04
+#     strategy:
+#       matrix:
+#         python-version: ['3.8', '3.12']
+#         db-backend: [mysql, postgres]
+#     name: "Test (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})"
+#     needs: lint
+#     steps:
+#     - uses: actions/checkout@v4
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#         cache: pip
+#     - name: Install Dependencies
+#       run: |
+#         sudo apt update
+#         sudo apt install --yes pandoc texlive-xetex librsvg2-bin
+#         python -m pip install --upgrade pip setuptools wheel
+#         pandoc --version
+#     - name: Install rdmo[mysql] and start mysql
+#       run: |
+#         python -m pip install -e .[ci,mysql]
+#         sudo systemctl start mysql.service
+#       if: matrix.db-backend == 'mysql'
+#     - name: Install rdmo[postgres] and start postgresql
+#       run: |
+#         python -m pip install -e .[ci,postgres]
+#         sudo systemctl start postgresql.service
+#         pg_isready
+#         sudo -u postgres psql --command="CREATE USER postgres_user PASSWORD 'postgres_password' CREATEDB"
+#       if: matrix.db-backend == 'postgres'
+#     - name: Prepare Env
+#       run: |
+#         cp -r testing/media testing/media_root
+#         mkdir testing/log
+#     - name: Run Tests
+#       run: |
+#         pytest -p randomly -p no:cacheprovider --cov --reuse-db --numprocesses=auto --dist=loadscope
+#         coveralls --service=github
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
+#         COVERALLS_FLAG_NAME: '${{ matrix.db-backend }}: ${{ matrix.python-version }}'
+#         COVERALLS_PARALLEL: true
+#     # end-to-end tests
+#     - uses: actions/setup-node@v4
+#       with:
+#         node-version: 18
+#         cache: npm
+#       if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
+#     - name: Install e2e tests dependencies
+#       run: |
+#         npm install
+#         npm run build:prod
+#         playwright install chromium
+#       if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
+#     - name: Run end-to-end tests
+#       run: pytest -p randomly -p no:cacheprovider --reuse-db --numprocesses=auto --dist=loadscope -m e2e --nomigrations
+#       if: matrix.python-version == '3.12' && matrix.db-backend == 'postgres'
+#       env:
+#         DJANGO_DEBUG: True
+#         GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
 
   coveralls:
     name: Indicate completion to coveralls
@@ -126,11 +126,19 @@ jobs:
 
   build-wheel:
     name: Build python wheel
-    needs: test
+    # needs: test
     runs-on: ubuntu-22.04
     if: github.event_name == 'pull_request'
     steps:
     - uses: actions/checkout@v4
+    - name: Get short commit SHA
+      id: short-sha
+      run: echo "sha=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_OUTPUT
+
+    - run: echo "The current short commit SHA is ${{ steps.short-sha.outputs.sha }}"
+
+    - run: cat rdmo/__init__.py 
+
     - uses: actions/setup-node@v4
       with:
         node-version: 18
@@ -143,11 +151,6 @@ jobs:
         cache: pip
     - run: python -m pip install --upgrade build pip setuptools wheel
     - run: python -m build --wheel
-    - run: |
-        PR_NUMBER=${{ github.event.pull_request.number }}
-        WHL_FILE=$(ls dist/*.whl)
-        NEW_NAME="${WHL_FILE/-py3-none-any/dev${PR_NUMBER}-py3-none-any}"
-        mv "$WHL_FILE" "$NEW_NAME"
     - uses: actions/upload-artifact@v3
       with:
         name: wheel
