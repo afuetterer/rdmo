@@ -137,6 +137,12 @@ jobs:
 
     - run: echo "The current short commit SHA is ${{ steps.short-sha.outputs.sha }}"
 
+    - name: Get current version (MAJOR.MINOR.PATCH)
+      id: current-version
+      run: echo "current_version=$(grep -Po "[\d.]+" rdmo/__init__.py)" >> $GITHUB_OUTPUT
+
+    - run: echo "The current version is ${{ steps.current-version.outputs.current_version }}"
+
     - run: cat rdmo/__init__.py
 
     - uses: actions/setup-node@v4
