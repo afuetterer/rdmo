@@ -137,7 +137,7 @@ jobs:
 
     - run: echo "The current short commit SHA is ${{ steps.short-sha.outputs.sha }}"
 
-    - run: cat rdmo/__init__.py 
+    - run: cat rdmo/__init__.py
 
     - uses: actions/setup-node@v4
       with:
