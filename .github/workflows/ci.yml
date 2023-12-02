@@ -139,11 +139,9 @@ jobs:
       run: echo "current_version=$(grep -Po "[\d.]+" rdmo/__init__.py)" >> $GITHUB_OUTPUT
     - name: Update version
       run: |
-        NEW_VERSION="${{ steps.current-version.outputs.current_version }}dev${{ steps.short-sha.outputs.sha }}"
+        NEW_VERSION="${{ steps.current-version.outputs.current_version }}.dev0+${{ steps.short-sha.outputs.sha }}"
         sed -i "s/__version__ = .*/__version__ = \"$NEW_VERSION\"/" rdmo/__init__.py
-
     - run: cat rdmo/__init__.py
-
     - uses: actions/setup-node@v4
       with:
         node-version: 18
