@@ -216,13 +216,12 @@ jobs:
         run: |
           {
             echo -e "# ✓ All optional dependency groups successfully installed in combination\n\n"
-            echo '<details><summary>Click to expand: Installed Python Packages</summary>'
+            echo '<details><summary>Installed Python packages as dependency tree</summary>'
             echo -e "\n\`\`\`console"
             echo "$ python -m pipdeptree --local-only --exclude=pip,pipdeptree"
             python -m pipdeptree --local-only --exclude=pip,pipdeptree
             echo -e "\`\`\`\n</details>"
-
-            echo '<details><summary>Click to expand: Outdated Dependencies</summary>'
+            echo '<details><summary>Outdated dependencies</summary>'
             echo -e "\n\`\`\`console"
             echo "$ python -m pip list --outdated"
             python -m pip list --outdated
