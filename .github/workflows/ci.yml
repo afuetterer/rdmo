@@ -143,6 +143,7 @@ jobs:
           echo "SHA=${{ github.event.pull_request.head.sha }}"
         else
           echo "SHA=${{ github.sha }}"
+        fi
         echo SHA
         echo $SHA
         echo "SHA=$(git rev-parse --short $SHA)" >> $GITHUB_ENV
