@@ -136,7 +136,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-
     - name: Get short commit SHA
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -144,55 +143,49 @@ jobs:
         else
           SHA="${{ github.sha }}"
         fi
-        echo $SHA
         echo "SHA=$(git rev-parse --short $SHA)" >> $GITHUB_ENV
-
-    - name: Use SHA variable
+    - name: Get current version (MAJOR.MINOR.PATCH)
+      id: current-version
+      run: echo "current_version=$(grep -Po '(?<=__version__ = ")[\d\w.]+(?=")' rdmo/__init__.py)" >> $GITHUB_OUTPUT
+    - name: Generate new version (current version + SHA)
+      id: new-version
+      run: echo "new_version=${{ steps.current-version.outputs.current_version }}+$SHA" >> $GITHUB_OUTPUT
+    - name: Update version in rdmo/__init__.py
       run: |
-        echo "The SHA is $SHA"
-
-    # - name: Get current version (MAJOR.MINOR.PATCH)
-    #   id: current-version
-    #   run: echo "current_version=$(grep -Po '(?<=__version__ = ")[\d\w.]+(?=")' rdmo/__init__.py)" >> $GITHUB_OUTPUT
-    # - name: Generate new version (current version + SHA)
-    #   id: new-version
-    #   run: echo "new_version=${{ steps.current-version.outputs.current_version }}+${{ steps.short-sha.outputs.sha }}" >> $GITHUB_OUTPUT
-    # - name: Update version in rdmo/__init__.py
-    #   run: |
-    #     sed -i "s/__version__ = .*/__version__ = \"${{ steps.new-version.outputs.new_version }}\"/" rdmo/__init__.py
-    # - uses: actions/setup-node@v4
-    #   with:
-    #     node-version: 18
-    #     cache: npm
-    # - run: npm install
-    # - run: npm run build:prod
-    # - uses: actions/setup-python@v4
-    #   with:
-    #     python-version: '3.12'
-    #     cache: pip
-    # - run: |
-    #     python -m pip install --upgrade pip
-    #     python -m pip install .[dev]
-    # - name: Build the wheel
-    #   run: python -m build --wheel
-    # - name: Check metadata
-    #   run: python -m twine check --strict dist/*
-    # - name: Install package from built wheel
-    #   run: python -m pip install --force-reinstall dist/rdmo*.whl
-    # - name: Write info to step summary
-    #   run: |
-    #     echo -e "# ✓ Wheel successfully built (v${{ steps.new-version.outputs.new_version }})\n\n" >> $GITHUB_STEP_SUMMARY
-    #     echo "\`\`\`console" >> $GITHUB_STEP_SUMMARY
-    #     echo "$ python -m pip show rdmo" >> $GITHUB_STEP_SUMMARY
-    #     python -m pip show rdmo >> $GITHUB_STEP_SUMMARY
-    #     echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-    # - name: Upload wheel as artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: wheel
-    #     path: dist/rdmo*.whl
-    #     if-no-files-found: error
-    #     retention-days: 30
+        sed -i "s/__version__ = .*/__version__ = \"${{ steps.new-version.outputs.new_version }}\"/" rdmo/__init__.py
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        cache: npm
+    - run: npm install
+    - run: npm run build:prod
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        cache: pip
+    - run: |
+        python -m pip install --upgrade pip
+        python -m pip install .[dev]
+    - name: Build the wheel
+      run: python -m build --wheel
+    - name: Check metadata
+      run: python -m twine check --strict dist/*
+    - name: Install package from built wheel
+      run: python -m pip install --force-reinstall dist/rdmo*.whl
+    - name: Write info to step summary
+      run: |
+        echo -e "# ✓ Wheel successfully built (v${{ steps.new-version.outputs.new_version }})\n\n" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`console" >> $GITHUB_STEP_SUMMARY
+        echo "$ python -m pip show rdmo" >> $GITHUB_STEP_SUMMARY
+        python -m pip show rdmo >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+    - name: Upload wheel as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: wheel
+        path: dist/rdmo*.whl
+        if-no-files-found: error
+        retention-days: 30
 
   # dev-setup:
   #   # Ref: structlog (MIT licensed) <https://github.com/hynek/structlog/blob/main/.github/workflows/ci.yml>
