@@ -140,11 +140,10 @@ jobs:
     - name: Get short commit SHA
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ]; then
-          echo "SHA=${{ github.event.pull_request.head.sha }}"
+          SHA="${{ github.event.pull_request.head.sha }}"
         else
-          echo "SHA=${{ github.sha }}"
+          SHA="${{ github.sha }}"
         fi
-        echo SHA
         echo $SHA
         echo "SHA=$(git rev-parse --short $SHA)" >> $GITHUB_ENV
 
