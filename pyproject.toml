@@ -42,11 +42,11 @@ dependencies = [
   # in minor version updates anytime
   "defusedcsv~=2.0",
   "defusedxml~=0.7.1",
-  "django>=4.2,<5.0",
+  "django>=4.2,<6.0",
   "django-cleanup~=8.0",
   "django-compressor~=4.4",
   "django-extensions~=3.2",
-  "django-filter~=23.2",
+  "django-filter>=23.2,<25.0",
   "django-libsass~=0.9",
   "django-mathfilters~=1.0",
   "django-mptt==0.14.0", # pinned, 0.15 requires Python >= 3.9
