@@ -91,7 +91,7 @@ jobs:
     - name: Check the metadata
       run: pipx run twine check --strict dist/*
     - name: Install package from built wheel
-      run: python -m pip install dist/rdmo*.whl
+      run: python -m pip install --no-compile dist/rdmo*.whl # do not create __pycache__/*.pyc files
     - name: Write info to step summary
       run: |
           {
