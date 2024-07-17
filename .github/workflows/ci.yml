@@ -183,6 +183,9 @@ jobs:
     - name: Install e2e tests dependencies
       run: playwright install chromium
       if: matrix.end-to-end
+    - name: Install e2e tests dependencies
+      run: python -m playwright install --with-deps
+      if: matrix.end-to-end
     - name: Run end-to-end tests
       run: |
         mkdir screenshots
