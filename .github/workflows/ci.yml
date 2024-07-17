@@ -111,7 +111,7 @@ jobs:
         retention-days: 30
 
   test:
-    name: "Test (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})"
+    name: "Test (Python: ${{ matrix.python-version }}, DB: ${{ matrix.db-backend }})" # TODO: add end-to-end to name
     needs: build-wheel
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -186,7 +186,7 @@ jobs:
     - name: Run end-to-end tests
       run: |
         mkdir screenshots
-        pytest -p randomly -p no:cacheprovider --reuse-db --numprocesses=auto --dist=loadscope -m e2e --nomigrations
+        pytest --nomigrations -m e2e
       if: matrix.end-to-end
       env:
         DJANGO_DEBUG: True
