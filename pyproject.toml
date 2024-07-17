@@ -207,6 +207,8 @@ filterwarnings = [
   "ignore:'cgi' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
   "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
 
+  "ignore:CoreAPI compatibility is deprecated and will be removed in DRF 3.17:rest_framework.RemovedInDRF317Warning",
+
   # ignore warnings raised from within django itself
   # django/core/files/storage/__init__.py
   "ignore:django.core.files.storage.get_storage_class is deprecated:django.utils.deprecation.RemovedInDjango51Warning",
