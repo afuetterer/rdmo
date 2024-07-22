@@ -194,20 +194,8 @@ jobs:
         retention-days: 30
 
   dev-setup:
-    # Ref: structlog (MIT licensed) <https://github.com/hynek/structlog/blob/main/.github/workflows/ci.yml>
-    name: "Test dev setup on ${{ matrix.os }}"
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-      - run: python -Im pip install --editable .[dev]
-      - run: python -Ic 'import rdmo; print(rdmo.__version__)'
+    # Ref: https://github.com/rdmorganiser/.github/blob/main/.github/workflows/_dev.yml
+    uses: afuetterer/rdmo-github/.github/workflows/_dev.yml@dev-setup-workflow
 
   dependencies:
     name: Test installation of all dependencies
