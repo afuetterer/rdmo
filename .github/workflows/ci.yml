@@ -196,6 +196,8 @@ jobs:
   dev-setup:
     # Ref: https://github.com/rdmorganiser/.github/blob/main/.github/workflows/_dev.yml
     uses: afuetterer/rdmo-github/.github/workflows/_dev.yml@dev-setup-workflow
+    with:
+      package-name: rdmo
 
   # dependencies:
   #   name: Test installation of all dependencies
