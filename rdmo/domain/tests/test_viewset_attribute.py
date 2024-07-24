@@ -54,7 +54,7 @@ def test_list(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_export(db, client, username, password, export_format):
+def test_export(db, client, username, password, export_format, mocked_convert_text):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['export']) + export_format + '/'

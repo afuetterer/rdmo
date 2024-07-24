@@ -12,11 +12,26 @@ from rdmo.core.tests.utils import get_obj_perms_status_code
 from ..models import Catalog
 from .test_viewset_catalog import export_formats, urlnames
 
+pytestmark = pytest.mark.django_db
+
 urlnames['catalog-toggle-site'] = 'v1-questions:catalog-toggle-site'
 
 
+@pytest.fixture(scope="module")
+def instance(django_db_blocker):
+    with django_db_blocker.unblock():
+        return Catalog.objects.first()
+
+
+@pytest.fixture(scope="module")
+def instances(django_db_blocker):
+    """Returns a queryset of all `Catalog` objects in the test database, queries only once."""
+    with django_db_blocker.unblock():
+        return Catalog.objects.all()
+
+
 @pytest.mark.parametrize('username,password', users)
-def test_list(db, client, username, password):
+def test_list(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['list'])
@@ -25,7 +40,7 @@ def test_list(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_index(db, client, username, password):
+def test_index(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['index'])
@@ -35,7 +50,7 @@ def test_index(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_export(db, client, username, password, export_format):
+def test_export(client, username, password, export_format, mocked_convert_text):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['export']) + export_format + '/'
@@ -50,9 +65,8 @@ def test_export(db, client, username, password, export_format):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_detail(db, client, username, password):
+def test_detail(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -61,9 +75,8 @@ def test_detail(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_nested(db, client, username, password):
+def test_nested(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['nested'], args=[instance.pk])
@@ -72,9 +85,8 @@ def test_nested(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create(db, client, username, password):
+def test_create(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['list'])
@@ -91,9 +103,8 @@ def test_create(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create_m2m(db, client, username, password):
+def test_create_m2m(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         catalog_sections = [{
@@ -123,9 +134,8 @@ def test_create_m2m(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_update(db, client, username, password):
+def test_update(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         catalog_sections = [{
@@ -153,9 +163,8 @@ def test_update(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_update_m2m(db, client, username, password):
+def test_update_m2m(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         catalog_sections = [{
@@ -185,9 +194,8 @@ def test_update_m2m(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_delete(db, client, username, password):
+def test_delete(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -197,9 +205,8 @@ def test_delete(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_detail_export(db, client, username, password, export_format):
+def test_detail_export(client, username, password, export_format, instance):
     client.login(username=username, password=password)
-    instance = Catalog.objects.first()
 
     url = reverse(urlnames['detail_export'], args=[instance.pk]) + export_format + '/'
     response = client.get(url)
@@ -215,9 +222,9 @@ def test_detail_export(db, client, username, password, export_format):
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('add_or_remove,has_current_site_check', [('add', True), ('remove', False)])
 @pytest.mark.parametrize('locked', [True, False])
-def test_update_catalog_toggle_site(db, client, username, password, add_or_remove, has_current_site_check, locked):
+def test_update_catalog_toggle_site(client, username, password, add_or_remove,
+                                    has_current_site_check, locked, instances):
     client.login(username=username, password=password)
-    instances = Catalog.objects.all()
     current_site = Site.objects.get_current()
 
     for instance in instances:

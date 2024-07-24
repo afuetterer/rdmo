@@ -110,7 +110,7 @@ def test_delete_multisite(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_detail_export(db, client, username, password):
+def test_detail_export(db, client, username, password, mocked_convert_text):
     client.login(username=username, password=password)
     instances = Attribute.objects.all()
 

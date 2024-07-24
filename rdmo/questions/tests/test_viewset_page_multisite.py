@@ -33,7 +33,7 @@ def test_index(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_export(db, client, username, password, export_format):
+def test_export(db, client, username, password, export_format, mocked_convert_text):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['export']) + export_format + '/'
@@ -273,10 +273,9 @@ def test_delete(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_detail_export(db, client, username, password, export_format):
+def test_detail_export(db, client, username, password, export_format, mocked_convert_text):
     client.login(username=username, password=password)
     instance = Page.objects.first()
-
     url = reverse(urlnames['detail_export'], args=[instance.pk]) + export_format + '/'
     response = client.get(url)
     assert response.status_code == status_map['detail'][username], response.content
