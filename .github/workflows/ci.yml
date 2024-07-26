@@ -53,12 +53,29 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: pip
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install --yes pandoc texlive-xetex librsvg2-bin
-        python -m pip install --upgrade pip
-        pandoc --version
+
+    - run: sudo apt-get install --yes librsvg2-bin
+
+    - uses: r-lib/actions/setup-pandoc@6012817847b5f064d0882d67a7b5e2ca6639afb2 # v2.9.0
+    - run: pandoc --version
+
+    - uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: |
+          collection-latex
+          collection-latexextra
+          collection-latexrecommended
+          collection-xetex
+
+    - run: xelatex --version
+
+    # - name: Install Dependencies
+    #   run: |
+    #     sudo apt update
+    #     sudo apt install --yes pandoc texlive-xetex librsvg2-bin
+    #     python -m pip install --upgrade pip
+    #     pandoc --version
+
     - name: Install rdmo[mysql] and start mysql
       run: |
         python -m pip install --editable .[ci,mysql]
