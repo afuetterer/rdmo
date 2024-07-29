@@ -54,7 +54,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: pip
 
-    - run: sudo apt-get install --yes librsvg2-bin
+    - uses: awalsh128/cache-apt-pkgs-action@a6c3917cc929dd0345bfb2d3feaf9101823370ad # v1.4.2
+      with:
+        packages: librsvg2-bin pandoc
+    - run: pandoc --version
 
     - uses: r-lib/actions/setup-pandoc@6012817847b5f064d0882d67a7b5e2ca6639afb2 # v2.9.0
     - run: pandoc --version
