@@ -7,6 +7,8 @@ from django.urls import reverse
 
 from ..models import Page
 
+pytestmark = pytest.mark.django_db
+
 users = (
     ('editor', 'editor'),
     ('reviewer', 'reviewer'),
@@ -49,8 +51,15 @@ urlnames = {
 export_formats = ('xml', 'rtf', 'odt', 'docx', 'html', 'markdown', 'tex', 'pdf')
 
 
+@pytest.fixture(scope="module")
+def instances(django_db_blocker):
+    """Returns a queryset of all `Page` objects in the test database, queries only once."""
+    with django_db_blocker.unblock():
+        return Page.objects.all()
+
+
 @pytest.mark.parametrize('username,password', users)
-def test_list(db, client, username, password):
+def test_list(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['list'])
@@ -59,7 +68,7 @@ def test_list(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_index(db, client, username, password):
+def test_index(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['index'])
@@ -69,7 +78,7 @@ def test_index(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_export(db, client, username, password, export_format):
+def test_export(client, username, password, export_format, mocked_convert_text):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['export']) + export_format + '/'
@@ -83,7 +92,7 @@ def test_export(db, client, username, password, export_format):
             assert child.tag in ['page', 'questionset', 'question']
 
 
-def test_export_search(db, client):
+def test_export_search(client):
     client.login(username='editor', password='editor')
 
     url = reverse(urlnames['export']) + 'xml/?search=bar'
@@ -92,9 +101,8 @@ def test_export_search(db, client):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_detail(db, client, username, password):
+def test_detail(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -103,9 +111,8 @@ def test_detail(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_nested(db, client, username, password):
+def test_nested(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['nested'], args=[instance.pk])
@@ -114,9 +121,8 @@ def test_nested(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create(db, client, username, password):
+def test_create(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['list'])
@@ -138,9 +144,8 @@ def test_create(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create_section(db, client, username, password):
+def test_create_section(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         section = instance.sections.first()
@@ -174,9 +179,8 @@ def test_create_section(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create_m2m(db, client, username, password):
+def test_create_m2m(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         page_questionsets = [{
@@ -223,9 +227,8 @@ def test_create_m2m(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_update(db, client, username, password):
+def test_update(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         questionsets = [questionset.id for questionset in instance.questionsets.all()]
@@ -256,9 +259,8 @@ def test_update(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_update_m2m(db, client, username, password):
+def test_update_m2m(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         page_questionsets = [{
@@ -305,9 +307,8 @@ def test_update_m2m(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_delete(db, client, username, password):
+def test_delete(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = Page.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -317,7 +318,7 @@ def test_delete(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_detail_export(db, client, username, password, export_format):
+def test_detail_export(client, username, password, export_format):
     client.login(username=username, password=password)
     instance = Page.objects.first()
 
@@ -332,7 +333,7 @@ def test_detail_export(db, client, username, password, export_format):
             assert child.tag in ['page', 'questionset', 'question']
 
 
-def test_detail_export_full(db, client):
+def test_detail_export_full(client):
     client.login(username='editor', password='editor')
 
     url = reverse(urlnames['detail_export'], args=[71]) + 'xml/?full=true'

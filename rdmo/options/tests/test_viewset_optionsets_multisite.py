@@ -11,9 +11,18 @@ from rdmo.core.tests.utils import get_obj_perms_status_code
 from ..models import OptionSet
 from .test_viewset_optionsets import urlnames
 
+pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(scope="module")
+def instances(django_db_blocker):
+    """Returns a queryset of all `OptionSet` objects in the test database, queries only once."""
+    with django_db_blocker.unblock():
+        return OptionSet.objects.all()
+
 
 @pytest.mark.parametrize('username,password', users)
-def test_list(db, client, username, password):
+def test_list(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['list'])
@@ -22,9 +31,8 @@ def test_list(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_detail(db, client, username, password):
+def test_detail(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -33,9 +41,8 @@ def test_detail(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_nested(db, client, username, password):
+def test_nested(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['nested'], args=[instance.pk])
@@ -44,7 +51,7 @@ def test_nested(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_index(db, client, username, password):
+def test_index(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['index'])
@@ -53,7 +60,7 @@ def test_index(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_export(db, client, username, password):
+def test_export(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse(urlnames['export'])
@@ -68,9 +75,8 @@ def test_export(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_create(db, client, username, password):
+def test_create(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['list'])
@@ -86,9 +92,8 @@ def test_create(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_update_m2m_multisite(db, client, username, password):
+def test_update_m2m_multisite(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         optionset_options = [{
@@ -119,9 +124,8 @@ def test_update_m2m_multisite(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_delete_multisite(db, client, username, password):
+def test_delete_multisite(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail'], args=[instance.pk])
@@ -130,9 +134,8 @@ def test_delete_multisite(db, client, username, password):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_detail_export(db, client, username, password):
+def test_detail_export(client, username, password, instances):
     client.login(username=username, password=password)
-    instances = OptionSet.objects.all()
 
     for instance in instances:
         url = reverse(urlnames['detail_export'], args=[instance.pk])

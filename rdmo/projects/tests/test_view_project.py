@@ -11,6 +11,8 @@ from rdmo.views.models import View
 from ..forms import CatalogChoiceField
 from ..models import Project
 
+pytestmark = pytest.mark.django_db
+
 users = (
     ('owner', 'owner'),
     ('manager', 'manager'),
@@ -25,35 +27,35 @@ users = (
 )
 
 view_project_permission_map = {
-    'owner': [1, 2, 3, 4, 5, 10],
-    'manager': [1, 3, 5, 7],
-    'author': [1, 3, 5, 8],
-    'guest': [1, 3, 5, 9],
-    'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    'owner': {1, 2, 3, 4, 5, 10},
+    'manager': {1, 3, 5, 7},
+    'author': {1, 3, 5, 8},
+    'guest': {1, 3, 5, 9},
+    'api': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+    'site': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 }
 
 change_project_permission_map = {
-    'owner': [1, 2, 3, 4, 5, 10],
-    'manager': [1, 3, 5, 7],
-    'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    'owner': {1, 2, 3, 4, 5, 10},
+    'manager': {1, 3, 5, 7},
+    'api': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+    'site': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 }
 
 delete_project_permission_map = {
-    'owner': [1, 2, 3, 4, 5, 10],
-    'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    'owner': {1, 2, 3, 4, 5, 10},
+    'api': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+    'site': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
 }
 
 export_project_permission_map = {
-    'owner': [1, 2, 3, 4, 5, 10],
-    'manager': [1, 3, 5, 7],
-    'api': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    'site': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    'owner': {1, 2, 3, 4, 5, 10},
+    'manager': {1, 3, 5, 7},
+    'api': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
+    'site': {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11},
 }
 
-projects = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+projects = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
 export_formats = ('rtf', 'odt', 'docx', 'html', 'markdown', 'tex', 'pdf')
 
@@ -63,7 +65,7 @@ catalog_id = 1
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_list(db, client, username, password):
+def test_list(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse('projects')
@@ -75,7 +77,7 @@ def test_list(db, client, username, password):
         assert response.status_code == 200
         # assertTemplateUsed(response, 'projects/projects.html')
 
-        if username in ('site', 'api'):
+        if username in {'site', 'api'}:
             assert projects == []
             # assert response.context['number_of_projects'] == len([])
             # assertContains(response, 'View all projects on')
@@ -90,13 +92,13 @@ def test_list(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_detail(db, client, username, password, project_id):
+def test_detail(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project', args=[project_id])
     response = client.get(url)
 
-    if project_id in view_project_permission_map.get(username, []):
+    if project_id in view_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -106,7 +108,7 @@ def test_detail(db, client, username, password, project_id):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_project_create_get(db, client, username, password):
+def test_project_create_get(client, username, password):
     client.login(username=username, password=password)
 
     url = reverse('project_create')
@@ -117,12 +119,12 @@ def test_project_create_get(db, client, username, password):
 
         # check the parent select dropdown
         for project_id in re.findall(r'<option value="(\d+)"', response.content.decode()):
-            assert int(project_id) in view_project_permission_map.get(username, [])
+            assert int(project_id) in view_project_permission_map.get(username, set())
     else:
         assert response.status_code == 302
 
 
-def test_project_create_restricted_get(db, client, settings):
+def test_project_create_restricted_get(client, settings):
     settings.PROJECT_CREATE_RESTRICTED = True
     settings.PROJECT_CREATE_GROUPS = ['projects']
 
@@ -138,7 +140,7 @@ def test_project_create_restricted_get(db, client, settings):
     assert response.status_code == 200
 
 
-def test_project_create_forbidden_get(db, client, settings):
+def test_project_create_forbidden_get(client, settings):
     settings.PROJECT_CREATE_RESTRICTED = True
 
     client.login(username='user', password='user')
@@ -150,7 +152,7 @@ def test_project_create_forbidden_get(db, client, settings):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_project_create_get_for_extra_users_and_unavailable_catalogs(db, client, username, password):
+def test_project_create_get_for_extra_users_and_unavailable_catalogs(client, username, password):
     client.login(username=username, password=password)
 
     Catalog.objects.create(
@@ -193,13 +195,13 @@ def test_project_create_get_for_extra_users_and_unavailable_catalogs(db, client,
 
         # check the parent select dropdown
         for project_id in re.findall(r'<option value="(\d+)"', response.content.decode()):
-            assert int(project_id) in view_project_permission_map.get(username, [])
+            assert int(project_id) in view_project_permission_map.get(username, set())
     else:
         assert response.status_code == 302
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_project_create_post(db, client, username, password):
+def test_project_create_post(client, username, password):
     client.login(username=username, password=password)
     project_count = Project.objects.count()
 
@@ -219,7 +221,7 @@ def test_project_create_post(db, client, username, password):
         assert Project.objects.count() == project_count
 
 
-def test_project_create_post_restricted(db, client, settings):
+def test_project_create_post_restricted(client, settings):
     settings.PROJECT_CREATE_RESTRICTED = True
     settings.PROJECT_CREATE_GROUPS = ['projects']
 
@@ -240,7 +242,7 @@ def test_project_create_post_restricted(db, client, settings):
     assert response.status_code == 302
 
 
-def test_project_create_post_forbidden(db, client, settings):
+def test_project_create_post_forbidden(client, settings):
     settings.PROJECT_CREATE_RESTRICTED = True
 
     client.login(username='user', password='user')
@@ -257,7 +259,7 @@ def test_project_create_post_forbidden(db, client, settings):
 
 
 @pytest.mark.parametrize('username,password', users)
-def test_project_create_parent_post(db, client, username, password):
+def test_project_create_parent_post(client, username, password):
     client.login(username=username, password=password)
     project_count = Project.objects.count()
 
@@ -270,7 +272,7 @@ def test_project_create_parent_post(db, client, username, password):
     }
     response = client.post(url, data)
 
-    if username in ('user', 'editor', 'reviewer'):
+    if username in {'user', 'editor', 'reviewer'}:
         assert response.status_code == 200
         assert Project.objects.count() == project_count
     elif password:
@@ -283,13 +285,13 @@ def test_project_create_parent_post(db, client, username, password):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_get(db, client, username, password, project_id):
+def test_project_update_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -300,7 +302,7 @@ def test_project_update_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_post(db, client, username, password, project_id):
+def test_project_update_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -312,7 +314,7 @@ def test_project_update_post(db, client, username, password, project_id):
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert Project.objects.get(pk=project_id).title == 'New title'
     else:
@@ -326,7 +328,7 @@ def test_project_update_post(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_post_parent(db, client, username, password, project_id):
+def test_project_update_post_parent(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -339,7 +341,7 @@ def test_project_update_post_parent(db, client, username, password, project_id):
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         if project_id == parent_project_id:
             assert response.status_code == 200
             assert Project.objects.get(pk=project_id).parent == project.parent
@@ -357,13 +359,13 @@ def test_project_update_post_parent(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_information_get(db, client, username, password, project_id):
+def test_project_update_information_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update_information', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -374,7 +376,7 @@ def test_project_update_information_get(db, client, username, password, project_
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_information_post(db, client, username, password, project_id):
+def test_project_update_information_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -385,7 +387,7 @@ def test_project_update_information_post(db, client, username, password, project
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert Project.objects.get(pk=project_id).title == 'Lorem ipsum dolor sit amet'
     else:
@@ -399,13 +401,13 @@ def test_project_update_information_post(db, client, username, password, project
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_catalog_get(db, client, username, password, project_id):
+def test_project_update_catalog_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update_catalog', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -416,7 +418,7 @@ def test_project_update_catalog_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_catalog_post(db, client, username, password, project_id):
+def test_project_update_catalog_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -426,7 +428,7 @@ def test_project_update_catalog_post(db, client, username, password, project_id)
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert Project.objects.get(pk=project_id).catalog_id == catalog_id
     else:
@@ -440,13 +442,13 @@ def test_project_update_catalog_post(db, client, username, password, project_id)
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_tasks_get(db, client, username, password, project_id):
+def test_project_update_tasks_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update_tasks', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -457,7 +459,7 @@ def test_project_update_tasks_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_tasks_post(db, client, username, password, project_id):
+def test_project_update_tasks_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -467,7 +469,7 @@ def test_project_update_tasks_post(db, client, username, password, project_id):
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert list(Project.objects.get(pk=project_id).tasks.values('id')) == []
     else:
@@ -481,13 +483,13 @@ def test_project_update_tasks_post(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_views_get(db, client, username, password, project_id):
+def test_project_update_views_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update_views', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -498,7 +500,7 @@ def test_project_update_views_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_views_post(db, client, username, password, project_id):
+def test_project_update_views_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -508,7 +510,7 @@ def test_project_update_views_post(db, client, username, password, project_id):
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert list(Project.objects.get(pk=project_id).views.values('id')) == []
     else:
@@ -522,13 +524,13 @@ def test_project_update_views_post(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_parent_get(db, client, username, password, project_id):
+def test_project_update_parent_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_update_parent', args=[project_id])
     response = client.get(url)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -539,7 +541,7 @@ def test_project_update_parent_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_update_parent_post(db, client, username, password, project_id):
+def test_project_update_parent_post(client, username, password, project_id):
     client.login(username=username, password=password)
     project = Project.objects.get(pk=project_id)
 
@@ -549,7 +551,7 @@ def test_project_update_parent_post(db, client, username, password, project_id):
     }
     response = client.post(url, data)
 
-    if project_id in change_project_permission_map.get(username, []):
+    if project_id in change_project_permission_map.get(username, set()):
         if project_id == parent_project_id:
             assert response.status_code == 200
             assert Project.objects.get(pk=project_id).parent == project.parent
@@ -567,13 +569,13 @@ def test_project_update_parent_post(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_delete_get(db, client, username, password, project_id):
+def test_project_delete_get(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_delete', args=[project_id])
     response = client.get(url)
 
-    if project_id in delete_project_permission_map.get(username, []):
+    if project_id in delete_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -584,13 +586,13 @@ def test_project_delete_get(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_delete_post(db, client, username, password, project_id):
+def test_project_delete_post(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_delete', args=[project_id])
     response = client.post(url)
 
-    if project_id in delete_project_permission_map.get(username, []):
+    if project_id in delete_project_permission_map.get(username, set()):
         assert response.status_code == 302
         assert not Project.objects.filter(pk=project_id).first()
     else:
@@ -604,13 +606,13 @@ def test_project_delete_post(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_export_xml(db, client, files, username, password, project_id):
+def test_project_export_xml(client, files, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_export', args=[project_id, 'xml'])
     response = client.get(url)
 
-    if project_id in export_project_permission_map.get(username, []):
+    if project_id in export_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -621,13 +623,13 @@ def test_project_export_xml(db, client, files, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_export_csv(db, client, username, password, project_id):
+def test_project_export_csv(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_export', args=[project_id, 'csvcomma'])
     response = client.get(url)
 
-    if project_id in export_project_permission_map.get(username, []):
+    if project_id in export_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -638,13 +640,13 @@ def test_project_export_csv(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_export_csvsemicolon(db, client, username, password, project_id):
+def test_project_export_csvsemicolon(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_export', args=[project_id, 'csvsemicolon'])
     response = client.get(url)
 
-    if project_id in export_project_permission_map.get(username, []):
+    if project_id in export_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -655,13 +657,13 @@ def test_project_export_csvsemicolon(db, client, username, password, project_id)
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_export_json(db, client, username, password, project_id):
+def test_project_export_json(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_export', args=[project_id, 'json'])
     response = client.get(url)
 
-    if project_id in export_project_permission_map.get(username, []):
+    if project_id in export_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -672,13 +674,13 @@ def test_project_export_json(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_answers(db, client, username, password, project_id):
+def test_project_answers(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_answers', args=[project_id])
     response = client.get(url)
 
-    if project_id in view_project_permission_map.get(username, []):
+    if project_id in view_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -690,13 +692,13 @@ def test_project_answers(db, client, username, password, project_id):
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_project_answers_export(db, client, username, password, project_id, export_format):
+def test_project_answers_export(client, username, password, project_id, export_format, mocked_convert_text):
     client.login(username=username, password=password)
 
     url = reverse('project_answers_export', args=[project_id, export_format])
     response = client.get(url)
 
-    if project_id in view_project_permission_map.get(username, []):
+    if project_id in view_project_permission_map.get(username, set()):
         assert response.status_code == 200
     else:
         if password:
@@ -707,7 +709,7 @@ def test_project_answers_export(db, client, username, password, project_id, expo
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_view(db, client, username, password, project_id):
+def test_project_view(client, username, password, project_id):
     client.login(username=username, password=password)
     project_views = Project.objects.get(pk=project_id).views.all()
 
@@ -715,7 +717,7 @@ def test_project_view(db, client, username, password, project_id):
         url = reverse('project_view', args=[project_id, view.id])
         response = client.get(url)
 
-        if project_id in view_project_permission_map.get(username, []):
+        if project_id in view_project_permission_map.get(username, set()):
             if view in project_views:
                 assert response.status_code == 200
             else:
@@ -730,17 +732,22 @@ def test_project_view(db, client, username, password, project_id):
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
 @pytest.mark.parametrize('export_format', export_formats)
-def test_project_view_export(db, client, username, password, project_id, export_format, files):
+def test_project_view_export(client, username, password, project_id, export_format, files, mocked_convert_text):
     client.login(username=username, password=password)
-    project_views = Project.objects.get(pk=project_id).views.all()
+    project_views = View.objects.filter(projects__id=project_id).values_list("id", flat=True)
 
-    for view in View.objects.all():
+    for view in View.objects.only("id"):
         url = reverse('project_view_export', args=[project_id, view.pk, export_format])
         response = client.get(url)
 
-        if project_id in view_project_permission_map.get(username, []):
-            if view in project_views:
+        if project_id in view_project_permission_map.get(username, set()):
+            if view.id in project_views:
                 assert response.status_code == 200
+                if export_format != "html":
+                    mocked_convert_text.assert_called()
+                    assert mocked_convert_text.call_args.kwargs["format"] == "html"
+                    # e.g. assert "/tmp/tmpxabjgfje.rtf" ends with "rtf"
+                    assert mocked_convert_text.call_args.kwargs["outputfile"].endswith(export_format)
             else:
                 assert response.status_code == 404
         else:
@@ -752,13 +759,13 @@ def test_project_view_export(db, client, username, password, project_id, export_
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_questions(db, client, username, password, project_id):
+def test_project_questions(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_questions', args=[project_id])
     response = client.get(url)
 
-    if project_id in view_project_permission_map.get(username, []):
+    if project_id in view_project_permission_map.get(username, set()):
         assert response.status_code == 200
     elif password:
         assert response.status_code == 403
@@ -768,13 +775,13 @@ def test_project_questions(db, client, username, password, project_id):
 
 @pytest.mark.parametrize('username,password', users)
 @pytest.mark.parametrize('project_id', projects)
-def test_project_error(db, client, username, password, project_id):
+def test_project_error(client, username, password, project_id):
     client.login(username=username, password=password)
 
     url = reverse('project_questions', args=[project_id])
     response = client.get(url)
 
-    if project_id in view_project_permission_map.get(username, []):
+    if project_id in view_project_permission_map.get(username, set()):
         assert response.status_code == 200
     elif password:
         assert response.status_code == 403
