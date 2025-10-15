@@ -236,3 +236,10 @@ default.extend-ignore-re = [
   "(?Rm)^.*(#|//)\\s*spellchecker:disable-line$", # for .py files
   "(?Rm)^.*<!-- spellchecker:disable-line -->$", # for .html files
 ]
+
+
+[tool.check-wheel-contents]
+ignore = [
+  "W002", # wheel contains duplicate files
+  "W004", # module is not located at importable path
+]
