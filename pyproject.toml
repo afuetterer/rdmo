@@ -31,6 +31,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  # TODO add 3.14
 ]
 dynamic = [
   "version",
@@ -41,7 +42,7 @@ dependencies = [
   # in minor version updates anytime
   "defusedcsv>=2.0,<3.0",
   "defusedxml>=0.7.1,<1.0",
-  "django>=5.2,<6.0",
+  "django>=5.2.7,<6.0", # TODO: bump to 5.2.8 in 11/2025 -> enables python 3.14 support
   "django-cleanup>=8.0,<10.0",
   "django-compressor>=4.4,<5.0",
   "django-extensions>=3.2,<5.0",
