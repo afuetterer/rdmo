@@ -21,8 +21,15 @@ repos:
       - id: trailing-whitespace
         exclude: \.dot$
       - id: debug-statements
+  # TODO remove after upgrade is completed
+  # Ref: https://django-upgrade.readthedocs.io
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: 1.29.1
+    hooks:
+    - id: django-upgrade
+      args: [--target-version, "5.2"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.12
+    rev: v0.14.0 # TODO remove me
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
