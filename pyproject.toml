@@ -204,15 +204,11 @@ markers = [
   "e2e: marks tests as end-to-end tests using playwright (deselect with '-m \"not e2e\"')",
 ]
 filterwarnings = [
-  # fail on RemovedInDjango50Warning exception
-  "error::django.utils.deprecation.RemovedInDjango50Warning",
+  # throw an error when using methods deprecated in the next django version
+  "error::django.utils.deprecation.RemovedInNextVersionWarning",
 
   # ignore warnings raised by widget_tweaks.py
   "ignore:'maxsplit' is passed as positional argument",
-
-  # ignore warnings raised from within django itself
-  # django/core/files/storage/__init__.py
-  "ignore:django.core.files.storage.get_storage_class is deprecated:django.utils.deprecation.RemovedInDjango51Warning",
 ]
 
 [tool.coverage.run]
