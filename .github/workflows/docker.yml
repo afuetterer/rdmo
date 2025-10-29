@@ -1,7 +1,7 @@
 name: Docker
 
 on:
-  # pull_request:
+  pull_request:
   workflow_dispatch: # run manually from actions tab
 
 # Ref: https://docs.github.com/en/actions/using-jobs/using-concurrency
