@@ -1,6 +1,7 @@
 ca-certificates
 curl
 git
+lsb-release
 pandoc
 texlive-latex-base
 texlive-latex-extra
