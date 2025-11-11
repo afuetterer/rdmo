@@ -6,6 +6,7 @@ import pytest
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 from django.core.management import call_command
 
 from rdmo.accounts.utils import set_group_permissions
@@ -75,3 +76,14 @@ def delete_all_objects():
         for model in models:
             model.objects.all().delete()
     return delete_all
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _disable_update_last_login():
+    """
+    Disable the update_last_login signal receiver to reduce login overhead.
+
+    Ref: https://adamj.eu/tech/2024/09/18/django-test-speed-last-login/
+    """
+    user_logged_in.disconnect(dispatch_uid="update_last_login")
+    return
