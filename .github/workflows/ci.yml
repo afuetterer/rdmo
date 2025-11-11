@@ -202,10 +202,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - name: Install the latest version of uv and set the python version
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: "3.13"
-          cache: pip
+          python-version: 3.13
+          activate-environment: true
+          enable-cache: true
       - name: Download wheel
         uses: actions/download-artifact@v6
         with:
@@ -213,11 +215,11 @@ jobs:
           path: dist
       - name: Install os requirements for python-ldap
         run: sudo apt-get update && sudo apt-get install --yes libldap2-dev libsasl2-dev
-      - run: python -m pip install --upgrade pip
+      # - run: python -m pip install --upgrade pip
       - name: Install rdmo wheel with all optional dependency groups
-        run: python -m pip install --no-compile "$(ls dist/*.whl)[allauth,ci,dev,gunicorn,ldap,mysql,postgres,pytest]"
+        run: uv pip install "$(ls dist/*.whl)[allauth,ci,dev,gunicorn,ldap,mysql,postgres,pytest]"
       - name: Verify installed packages have compatible dependencies
-        run: python -m pip check
+        run: uv pip check
       - uses: actions/setup-node@v6
         with:
           node-version: 22
