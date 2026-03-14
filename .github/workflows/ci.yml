@@ -70,9 +70,15 @@ jobs:
       with:
         name: Packages
         path: dist
+
+    - uses: awalsh128/cache-apt-pkgs-action@v1.6.0
+      with:
+        packages: pandoc texlive-latex-base texlive-latex-extra texlive-luatex librsvg2-bin
+        version: 1.0
+        execute_install_scripts: true
+
     - name: Install Dependencies
       run: |
-        sudo apt-get update && sudo apt-get install --yes pandoc texlive-latex-base texlive-latex-extra texlive-luatex librsvg2-bin
         pandoc --version
         python -m pip install --upgrade pip
         python -m pip --version
