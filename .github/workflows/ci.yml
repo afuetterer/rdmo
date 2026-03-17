@@ -154,10 +154,11 @@ jobs:
       env:
         DJANGO_DEBUG: True
         GITHUB_DB_BACKEND: ${{ matrix.db-backend }}
-    - uses: actions/upload-artifact@v5
+    - uses: actions/upload-artifact@v7
       with:
         name: screenshots
         path: screenshots/**/*.png
+        archive: false
 
   coveralls:
     name: Indicate completion to coveralls
